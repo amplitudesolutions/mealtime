@@ -1,0 +1,73 @@
+<div class="container-fluid" ng-controller="DashboardCtrl">
+	<div class="col-sm-2 hidden-xs">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				Add To List
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="sr-only">Item Name</label>
+					<form ng-submit="addNewItem()">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Add Item" ng-model="itemname.text">
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</span>
+						</div>
+					</form>
+				</div>
+				<ul class="list-unstyled">
+					<li ng-repeat="i in items | filter:itemname" ng-click="addItem(i)">{{i.text}}</li>
+				</ul>
+			</div>
+		</div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				Add Category
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="sr-only">Category Name</label>
+					<form ng-submit="addCategory()">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Add New Category" ng-model="categoryname">
+							<span class="input-group-btn">
+								<button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+							</span>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				Receipes
+			</div>
+			<div class="panel-body">
+				<div ng-repeat="receipe in recipes">
+					{{receipe.text}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-10">
+		<div ng-repeat="category in categories">
+			<div class="col-sm-2" droppable drop="handleDrop()">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						{{category.text}}
+					</div>
+					<div class="panel-body">
+						<ul class="list-unstyled">
+							<li ng-repeat="i in list | filter:categoryMatch(category.text)" draggable item="i">{{i.item.text}} ({{i.quantity}})</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+ <div class="bin bin-left" droppable drop="leftDrop()" style="float: left;border: 1px solid red; min-height: 150px; width: 150px;float: right;padding: 10px;">
+    <div class="item" id="item1" style="border: 1px solid; height: 150px; width: 150px;background: blue;" draggable></div>
+  </div>
+  <div class="bin" droppable drop="rightDrop()" style="border: 1px solid red; min-height: 150px; width: 150px;float: right;padding: 10px;"></div>
