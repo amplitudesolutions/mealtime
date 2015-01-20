@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.dashboard', ['ngRoute'])
+angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/dashboard', {
@@ -9,16 +9,37 @@ angular.module('myApp.dashboard', ['ngRoute'])
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', function($scope) {
+.controller('DashboardCtrl', ['$scope', '$firebase', function($scope, $firebase) {
 
-	$scope.categories = [
-		{id: 1, text: 'Fruits'},
-		{id: 2, text: 'Vegetables'},
-		{id: 3, text: 'Meats'},
-		{id: 4, text: 'Dairy'},
-		{id: 5, text: 'Dry Goods'},
-		{id: 6, text: 'Uncategorized'}
-	];
+  // connect to firebase 
+  var baseRef = new Firebase("https://intense-inferno-9799.firebaseio.com");
+  var categoriesRef = baseRef.child('categories');
+  var itemsRef = baseRef.child('items');
+  var listRef = baseRef.child('lists');
+  // var listItemRef = listRef.child('items');
+
+  var fb = $firebase(categoriesRef);
+  var fbItem = $firebase(itemsRef);
+  var fbList = $firebase(listRef);
+
+  $scope.categories = fb.$asArray();
+  $scope.items = fbItem.$asArray();
+  $scope.list = fbList.$asArray();
+
+  $scope.populate = function() {
+    fb.$set({
+        Uncategorized: {name: 'Uncategorized'}
+    });
+
+    fbList.$set({
+      Default: {name: 'Default List'}
+    })
+
+    fbItem.$set({});
+  };
+
+  $scope.addCategoryState = false;
+
 	$scope.recipes = [
 		{id: 1, text: 'Cajun Chicken'},
 		{id: 2, text: 'Vegetarian Lasangna'},
@@ -34,77 +55,104 @@ angular.module('myApp.dashboard', ['ngRoute'])
 		{id: 1, recipe_id: 4, item_id: 6}
 	];
 
-	$scope.items = [
-		{id: 1, text: 'Chicken', category: $scope.categories[2]},
-		{id: 2, text: 'Penne Noodles', category: $scope.categories[4]},
-		{id: 3, text: 'Flatbread', category: $scope.categories[4]},
-		{id: 4, text: 'Beef Steak', category: $scope.categories[2]},
-		{id: 5, text: 'Rice Noodles', category: $scope.categories[4]},
-		{id: 6, text: 'Cheese', category:  $scope.categories[3]},
-		{id: 7, text: 'Oranges', category: $scope.categories[0]},
-		{id: 8, text: 'Appricots', category:  $scope.categories[0]}
-	];
+  $scope.categories = fb.$asArray();
 
-	$scope.list = [
-		{"id": "1", "item": {"text": "Chicken", "category": "Meats"}, "quantity": "1"},
-		// {"id": "2", "item": {"text": "Flatbread", "category": "Dry Goods"}},
-		// {"id": "3", "item": {"text": "Cheese", "category": "Dairy"}},
-		// {"id": "4", "item": {"text": "Beef Steak", "category": "Meats"}},
-		// {"id": "5", "item": {"text": "Penne Noodles", "category": "Dry Goods"}},
-		// {"id": "6", "item": {"text": "Apples", "category": "Fruits"}},
-		// {"id": "7", "item": {"text": "Bananas", "category": "Fruits"}},
-		// {"id": "8", "item": {"text": "Carrots", "category": "Vegetables"}},
-		// {"id": "9", "item": {"text": "Celery", "category": "Vegetables"}}
-	];
+	$scope.setAddCategoryState = function(state) {
+    $scope.addCategoryState = state;
+  };
+
+  $scope.isAddCategory = function() {
+    return $scope.addCategoryState;
+  };
 
 	$scope.addCategory = function() {	
-		$scope.categories.push({id: $scope.categories.length, text:$scope.categoryname});
+		//$scope.categories.push({id: $scope.categories.length, text:$scope.categoryname});
+    //var list = $firebase(ref).$asArray();
+    $scope.categories.$add({ name: $scope.categoryname }).then(function(ref) {
+      var id = ref.key();
+      //console.log("added record with id " + id);
+      $scope.categories.$indexFor(id); // returns location in the array
+    });
+
 		$scope.categoryname = '';
 	};
 
 	$scope.addNewItem = function() {
-		var existingItem = -1;
-		//Check if item exists in item list, if not, add it, then add to grocery list
-		for(var i = $scope.items.length - 1; i >= 0; i--){
-       		if($scope.items[i].text == $scope.itemname.text){
-       			existingItem = $scope.items[i];
-		 	}
-	    }
+		var existingItem = null;
 
-	    if (existingItem == -1) {
-	    	$scope.items.push({id: $scope.items.length, text: $scope.itemname.text, category: $scope.categories[5]});
-	    	existingItem = $scope.items[$scope.items.length-1];
-	    }
-	    $scope.itemname.text = "";
-	    $scope.addItem(existingItem);
+    itemsRef.orderByChild("name").startAt($scope.itemname.name).endAt($scope.itemname.name).once('value', function(dataSnapshot) {
+      //Will only be one.
+      dataSnapshot.forEach(function(snap){
+        //console.log(snap.key());
+        existingItem = snap.key();  
+      });
+      
+      if (existingItem === null) {
+        //Create New Item
+        $scope.items.$add({ name: $scope.itemname.name }).then(function(ref) {
+          ref.child("category/" + $scope.categories.$keyAt($scope.categories[0])).set(true);
+          categoriesRef.child("/" + $scope.categories.$keyAt($scope.categories[0]) + "/items/" + ref.key()).set(true);
+          $scope.addItem(ref.key());
+        });
+      } else {
+        $scope.addItem(existingItem);
+      }
+
+      $scope.itemname.name = "";
+    });
+
 	};
 
 	$scope.addItem = function(item) {
-		var itemExistsId = -1;
+    // if ($scope.list.length < 1) {
+    //   // Check if list exists, if not create it.    
+    //   //Assuming only 1 list will ever exist for now.
+    //   $scope.list.$add({name: "Default list"});
+    // }
 
-		//Need to look at LODash or Underscore.js for utility functions.
-		for(var i = $scope.list.length - 1; i >= 0; i--){
-       		if($scope.list[i].item.id == item.id){
-       			itemExistsId = i;
-		 	}
-	    }
-	    if (itemExistsId == -1) {
-	     	$scope.list.push({id: $scope.list.length, item: item, quantity: 1});
-	    } else {
-	     	$scope.list[itemExistsId].quantity += 1;	
-	    }
+    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
+    
+    //Check if item exists, if not create it.
+    listItemRef.child(item).transaction(function(currentData){
+      if (currentData === null) {
+        return { quantity: 1 };
+      } else {
+        listItemRef.child(item + "/quantity").transaction(function(quantity) {
+          return quantity+1;
+        });
+      }
+    }, function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      }
+    });
 	};
 
-	$scope.categoryMatch = function(categoryFilter) {
-	  return function(list) {
-	    return list.item.category.text === categoryFilter;
-	  }
-	};
+	// $scope.categoryMatch = function(categoryFilter) {
+	//   return function(list) {
+	//     return $scope.list.item.category.name === categoryFilter;
+	//   }
+	// };
 
-	$scope.handleDrop = function() {
-        alert('Item has been dropped');
+	$scope.handleDrop = function(item, bin) {
+        //alert('Item has been dropped');
+        //alert(this.id);
+        //alert(bin);
+        //alert(item);
+        //Need to look at LODash or Underscore.js for utility functions.
+        alert(bin);
+        for(var i = $scope.items.length - 1; i >= 0; i--){
+          if('item' + $scope.items[i].id == item){
+            //itemExistsId = i;
+            alert($scope.items[i].id + '/' + $scope.items[i].text);
+            $scope.items[i].category.id = bin;
+          }
+        }
     };
 
+  $scope.emptyList = function() {
+    $scope.list = [];
+  };
 }])
 
 .directive('draggable', function() {
@@ -139,7 +187,8 @@ angular.module('myApp.dashboard', ['ngRoute'])
 .directive('droppable', function() {
   return {
     scope: {
-      drop: '&' // parent
+      drop: '&',
+      bin: '='
     },
     link: function(scope, element) {
       // again we need the native object
@@ -183,11 +232,18 @@ angular.module('myApp.dashboard', ['ngRoute'])
           
           this.classList.remove('over');
           
+          var binId = this.id;
           var item = document.getElementById(e.dataTransfer.getData('Text'));
-          this.appendChild(item);
-          
-          // call the drop passed drop function
-          scope.$apply('drop()');
+          var list = document.getElementById("List" + binId);
+          list.appendChild(item);
+          //this.appendChild(item);
+          // call the passed drop function
+          scope.$apply(function(scope) {
+            var fn = scope.drop();
+            if ('undefined' !== typeof fn) {            
+              fn(item.id, binId);
+            }
+          });
           
           return false;
         },
@@ -195,4 +251,6 @@ angular.module('myApp.dashboard', ['ngRoute'])
       );
     }
   }
-});
+})
+
+;
