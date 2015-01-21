@@ -55,7 +55,7 @@
 					<div class="panel-body">
 						<ul class="list-unstyled" id="List{{category.$id}}">
 							<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
-								{{items[items.$indexFor(key)].name}}
+								{{items[items.$indexFor(key)].name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(key)"></i>
 							</li>
 						</ul>
 					</div>

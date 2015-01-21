@@ -4,8 +4,8 @@
 angular.module('myApp', [
   'ngRoute',
   'myApp.dashboard',
-  'myApp.view1',
-  'myApp.view2',
+  'myApp.inventory',
+  'myApp.recipes',
   'myApp.version',
   'ui.bootstrap',
   'firebase',

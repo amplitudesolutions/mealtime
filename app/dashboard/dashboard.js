@@ -50,6 +50,21 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     {id: 6, text: 'Beef Pho'}
   ];
 
+  $scope.deleteItem = function(item) {
+    //console.log(item);
+    var category = null;
+    //console.log(itemsRef.child("categories"));
+    itemsRef.child(item).child('/category').once('value', function(data){
+      data.forEach(function(snap){
+        category = snap.key();
+      });
+    });
+
+    categoriesRef.child("/" + category + "/items/" + item).set(null);
+    listRef.child("/Default/items/" + item).set(null);
+    itemsRef.child(item).remove();
+  };
+
 	$scope.setAddCategoryState = function(state) {
     $scope.addCategoryState = state;
   };
