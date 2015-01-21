@@ -27,7 +27,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   $scope.populate = function() {
     fb.$set({
-        Uncategorized: {name: 'Uncategorized'}
+        Uncategorized: {name: 'Uncategorized', default: true}
     });
 
     fbList.$set({
@@ -58,19 +58,33 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     return $scope.addCategoryState;
   };
 
+  $scope.setDefaultCategory = function(categoryItem) {
+    categoryItem.child('default').set(true);
+  };
+
 	$scope.addCategory = function() {	
-		//$scope.categories.push({id: $scope.categories.length, text:$scope.categoryname});
-    //var list = $firebase(ref).$asArray();
     $scope.categories.$add({ name: $scope.categoryname }).then(function(ref) {
-      var id = ref.key();
-      //console.log("added record with id " + id);
-      $scope.categories.$indexFor(id); // returns location in the array
+      //var id = ref;
+      if ($scope.categories.length == 1) {
+        $scope.setDefaultCategory(ref);
+      }
     });
 
 		$scope.categoryname = '';
 	};
 
+  function getDefaultCategory() {
+    var returnData = null;
+    categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
+      snap.forEach(function(snapData) {
+        returnData = snapData.key();
+      });
+    });
+    return returnData;
+  };
+
 	$scope.addNewItem = function() {
+    var defaultCategory = getDefaultCategory();
 		var existingItem = null;
 
     itemsRef.orderByChild("name").startAt($scope.itemname.name).endAt($scope.itemname.name).once('value', function(dataSnapshot) {
@@ -83,8 +97,8 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       if (existingItem === null) {
         //Create New Item
         $scope.items.$add({ name: $scope.itemname.name }).then(function(ref) {
-          ref.child("category/" + $scope.categories.$keyAt($scope.categories[0])).set(true);
-          categoriesRef.child("/" + $scope.categories.$keyAt($scope.categories[0]) + "/items/" + ref.key()).set(true);
+          ref.child("category/" + defaultCategory).set(true);
+          categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
           $scope.addItem(ref.key());
         });
       } else {

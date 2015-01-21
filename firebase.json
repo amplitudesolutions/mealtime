@@ -1,0 +1,9 @@
+{
+  "firebase": "intense-inferno-9799",
+  "public": "app",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
