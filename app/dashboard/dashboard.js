@@ -16,7 +16,6 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   var categoriesRef = baseRef.child('categories');
   var itemsRef = baseRef.child('items');
   var listRef = baseRef.child('lists');
-  // var listItemRef = listRef.child('items');
 
   var fb = $firebase(categoriesRef);
   var fbItem = $firebase(itemsRef);
@@ -40,22 +39,16 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   $scope.addCategoryState = false;
 
-	$scope.recipes = [
-		{id: 1, text: 'Cajun Chicken'},
-		{id: 2, text: 'Vegetarian Lasangna'},
-		{id: 3, text: 'Earls Potatoe Salad'},
-		{id: 4, text: 'Flatbread Pizza'},
-		{id: 5, text: 'Lemon Chicken Pasta'},
-		{id: 6, text: 'Beef Pho'}
-	];
+	$scope.categories = fb.$asArray();
 
-	$scope.ingredients = [
-		{id: 1, recipe_id: 1, item_id: 1},
-		{id: 1, recipe_id: 4, item_id: 3},
-		{id: 1, recipe_id: 4, item_id: 6}
-	];
-
-  $scope.categories = fb.$asArray();
+  $scope.recipes = [
+    {id: 1, text: 'Cajun Chicken'},
+    {id: 2, text: 'Vegetarian Lasangna'},
+    {id: 3, text: 'Earls Potatoe Salad'},
+    {id: 4, text: 'Flatbread Pizza'},
+    {id: 5, text: 'Lemon Chicken Pasta'},
+    {id: 6, text: 'Beef Pho'}
+  ];
 
 	$scope.setAddCategoryState = function(state) {
     $scope.addCategoryState = state;
@@ -104,11 +97,6 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 	};
 
 	$scope.addItem = function(item) {
-    // if ($scope.list.length < 1) {
-    //   // Check if list exists, if not create it.    
-    //   //Assuming only 1 list will ever exist for now.
-    //   $scope.list.$add({name: "Default list"});
-    // }
 
     var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
     
@@ -128,27 +116,13 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     });
 	};
 
-	// $scope.categoryMatch = function(categoryFilter) {
-	//   return function(list) {
-	//     return $scope.list.item.category.name === categoryFilter;
-	//   }
-	// };
-
 	$scope.handleDrop = function(item, bin) {
-        //alert('Item has been dropped');
-        //alert(this.id);
-        //alert(bin);
-        //alert(item);
-        //Need to look at LODash or Underscore.js for utility functions.
-        alert(bin);
-        for(var i = $scope.items.length - 1; i >= 0; i--){
-          if('item' + $scope.items[i].id == item){
-            //itemExistsId = i;
-            alert($scope.items[i].id + '/' + $scope.items[i].text);
-            $scope.items[i].category.id = bin;
-          }
-        }
-    };
+    //Need to look at LODash or Underscore.js for utility functions.
+    alert(bin);
+    //item is the item key
+    //bin is the category key
+    //Update Category/Item and Item/Category
+  };
 
   $scope.emptyList = function() {
     $scope.list = [];
@@ -230,20 +204,37 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
           // Stops some browsers from redirecting.
           if (e.stopPropagation) e.stopPropagation();
           
-          this.classList.remove('over');
-          
           var binId = this.id;
           var item = document.getElementById(e.dataTransfer.getData('Text'));
           var list = document.getElementById("List" + binId);
-          list.appendChild(item);
-          //this.appendChild(item);
-          // call the passed drop function
-          scope.$apply(function(scope) {
-            var fn = scope.drop();
-            if ('undefined' !== typeof fn) {            
-              fn(item.id, binId);
-            }
+
+          var baseRef = new Firebase("https://intense-inferno-9799.firebaseio.com");
+          var categoryRef = baseRef.child('categories')
+          var itemsRef = baseRef.child(/items/ + item.id);
+
+          var previousCat = null;
+          //console.log(itemsRef.child("categories"));
+          itemsRef.child('/category').once('value', function(data){
+            data.forEach(function(snap){
+              previousCat = snap.key();
+            });
           });
+
+          console.log("Remove Child: " + categoryRef.child(previousCat + "/items/" + item.id));
+          categoryRef.child(previousCat + "/items/" + item.id).set(null);
+          console.log("Adding Child: " + categoryRef.child(binId + "/items/" + item.id));
+          categoryRef.child(binId + "/items/" + item.id).set(true);
+          
+          //console.log("old cat: " + itemsRef.child('category'));
+          //Removes old category from item and adds new one
+          itemsRef.child("category").remove();
+          itemsRef.child("category/" + binId).set(true);
+        
+          this.classList.remove('over');
+                    
+          // console.log("Bin: " + binId);
+          
+          // console.log("item: " + item.id);
           
           return false;
         },

@@ -21,24 +21,6 @@
 				</ul>
 			</div>
 		</div>
-		<!-- <div class="panel panel-primary">
-			<div class="panel-heading">
-				Add Category
-			</div>
-			<div class="panel-body">
-				<div class="form-group">
-					<label class="sr-only">Category Name</label>
-					<form ng-submit="addCategory()">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Add New Category" ng-model="categoryname">
-							<span class="input-group-btn">
-								<button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-							</span>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div> -->
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				Receipes
@@ -61,23 +43,20 @@
 	<div class="col-sm-8">
 		<div ng-repeat="category in categories">  <!-- ng-init="item = items.$load(category.$id)" -->
 			<div class="col-sm-3">
-				<div class="panel panel-success" droppable drop="handleDrop" id="{{category.id}}" bin="bin">
+				<div class="panel panel-success" droppable drop="handleDrop" id="{{category.$id}}" bin="bin">
 					<div class="panel-heading">
 						{{category.name}}
-<!-- 						<div ng-repeat="(key, val) in category.items">
-							{{items[items.$indexFor(key)].name}}
-						</div> -->
-						<!-- <div ng-repeat="(key, val) in list">
-
-							{{val.items.$id}}
+						<!-- <div ng-repeat="l in list">
+							<div ng-repeat="(key, val) in l.items ">
+								{{items[items.$indexFor(key)].name}}
+							</div>
 						</div> -->
 					</div>
 					<div class="panel-body">
-						<ul class="list-unstyled" id="List{{category.id}}">
-							<li ng-repeat="i in list.items" class="hand" draggable item="item" id="item{{i.id}}">
-								{{i}}
-							</li><!-- | filter:categoryMatch(val.name) -->
-
+						<ul class="list-unstyled" id="List{{category.$id}}">
+							<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
+								{{items[items.$indexFor(key)].name}}
+							</li>
 						</ul>
 					</div>
 				</div>
