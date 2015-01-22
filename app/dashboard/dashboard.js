@@ -51,13 +51,10 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   ];
 
   $scope.deleteItem = function(item) {
-    //console.log(item);
     var category = null;
-    //console.log(itemsRef.child("categories"));
-    itemsRef.child(item).child('/category').once('value', function(data){
-      data.forEach(function(snap){
-        category = snap.key();
-      });
+
+    itemsRef.child(item).once('value', function(data){
+        category = data.val().category;
     });
 
     categoriesRef.child("/" + category + "/items/" + item).set(null);
@@ -98,6 +95,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     return returnData;
   };
 
+  //Add New Item to Inventory
 	$scope.addNewItem = function() {
     var defaultCategory = getDefaultCategory();
 		var existingItem = null;
@@ -112,7 +110,12 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       if (existingItem === null) {
         //Create New Item
         $scope.items.$add({ name: $scope.itemname.name }).then(function(ref) {
-          ref.child("category/" + defaultCategory).set(true);
+
+          //ref.child("category/" + defaultCategory).set(true);
+
+          //MAYBE LOOK AT DOING THIS INSTEAD AS ITS ONLY A 1 to Many Relationship
+          ref.child("category").set(defaultCategory);
+          
           categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
           $scope.addItem(ref.key());
         });
@@ -125,6 +128,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
 	};
 
+  //Add New Item to List
 	$scope.addItem = function(item) {
 
     var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
@@ -132,7 +136,9 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     //Check if item exists, if not create it.
     listItemRef.child(item).transaction(function(currentData){
       if (currentData === null) {
-        return { quantity: 1 };
+          // categoriesRef.child(item.category)
+          //console.log(item);
+          return { quantity: 1 };
       } else {
         listItemRef.child(item + "/quantity").transaction(function(quantity) {
           return quantity+1;
@@ -242,22 +248,27 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
           var itemsRef = baseRef.child(/items/ + item.id);
 
           var previousCat = null;
-          //console.log(itemsRef.child("categories"));
-          itemsRef.child('/category').once('value', function(data){
-            data.forEach(function(snap){
-              previousCat = snap.key();
-            });
+          //console.log(itemsRef.child("category"));
+          
+          itemsRef.once('value', function(data){
+            //data.forEach(function(snap){
+              //console.log(data.val().category);
+              previousCat = data.val().category;
+            //});
           });
+          itemsRef.child('category').remove();
 
-          console.log("Remove Child: " + categoryRef.child(previousCat + "/items/" + item.id));
+          // console.log("Remove Child: " + categoryRef.child(previousCat + "/items/" + item.id));
           categoryRef.child(previousCat + "/items/" + item.id).set(null);
-          console.log("Adding Child: " + categoryRef.child(binId + "/items/" + item.id));
+          // console.log("Adding Child: " + categoryRef.child(binId + "/items/" + item.id));
           categoryRef.child(binId + "/items/" + item.id).set(true);
           
           //console.log("old cat: " + itemsRef.child('category'));
           //Removes old category from item and adds new one
           itemsRef.child("category").remove();
-          itemsRef.child("category/" + binId).set(true);
+          
+          //itemsRef.child("category/" + binId).set(true);
+          itemsRef.child("category").set(binId);
         
           this.classList.remove('over');
                     

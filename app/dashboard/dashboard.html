@@ -54,9 +54,12 @@
 					</div>
 					<div class="panel-body">
 						<ul class="list-unstyled" id="List{{category.$id}}">
+							<li ng-repeat="(key, val) in items | filter: category.$id" class="hand" draggable item="item" id="{{val.$id}}" data-cat="{{category.id}}">{{val.name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(val.$id)"></i>
+							</li>
+							<!-- ----
 							<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
 								{{items[items.$indexFor(key)].name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(key)"></i>
-							</li>
+							</li> -->
 						</ul>
 					</div>
 				</div>
