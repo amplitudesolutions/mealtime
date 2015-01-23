@@ -37,14 +37,14 @@ body { padding-top: 70px; }
   border: 1px solid #B8B8B8;
   background-color: #D0D0D0;
   /* Rotate div */
-    -ms-transform: rotate(3deg); /* IE 9 */
-    -webkit-transform: rotate(3deg); /* Chrome, Safari, Opera */
-    transform: rotate(3deg);
+ /*   -ms-transform: rotate(3deg); *//* IE 9 */
+    /*-webkit-transform: rotate(3deg);*/ /* Chrome, Safari, Opera */
+    /*transform: rotate(3deg);*/
 }
 
 .over {
   /*border-color: red;*/
-  /*box-shadow: 2px 2px 2px #888888;*/
+  box-shadow: 2px 2px 2px #888888;
   
 }
 
@@ -79,4 +79,9 @@ body { padding-top: 70px; }
 .animate-repeat.ng-enter.ng-enter-active {
   opacity:1;
   max-height:40px;
+}
+
+.done-true {
+  text-decoration: line-through;
+  color: grey;
 }

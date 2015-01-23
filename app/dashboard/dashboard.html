@@ -17,7 +17,7 @@
 					</form>
 				</div>
 				<ul class="list-unstyled">
-					<li ng-repeat="i in items | filter:itemname" ng-click="addItem(i.$id)" class="hand animate-repeat">{{i.name}}</li>
+					<li ng-repeat="i in items | filter:itemname" ng-click="addItem(i)" class="hand animate-repeat">{{i.name}}</li>
 				</ul>
 			</div>
 		</div>
@@ -52,16 +52,21 @@
 							</div>
 						</div> -->
 					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled" id="List{{category.$id}}">
-							<li ng-repeat="(key, val) in items | filter: category.$id" class="hand" draggable item="item" id="{{val.$id}}" data-cat="{{category.id}}">{{val.name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(val.$id)"></i>
-							</li>
-							<!-- ----
-							<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
-								{{items[items.$indexFor(key)].name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(key)"></i>
-							</li> -->
-						</ul>
-					</div>
+					<ul class="list-group" id="List{{category.$id}}">
+						<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
+							<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
+							{{items[items.$indexFor(item.$id)].name}} <span class="visible-xs">{{item.quantity}}</span>
+							<div class="btn-group btn-grou-xs pull-right hidden-xs" role="group">
+								<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
+								<button type="button" class="btn btn-default">{{item.quantity}}</button>
+								<button type="button" class="btn btn-default" ng-click="addQty(item)"><i class="fa fa-plus"></i></button>
+							</div>
+						</li>
+						<!-- 
+						<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
+							{{items[items.$indexFor(key)].name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(key)"></i>
+						</li> -->
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -89,46 +94,24 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="col-sm-2">
 		<div class="col-sm-12">
-			<div class="panel panel-info">
-				<div class="panel-heading">
-					Weekly Planner
-				</div>
-				<div class="panel-body">
-					<dl>
-					  <dt>Monday</dt>
-					  <dd><del>Sundried Tomatoe Linguini</de></dd>
-					  <dt>Tuesday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					  <dt>Wednesday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					  <dt>Thursday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					  <dt>Friday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					  <dt>Saturday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					  <dt>Sunday</dt>
-					  <dd>Sundried Tomatoe Linguini</dd>
-					</dl>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					Your Grocery List
-				</div>
-				<div class="panel-body">
-					<ul class="list-unstyled">
-						<li ng-repeat="(id, val) in list[0].items" id="{{id}}" class="animate-repeat">
-							{{items[items.$indexFor(id)].name}} ({{val.quantity}})
-						</li>
-					</ul>
+			<div class="row">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Stuff you've got
+					</div>
+					<div class="panel-body">
+						<ul class="list-unstyled">
+							<li ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="animate-repeat">
+								<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
+								<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}}</span>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
 </div>

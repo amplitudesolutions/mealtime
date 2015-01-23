@@ -20,10 +20,12 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   var fb = $firebase(categoriesRef);
   var fbItem = $firebase(itemsRef);
   var fbList = $firebase(listRef);
+  var fbListItems = $firebase(listRef.child('/Default/items'));
 
   $scope.categories = fb.$asArray();
   $scope.items = fbItem.$asArray();
   $scope.list = fbList.$asArray();
+  $scope.listItems = fbListItems.$asArray();
 
   $scope.populate = function() {
     fb.$set({
@@ -51,15 +53,53 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   ];
 
   $scope.deleteItem = function(item) {
+    //Delete Item from Inventory
     var category = null;
 
-    itemsRef.child(item).once('value', function(data){
+    itemsRef.child(item.$id).once('value', function(data){
         category = data.val().category;
     });
 
-    categoriesRef.child("/" + category + "/items/" + item).set(null);
-    listRef.child("/Default/items/" + item).set(null);
-    itemsRef.child(item).remove();
+    categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
+    console.log("/Default/items/" + item.$id);
+    $scope.removeItem(item);
+    //listRef.child("/Default/items/" + item.$id).set(null);
+    itemsRef.child(item.$id).remove();
+  };
+
+  $scope.removeItem = function(item) {
+    //Remove Item From List
+    listRef.child("/Default/items/" + item.$id).remove();
+  };
+
+  $scope.addQty = function(item) {
+    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
+    //Check if item exists, if not create it.
+
+    listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
+      return quantity+1;
+    }), function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      }
+    };
+  };
+
+  $scope.subtractQty = function(item) {
+    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
+    //Check if item exists, if not create it.
+
+    listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
+      if (quantity <= 1) {
+        $scope.removeItem(item);
+      } else {
+        return quantity-1;
+      }
+    }), function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      }
+    };
   };
 
 	$scope.setAddCategoryState = function(state) {
@@ -109,15 +149,9 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       
       if (existingItem === null) {
         //Create New Item
-        $scope.items.$add({ name: $scope.itemname.name }).then(function(ref) {
-
-          //ref.child("category/" + defaultCategory).set(true);
-
-          //MAYBE LOOK AT DOING THIS INSTEAD AS ITS ONLY A 1 to Many Relationship
-          ref.child("category").set(defaultCategory);
-          
+        $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory }).then(function(ref) {         
           categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
-          $scope.addItem(ref.key());
+          $scope.addItem($scope.items.$getRecord(ref.key()));
         });
       } else {
         $scope.addItem(existingItem);
@@ -132,15 +166,14 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 	$scope.addItem = function(item) {
 
     var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-    
     //Check if item exists, if not create it.
-    listItemRef.child(item).transaction(function(currentData){
+    listItemRef.child(item.$id).transaction(function(currentData){
       if (currentData === null) {
           // categoriesRef.child(item.category)
           //console.log(item);
-          return { quantity: 1 };
+          return { quantity: 1, category: item.category, gotit: false};
       } else {
-        listItemRef.child(item + "/quantity").transaction(function(quantity) {
+        listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
           return quantity+1;
         });
       }
@@ -245,7 +278,8 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
           var baseRef = new Firebase("https://intense-inferno-9799.firebaseio.com");
           var categoryRef = baseRef.child('categories')
-          var itemsRef = baseRef.child(/items/ + item.id);
+          var itemsRef = baseRef.child('/items/' + item.id);
+          var listRef = baseRef.child('/lists/' + 'Default/' + "items/" + item.id);
 
           var previousCat = null;
           //console.log(itemsRef.child("category"));
@@ -262,11 +296,14 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
           categoryRef.child(previousCat + "/items/" + item.id).set(null);
           // console.log("Adding Child: " + categoryRef.child(binId + "/items/" + item.id));
           categoryRef.child(binId + "/items/" + item.id).set(true);
+
+          //Add Category to List Item
+          listRef.child("category").remove();
+          listRef.child("category").set(binId);
           
           //console.log("old cat: " + itemsRef.child('category'));
           //Removes old category from item and adds new one
           itemsRef.child("category").remove();
-          
           //itemsRef.child("category/" + binId).set(true);
           itemsRef.child("category").set(binId);
         
