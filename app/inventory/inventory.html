@@ -1,1 +1,36 @@
-<p>This is the partial for inventory</p>
+<div class="container-fluid" ng-controller="InventoryCtrl">
+	<div class="row">
+		<div class="col-sm-6">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Item Name</th>
+						<th class="text-center">Category</th>
+						<th class="text-center">Stock</th>
+						<th class="text-center">Minimum Stock</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="i in items">
+						<td>{{i.name}}</td>
+						<td class="text-center">{{categories[categories.$indexFor(i.category)].name}}</td>
+						<td class="text-center">
+							<div class="btn-group btn-grou-xs hidden-xs" role="group">
+								<button type="button" class="btn btn-default" ng-click="removeStock(i)"><i class="fa fa-minus"></i></button>
+								<button type="button" class="btn btn-default">{{i.stock}}</button>
+								<button type="button" class="btn btn-default" ng-click="addStock(i)"><i class="fa fa-plus"></i></button>
+							</div>
+						</td>
+						<td class="text-center">
+							<div class="btn-group btn-grou-xs hidden-xs" role="group">
+								<button type="button" class="btn btn-default" ng-click="subtractQty(i)"><i class="fa fa-minus"></i></button>
+								<button type="button" class="btn btn-default">{{i.minstock}}</button>
+								<button type="button" class="btn btn-default" ng-click="addQty(i)"><i class="fa fa-plus"></i></button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

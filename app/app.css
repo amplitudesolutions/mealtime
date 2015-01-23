@@ -48,9 +48,10 @@ body { padding-top: 70px; }
   
 }
 
-/*.over > .panel-heading {
+.over > .panel-heading {
     background-color: #C5D5BE;
-}*/
+    border-color: #C5D5BE;
+}
 
 .over > .panel-body {
     background-color: #F0F0F0 ;

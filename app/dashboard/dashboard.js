@@ -143,13 +143,12 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     itemsRef.orderByChild("name").startAt($scope.itemname.name).endAt($scope.itemname.name).once('value', function(dataSnapshot) {
       //Will only be one.
       dataSnapshot.forEach(function(snap){
-        //console.log(snap.key());
-        existingItem = snap.key();  
+        existingItem = $scope.items.$getRecord(snap.key()); 
       });
       
       if (existingItem === null) {
         //Create New Item
-        $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory }).then(function(ref) {         
+        $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
           categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
           $scope.addItem($scope.items.$getRecord(ref.key()));
         });
