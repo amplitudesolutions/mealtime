@@ -11,26 +11,42 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="i in items">
-						<td>{{i.name}}</td>
-						<td class="text-center">{{categories[categories.$indexFor(i.category)].name}}</td>
+					<tr ng-repeat="i in items | filter: categories.name">
+						<td>
+							<span ng-dblclick="editItem(i.$id)" ng-hide="isItemEditing(i.$id)">{{i.name}}</span>
+							<form ng-submit="saveItem(i)" ng-show="isItemEditing(i.$id);">
+								<input type="text" class="form-control" ng-model="i.name">
+							</form>
+						</td>
+						<td class="text-center">
+							{{categories[categories.$indexFor(i.category)].name}}</span>
+						</td>
 						<td class="text-center">
 							<div class="btn-group btn-grou-xs hidden-xs" role="group">
 								<button type="button" class="btn btn-default" ng-click="removeStock(i)"><i class="fa fa-minus"></i></button>
-								<button type="button" class="btn btn-default">{{i.stock}}</button>
+								<button type="button" class="btn btn-default" ng-class="{'btn-danger': i.stock < i.minstock}">{{i.stock}}</button>
 								<button type="button" class="btn btn-default" ng-click="addStock(i)"><i class="fa fa-plus"></i></button>
 							</div>
 						</td>
 						<td class="text-center">
 							<div class="btn-group btn-grou-xs hidden-xs" role="group">
-								<button type="button" class="btn btn-default" ng-click="subtractQty(i)"><i class="fa fa-minus"></i></button>
+								<button type="button" class="btn btn-default" ng-click="removeMinStock(i)"><i class="fa fa-minus"></i></button>
 								<button type="button" class="btn btn-default">{{i.minstock}}</button>
-								<button type="button" class="btn btn-default" ng-click="addQty(i)"><i class="fa fa-plus"></i></button>
+								<button type="button" class="btn btn-default" ng-click="addMinStock(i)"><i class="fa fa-plus"></i></button>
 							</div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		<div class="col-sm-3">
+			<div class="form-group">
+				<label for="categorySelect">Filter By Category</label>
+				<select id="categorySelect" class="form-control" ng-model="categories.name">
+					<option value="">Select to Filter</option>
+					<option ng-repeat="c in categories" value="{{c.$id}}">{{c.name}}</option>
+				</select>
+			</div>
 		</div>
 	</div>
 </div>
