@@ -18,23 +18,30 @@
 						<div class="panel-heading hand" ng-click="editCategory(category)">
 							{{category.name}}
 						</div>
-						<div class="panel-body" collapse="!isCategoryEditing(category.$id)">
-							<form ng-submit="saveCategory(category)">
-								<div class="form-group">
-									<input type="text=" ng-model="categoryEdit.name" class="form-control">
-								</div>
-								<button class="btn btn-danger" ng-click="categoryEditId=false">Cancel</button>
-								<button class="btn btn-success">Save</button>
-							</form>
+						<div class="list-group" collapse="!isCategoryEditing(category.$id)">
+							<div style="padding: 10px;">
+								<form ng-submit="saveCategory(category)">
+									<div class="form-group">
+										<input type="text=" ng-model="categoryEdit.name" class="form-control">
+									</div>
+									<button class="btn btn-danger" ng-click="categoryEditId=false">Cancel</button>
+									<button class="btn btn-success">Save</button>
+								</form>
+							</div>
 						</div>
 						<ul class="list-group" id="List{{category.$id}}">
-							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
+							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}" ng-click="itemCollapse = !itemCollapse">
 								<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
 								{{items[items.$indexFor(item.$id)].name}}
 								<div class="btn-group btn-group-xs pull-right" role="group">
 									<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
 									<button type="button" class="btn btn-default">{{item.quantity}}</button>
 									<button type="button" class="btn btn-default" ng-click="addQty(item)"><i class="fa fa-plus"></i></button>
+								</div>
+								<div collapse="itemCollapse" ng-init="itemCollapse = true">
+									<hr>
+									<progressbar value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></progressbar>
+									<i class="fa fa-check" style="color: green;"> {{items[items.$indexFor(item.$id)].stock}}</i>
 								</div>
 							</li>
 						</ul>
