@@ -1,52 +1,70 @@
-<div class="container-fluid" ng-controller="InventoryCtrl">
+<div class="container" ng-controller="InventoryCtrl">
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-12">
+			<div class="row">
+				<div class="col-xs-10 col-sm-5 col-md-offset-3">
+					<form ng-submit="addNewItem()">
+						<div class="form-group">
+							<input type="text" class="form-control no-radius input-lg" placeholder="Search or Add New Item" ng-model="itemname.name">
+						</div>
+					</form>
+				</div>
+				<div class="col-xs-1 col-sm-1">
+					<div class="row">
+						<div class="btn-group" dropdown is-open="status.isopen">
+					      <button type="button" class="btn btn-default btn-lg dropdown-toggle no-radius" dropdown-toggle ng-disabled="disabled">
+					        <i class="fa fa-list-ul"></i>
+					      </button>
+					      <ul class="dropdown-menu" role="menu">
+					      	<li ng-repeat="c in categories"><a href="#">{{c.name}}</a></li>
+					      </ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
 			<table class="table table-hover">
 				<thead>
 					<tr>
 						<th>Item Name</th>
-						<th class="text-center">Category</th>
+						<th class="text-center hidden-xs">Category</th>
 						<th class="text-center">Stock</th>
 						<th class="text-center">Minimum Stock</th>
+						<th class="text-center hidden-xs">Options</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="i in items | filter: categories.name">
+					<tr ng-repeat="i in items | filter: itemname.name">
 						<td>
-							<span ng-dblclick="editItem(i.$id)" ng-hide="isItemEditing(i.$id)">{{i.name}}</span>
+							<span ng-click="editItem(i.$id)" ng-hide="isItemEditing(i.$id)">{{i.name}}</span>
 							<form ng-submit="saveItem(i)" ng-show="isItemEditing(i.$id);">
 								<input type="text" class="form-control" ng-model="i.name">
 							</form>
 						</td>
-						<td class="text-center">
+						<td class="text-center hidden-xs">
 							{{categories[categories.$indexFor(i.category)].name}}</span>
 						</td>
 						<td class="text-center">
-							<div class="btn-group btn-grou-xs hidden-xs" role="group">
+							<div class="btn-group btn-group-xs" role="group">
 								<button type="button" class="btn btn-default" ng-click="removeStock(i)"><i class="fa fa-minus"></i></button>
 								<button type="button" class="btn btn-default" ng-class="{'btn-danger': i.stock < i.minstock}">{{i.stock}}</button>
 								<button type="button" class="btn btn-default" ng-click="addStock(i)"><i class="fa fa-plus"></i></button>
 							</div>
 						</td>
 						<td class="text-center">
-							<div class="btn-group btn-grou-xs hidden-xs" role="group">
+							<div class="btn-group btn-group-xs" role="group">
 								<button type="button" class="btn btn-default" ng-click="removeMinStock(i)"><i class="fa fa-minus"></i></button>
 								<button type="button" class="btn btn-default">{{i.minstock}}</button>
 								<button type="button" class="btn btn-default" ng-click="addMinStock(i)"><i class="fa fa-plus"></i></button>
 							</div>
 						</td>
+						<td class="text-center hidden-xs">
+							<button type="button" class="btn btn-danger btn-xs" ng-click="deleteItem(i)">Delete</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<div class="col-sm-3">
-			<div class="form-group">
-				<label for="categorySelect">Filter By Category</label>
-				<select id="categorySelect" class="form-control" ng-model="categories.name">
-					<option value="">Select to Filter</option>
-					<option ng-repeat="c in categories" value="{{c.$id}}">{{c.name}}</option>
-				</select>
-			</div>
 		</div>
 	</div>
 </div>

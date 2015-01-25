@@ -9,10 +9,10 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', '$firebase', function($scope, $firebase) {
+.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', function($scope, $firebase, getDBUrl) {
+  // connect to firebase
+  var baseRef = new Firebase(getDBUrl.path);
 
-  // connect to firebase 
-  var baseRef = new Firebase("https://intense-inferno-9799.firebaseio.com");
   var categoriesRef = baseRef.child('categories');
   var itemsRef = baseRef.child('items');
   var listRef = baseRef.child('lists');
@@ -26,6 +26,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   $scope.items = fbItem.$asArray();
   $scope.list = fbList.$asArray();
   $scope.listItems = fbListItems.$asArray();
+  $scope.categoryEdit = null;
 
   $scope.populate = function() {
     fb.$set({
@@ -40,17 +41,32 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   };
 
   $scope.addCategoryState = false;
-
 	$scope.categories = fb.$asArray();
 
-  $scope.recipes = [
-    {id: 1, text: 'Cajun Chicken'},
-    {id: 2, text: 'Vegetarian Lasangna'},
-    {id: 3, text: 'Earls Potatoe Salad'},
-    {id: 4, text: 'Flatbread Pizza'},
-    {id: 5, text: 'Lemon Chicken Pasta'},
-    {id: 6, text: 'Beef Pho'}
-  ];
+  $scope.categoryEditId = null;
+
+  $scope.isCategoryEditing = function(id) {
+    if ($scope.categoryEditId == id) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  $scope.editCategory = function (category) {
+    $scope.categoryEdit = angular.copy(category)
+    $scope.categoryEditId = category.$id;
+  };
+
+  $scope.saveCategory = function(category) {
+    var name = $scope.categories[$scope.categories.$indexFor(category.$id)].name.trim();
+    if (name) {
+      category.name = $scope.categoryEdit.name;
+      $scope.categories.$save(category);
+     }
+    $scope.categoryEditId = null;
+  };
+
 
   $scope.deleteItem = function(item) {
     //Delete Item from Inventory
@@ -115,7 +131,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   };
 
 	$scope.addCategory = function() {	
-    $scope.categories.$add({ name: $scope.categoryname }).then(function(ref) {
+    $scope.categories.$add({ name: $scope.categoryname, color: 'default' }).then(function(ref) {
       //var id = ref;
       if ($scope.categories.length == 1) {
         $scope.setDefaultCategory(ref);
@@ -151,6 +167,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
         $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
           categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
           $scope.addItem($scope.items.$getRecord(ref.key()));
+
         });
       } else {
         $scope.addItem(existingItem);
@@ -181,6 +198,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
         console.log('Transaction failed abnormally!', error);
       }
     });
+    $scope.itemname.name = "";
 	};
 
 	$scope.handleDrop = function(item, bin) {
@@ -196,7 +214,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   };
 }])
 
-.directive('draggable', function() {
+.directive('draggable', ['getDBUrl', function(getDBUrl) {
   return function(scope, element) {
     // this gives us the native JS object
     var el = element[0];
@@ -223,9 +241,9 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       false
     );
   }
-})
+}])
 
-.directive('droppable', function() {
+.directive('droppable', ['getDBUrl', function(getDBUrl) {
   return {
     scope: {
       drop: '&',
@@ -275,7 +293,8 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
           var item = document.getElementById(e.dataTransfer.getData('Text'));
           var list = document.getElementById("List" + binId);
 
-          var baseRef = new Firebase("https://intense-inferno-9799.firebaseio.com");
+          var baseRef = new Firebase(getDBUrl.path);
+
           var categoryRef = baseRef.child('categories')
           var itemsRef = baseRef.child('/items/' + item.id);
           var listRef = baseRef.child('/lists/' + 'Default/' + "items/" + item.id);
@@ -318,6 +337,6 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       );
     }
   }
-})
+}])
 
 ;

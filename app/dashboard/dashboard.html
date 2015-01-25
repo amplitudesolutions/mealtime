@@ -1,117 +1,86 @@
-<div class="container-fluid" ng-controller="DashboardCtrl">
-	<div class="col-sm-2 hidden-xs">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				Add To List
-			</div>
-			<div class="panel-body">
+<div class="container" ng-controller="DashboardCtrl">
+	<div class="col-sm-12">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
 				<div class="form-group">
-					<label class="sr-only">Item Name</label>
 					<form ng-submit="addNewItem()">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Add Item" ng-model="itemname.name">
-							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							</span>
-						</div>
+						<input type="text" class="form-control no-radius input-lg" placeholder="Add Item or Recipe" ng-model="itemname.name" typeahead="i.name for i in items | filter:$viewValue | limitTo:8" typeahead-on-select="addItem($item)">
 					</form>
 				</div>
-				<ul class="list-unstyled">
-					<li ng-repeat="i in items | filter:itemname" ng-click="addItem(i)" class="hand animate-repeat">{{i.name}}</li>
-				</ul>
-			</div>
-		</div>
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				Receipes
-			</div>
-			<div class="panel-body">
-				<div ng-repeat="receipe in recipes">
-					{{receipe.text}}
-				</div>
-			</div>
-		</div>
-		<div class="panel panel-danger">
-			<div class="panel-heading">
-				Dev Options
-			</div>
-			<div class="panel-body">
-				<button ng-click="populate()" class="btn btn-success">Reset Data</button>
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-8">
-		<div ng-repeat="category in categories">  <!-- ng-init="item = items.$load(category.$id)" -->
-			<div class="col-sm-3">
-				<div class="panel panel-success" droppable drop="handleDrop" id="{{category.$id}}" bin="bin">
-					<div class="panel-heading">
-						{{category.name}}
-						<!-- <div ng-repeat="l in list">
-							<div ng-repeat="(key, val) in l.items ">
-								{{items[items.$indexFor(key)].name}}
-							</div>
-						</div> -->
-					</div>
-					<ul class="list-group" id="List{{category.$id}}">
-						<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
-							<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
-							{{items[items.$indexFor(item.$id)].name}} <span class="visible-xs">{{item.quantity}}</span>
-							<div class="btn-group btn-grou-xs pull-right hidden-xs" role="group">
-								<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
-								<button type="button" class="btn btn-default">{{item.quantity}}</button>
-								<button type="button" class="btn btn-default" ng-click="addQty(item)"><i class="fa fa-plus"></i></button>
-							</div>
-						</li>
-						<!-- 
-						<li ng-repeat="(key, val) in category.items" class="hand" draggable item="item" id="{{key}}" data-cat="{{category.id}}">
-							{{items[items.$indexFor(key)].name}} <i class="fa fa-times-circle-o" ng-click="deleteItem(key)"></i>
-						</li> -->
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-3">
-			<div class="panel panel-success">
-				<div class="panel-heading" ng-click="setAddCategoryState(true)">
-					Add New
-				</div>
-				<div class="panel-body" ng-show="isAddCategory()">
-					<div class="form-group">
-						<label class="sr-only">Category Name</label>
-						<form ng-submit="addCategory()">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Add New Category" ng-model="categoryname">
-								<span class="input-group-btn">
-									<button class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-								</span>
-							</div>
-						</form>
-					</div>
-					<div class="form-group">
-						<a class="" ng-click="setAddCategoryState(false)">Cancel</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-sm-2">
-		<div class="col-sm-12">
-			<div class="row">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						In your basket
-					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled">
-							<li ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="animate-repeat">
+	<div class="col-sm-12">
+		<div class="row">	
+			<div ng-repeat="category in categories">  <!-- ng-init="item = items.$load(category.$id)" -->
+				<div class="col-sm-4 col-md-3">
+					<div class="hand panel panel-{{category.color}}" droppable drop="handleDrop" id="{{category.$id}}" bin="bin">
+						<div class="panel-heading hand" ng-click="editCategory(category)">
+							{{category.name}}
+						</div>
+						<div class="panel-body" collapse="!isCategoryEditing(category.$id)">
+							<form ng-submit="saveCategory(category)">
+								<div class="form-group">
+									<input type="text=" ng-model="categoryEdit.name" class="form-control">
+								</div>
+								<button class="btn btn-danger" ng-click="categoryEditId=false">Cancel</button>
+								<button class="btn btn-success">Save</button>
+							</form>
+						</div>
+						<ul class="list-group" id="List{{category.$id}}">
+							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
 								<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
-								<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}}</span>
+								{{items[items.$indexFor(item.$id)].name}}
+								<div class="btn-group btn-group-xs pull-right" role="group">
+									<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
+									<button type="button" class="btn btn-default">{{item.quantity}}</button>
+									<button type="button" class="btn btn-default" ng-click="addQty(item)"><i class="fa fa-plus"></i></button>
+								</div>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div>
+			<div class="col-sm-4 col-md-3">
+				<div class="panel panel-success">
+					<div class="panel-heading" ng-click="setAddCategoryState(true)">
+						Add New Category
+					</div>
+					<div class="panel-body" collapse="!isAddCategory()">
+						<div class="form-group">
+							<label class="sr-only">Category Name</label>
+							<form ng-submit="addCategory()">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="Add New Category" ng-model="categoryname">
+									<span class="input-group-btn">
+										<button class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+									</span>
+								</div>
+							</form>
+						</div>
+						<div class="form-group">
+							<a class="" ng-click="setAddCategoryState(false)">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4 col-md-3">
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								In your basket
+							</div>
+							<ul class="list-group">
+								<li ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item animate-repeat">
+									<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
+									<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} ({{item.quantity}})</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
+	</div>	
 </div>

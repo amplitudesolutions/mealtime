@@ -61,6 +61,10 @@ body { padding-top: 70px; }
   cursor: pointer;
 }
 
+.cursor-default {
+  cursor: default;
+}
+
 .animate-repeat.ng-move,
 .animate-repeat.ng-enter,
 .animate-repeat.ng-leave {
@@ -85,4 +89,17 @@ body { padding-top: 70px; }
 .done-true {
   text-decoration: line-through;
   color: grey;
+}
+
+.panel {
+   border-radius: 0px;
+}
+
+.panel-heading {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.no-radius {
+  border-radius: 0px;
 }
