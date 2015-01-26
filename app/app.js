@@ -6,6 +6,7 @@ angular.module('myApp', [
   'myApp.dashboard',
   'myApp.inventory',
   'myApp.recipes',
+  'myApp.list',
   'myApp.version',
   'ui.bootstrap',
   'firebase'

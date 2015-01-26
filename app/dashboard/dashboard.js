@@ -214,7 +214,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   };
 }])
 
-.directive('draggable', ['getDBUrl', function(getDBUrl) {
+.directive('draggable', [function() {
   return function(scope, element) {
     // this gives us the native JS object
     var el = element[0];

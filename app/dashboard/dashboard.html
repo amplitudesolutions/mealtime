@@ -1,11 +1,26 @@
+<script type="text/ng-template" id="customTemplate.html">
+  <a>
+  	<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <p>Current Stock: {{match.model.stock}}</p>
+      
+  </a>
+</script>
+
 <div class="container" ng-controller="DashboardCtrl">
 	<div class="col-sm-12">
 		<div class="row">
-			<div class="col-md-6 col-md-offset-3">
+			<div class="col-xs-10 col-sm-6 col-md-offset-3">
 				<div class="form-group">
 					<form ng-submit="addNewItem()">
-						<input type="text" class="form-control no-radius input-lg" placeholder="Add Item or Recipe" ng-model="itemname.name" typeahead="i.name for i in items | filter:$viewValue | limitTo:8" typeahead-on-select="addItem($item)">
+						<input type="text" class="form-control no-radius input-lg" placeholder="Add Item" ng-model="itemname.name" typeahead="i.name for i in items | filter:$viewValue | limitTo:8" typeahead-on-select="addItem($item)" typeahead-focus-first="false" typeahead-template-url="customTemplate.html">
 					</form>
+				</div>
+			</div>
+			<div class="col-xs-1 col-sm-1">
+				<div class="row">	
+			      <button type="button" class="btn btn-default btn-lg dropdown-toggle no-radius" dropdown-toggle ng-disabled="disabled">
+			        <i class="fa fa-list-ul"></i>
+			      </button>
 				</div>
 			</div>
 		</div>
@@ -30,9 +45,9 @@
 							</div>
 						</div>
 						<ul class="list-group" id="List{{category.$id}}">
-							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}" ng-click="itemCollapse = !itemCollapse">
+							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix fader" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
 								<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
-								{{items[items.$indexFor(item.$id)].name}}
+								<span  ng-click="itemCollapse = !itemCollapse">{{items[items.$indexFor(item.$id)].name}}</span>
 								<div class="btn-group btn-group-xs pull-right" role="group">
 									<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
 									<button type="button" class="btn btn-default">{{item.quantity}}</button>
@@ -78,16 +93,16 @@
 							<div class="panel-heading">
 								In your basket
 							</div>
-							<ul class="list-group">
-								<li ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item animate-repeat">
+							<div class="list-group">
+								<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
 									<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
-									<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} ({{item.quantity}})</span>
-								</li>
-							</ul>
+									<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} <small>Qty: {{item.quantity}}</small></span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 </div>
