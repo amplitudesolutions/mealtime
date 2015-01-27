@@ -19,11 +19,19 @@ angular.module('myApp.inventory', ['ngRoute'])
 	
 	var fbCategories = $firebase(categoriesRef);
 	var fbItem = $firebase(itemsRef);
+
+	$scope.filterText = "";
+	$scope.itemAdded = "";
+	$scope.itemname = "";
 	
 	$scope.categories = fbCategories.$asArray();
 	$scope.items = fbItem.$asArray();
 
 	$scope.itemEditId = null;
+
+	$scope.setFilter = function(category) {
+		$scope.filterText = category;
+	};
 
 	$scope.isItemEditing = function(id) {
 		if ($scope.itemEditId == id) {
@@ -35,6 +43,52 @@ angular.module('myApp.inventory', ['ngRoute'])
 
 	$scope.editItem = function (id) {
 		$scope.itemEditId = id;
+	};
+
+	function getDefaultCategory() {
+	    var returnData = null;
+	    categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
+	      snap.forEach(function(snapData) {
+	        returnData = snapData.key();
+	      });
+	    });
+	    return returnData;
+	};
+
+	$scope.addNewItem = function() {
+		var defaultCategory = getDefaultCategory();
+		$scope.itemAdded = "";
+
+	    itemsRef.orderByChild("name").startAt($scope.itemname).endAt($scope.itemname).once('value', function(dataSnapshot) {
+
+	      if (dataSnapshot.val() === null) {
+	        //Create New Item
+	        $scope.items.$add({ name: $scope.itemname, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+	          categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
+	          $scope.itemAdded = ref.key();
+	        });
+	      } else {
+	      	dataSnapshot.forEach(function(snap){
+		    	$scope.itemExists = $scope.items.$getRecord(snap.key()).$id;
+		    });
+	      }
+	      $scope.itemname = "";
+	    });
+	};
+
+	$scope.changeCategory = function(item, category_id) {
+		itemsRef.child(item.$id + "/category").transaction(function(category) {
+		  listRef.child('/Default/items/' + item.$id + '/category').transaction(function(category){
+		  	console.log(category);
+		  	if (category !== null)
+		  		return category_id;
+		  });
+	      return category_id;
+	    }), function(error, committed, snapshot) {
+	      if (error) {
+	        console.log('Transaction failed abnormally!', error);
+	      }
+	    };
 	};
 
 	$scope.saveItem = function(item) {
@@ -100,9 +154,7 @@ angular.module('myApp.inventory', ['ngRoute'])
 	    });
 
 	    categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
-	    console.log("/Default/items/" + item.$id);
 	    listRef.child("/Default/items/" + item.$id).remove();
-	    //listRef.child("/Default/items/" + item.$id).set(null);
 	    itemsRef.child(item.$id).remove();
 	  };
 }]);

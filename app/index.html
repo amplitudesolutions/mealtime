@@ -10,17 +10,15 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   
-  <link rel="stylesheet" href="bower_components/ngtoast/dist/ngToast.min.css">
-
   <link rel="stylesheet" href="assets/css/animate.css">
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
   <nav ng-controller="MenuCtrl" class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+    <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" ng-click="navbarCollapsed = !navbarCollapsed">
           <span class="sr-only">Toggle navigation</span>
@@ -33,10 +31,53 @@
       <div id="navbar" class="navbar-collapse" collapse="navbarCollapsed">
         <ul class="nav navbar-nav">
           <li ng-class="{active: isActive('/dashboard')}"><a href="#/dashboard"><i class="fa fa-calendar"></i> dashboard</a></li>
-          <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
           <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery"></i> receipes</a></li>
+          <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li dropdown is-open="status.isopen">
+            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell"></i></a>
+            <ul class="dropdown-menu" role="menu">
+              <!-- <li style="padding: 8px;">
+                <div class="msg" style="border: #CCC solid thin; height: 53px;">
+                  <div style="vertical-align: top; display: inline-block; padding-right: 15px; height: 60px;"><i class="fa fa-exclamation fa-lg"></i></div>
+                  <div style="padding-left: 10px; display: inline-block;">You are low on chicken! </div>
+                  <div style="display: inline-block; padding-left: 15px;"><button class="btn btn-default btn-xs no-radius"><i class="fa fa-cart-arrow-down"></i></button></div>
+                </div>
+              </li> -->
+              <li>
+                <div>
+                  <div style="display: inline-block; vertical-align: top;">
+                    <i class="fa fa-exclamation fa-lg"></i>
+                  </div>
+                  <div style="display: inline-block; width: 200px; padding-left: 15px; padding-right: 15px;">
+                     Low on chicken 
+                    <div><small>Current Stock: 2</small></div>
+                  </div>
+                  <div style="display: inline-block; vertical-align: top;">
+                    <button class="btn btn-default btn-xs no-radius"><i class="fa fa-cart-arrow-down"></i> <b>Add</b></button>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div style="">
+                  <div style="display: inline-block; vertical-align: top;">
+                    <i class="fa fa-exclamation fa-lg"></i>
+                  </div>
+                  <div style="display: inline-block; width: 200px; padding-left: 15px; padding-right: 15px;">
+                     Low on Toothpaste 
+                    <div><small style="white-space: normal;">About 1 month since your last purchase</small></div>
+                  </div>
+                  <div style="display: inline-block; vertical-align: top;">
+                    <button class="btn btn-default btn-xs no-radius"><i class="fa fa-cart-arrow-down"></i> <b>Add</b></button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div><!--/.nav-collapse -->
+
     </div>
   </nav>
   <!--[if lt IE 7]>
@@ -56,7 +97,6 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-  <script src="bower_components/ngtoast/dist/ngToast.min.js"></script>
   <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
   <script src='https://cdn.firebase.com/js/client/2.0.4/firebase.js'></script>
   <script src="https://cdn.firebase.com/libs/angularfire/0.9.1/angularfire.min.js"></script>

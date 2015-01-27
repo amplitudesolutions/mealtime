@@ -151,6 +151,17 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     return returnData;
   };
 
+  $scope.addLowItems = function () {
+    //This function adds items to the list that are "Low" in stock as defined in the inventory.
+    itemsRef.orderByChild("minstock").startAt(1).once("value", function(minStockSnap) {
+      minStockSnap.forEach(function(snap) {
+        if (snap.val().stock < snap.val().minstock) {
+          console.log("Order: " + snap.val().name + " Qty:" + (snap.val().minstock - snap.val().stock));
+        }
+      });
+    });
+  };
+
   //Add New Item to Inventory
 	$scope.addNewItem = function() {
     var defaultCategory = getDefaultCategory();
@@ -185,8 +196,6 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     //Check if item exists, if not create it.
     listItemRef.child(item.$id).transaction(function(currentData){
       if (currentData === null) {
-          // categoriesRef.child(item.category)
-          //console.log(item);
           return { quantity: 1, category: item.category, gotit: false};
       } else {
         listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {

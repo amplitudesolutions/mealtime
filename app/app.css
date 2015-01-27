@@ -2,6 +2,8 @@
 
 body { padding-top: 70px; }
 
+
+
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -15,6 +17,16 @@ body { padding-top: 70px; }
 
 .menu:after {
   content: "]";
+}
+
+.dropdown-menu > li > div {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
 }
 
 .menu > li {
@@ -55,6 +67,15 @@ body { padding-top: 70px; }
 
 .over > .panel-body {
     background-color: #F0F0F0 ;
+}
+
+.category_selected {
+  font-weight: bold;
+  color: red;
+}
+
+.itemAdded {
+  border-color: green;
 }
 
 .hand {
