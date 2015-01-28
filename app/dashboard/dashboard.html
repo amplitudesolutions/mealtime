@@ -86,8 +86,8 @@
 				<div class="col-sm-12">
 					<div class="row">
 						<div class="panel panel-info">
-							<div class="panel-heading">
-								In your basket
+							<div class="panel-heading clearfix">
+								<i class="fa fa-trash-o fa-lg pull-right" style="padding-top: 4px;" ng-click="clearCart()"></i>In your basket 
 							</div>
 							<div class="list-group">
 								<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">

@@ -2,7 +2,17 @@
 
 body { padding-top: 70px; }
 
+.list-group-item:first-child {
+  border-radius: 0;
+}
 
+.list-group-item:last-child {
+  border-radius: 0;
+}
+
+.btn {
+  border-radius: 0;
+}
 
 .menu {
   list-style: none;

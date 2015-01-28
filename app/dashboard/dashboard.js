@@ -67,6 +67,16 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     $scope.categoryEditId = null;
   };
 
+  $scope.clearCart = function() {
+    // listRef.child('/Default/items').remove();
+
+    listRef.child('/Default/items').orderByChild('gotit').startAt(true).endAt(true).once('value', function(snap) {
+      snap.forEach(function(snapData) {
+        listRef.child('/Default/items/' + snapData.key()).remove();
+      });
+    });
+
+  }
 
   $scope.deleteItem = function(item) {
     //Delete Item from Inventory
