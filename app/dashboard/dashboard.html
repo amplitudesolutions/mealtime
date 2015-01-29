@@ -46,7 +46,7 @@
 						</div>
 						<ul class="list-group" id="List{{category.$id}}">
 							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix fader" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}">
-								<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
+								<input type="checkbox" ng-model="item.gotit" ng-change="addToCart(item)">
 								<span  ng-click="itemCollapse = !itemCollapse">{{items[items.$indexFor(item.$id)].name}}</span>
 								<div class="btn-group btn-group-xs pull-right" role="group">
 									<button type="button" class="btn btn-default" ng-click="subtractQty(item)"><i class="fa fa-minus"></i></button>
@@ -102,3 +102,5 @@
 		</div>
 	</div>
 </div>
+
+{{1422501137226 | date:'medium':'UTC'}}

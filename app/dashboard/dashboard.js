@@ -45,6 +45,29 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   $scope.categoryEditId = null;
 
+  $scope.addToCart = function(item) {
+    //$scope.list.$save(item);
+    var transactions = baseRef.child("transactions");
+    //Add Transaction to Transaction table
+
+    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
+    //Check if item exists, if not create it.
+    listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
+      if (gotit === null) {
+          //Item in list.. need to tell them
+      } else {
+        //Add a Transaction
+        var currentDate = new Date();
+        transactions.push({list: $scope.list[0].$id, item: item.$id, date: Firebase.ServerValue.TIMESTAMP});
+        return !gotit;
+      }
+    }, function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      }
+    });
+  };
+
   $scope.isCategoryEditing = function(id) {
     if ($scope.categoryEditId == id) {
       return true;
