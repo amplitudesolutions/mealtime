@@ -53,12 +53,52 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
     //Check if item exists, if not create it.
     listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
-      if (gotit === null) {
-          //Item in list.. need to tell them
-      } else {
+      if (gotit !== null) {
+      //     //Item in list.. need to tell them
+      // } else {
         //Add a Transaction
-        var currentDate = new Date();
-        transactions.push({list: $scope.list[0].$id, item: item.$id, date: Firebase.ServerValue.TIMESTAMP});
+        var purchaseDate = Firebase.ServerValue.TIMESTAMP;
+        
+        itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
+          return purchaseDate;
+        });
+
+        itemsRef.child(item.$id + "/stock").transaction(function(stock) {
+          return stock+item.quantity;
+        });
+
+        transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
+        return !gotit;
+      }
+    }, function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      }
+    });
+  };
+
+  $scope.removeFromCart = function(item) {
+    var transactions = baseRef.child("transactions");
+    //Add Transaction to Transaction table
+
+    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
+    //Check if item exists, if not create it.
+    listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
+      if (gotit !== null) {
+      //     //Item in list.. need to tell them
+      // } else {
+        //Add a Transaction
+        var purchaseDate = Firebase.ServerValue.TIMESTAMP;
+        
+        itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
+          return purchaseDate;
+        });
+
+        itemsRef.child(item.$id + "/stock").transaction(function(stock) {
+          return stock-item.quantity;
+        });
+
+        transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
         return !gotit;
       }
     }, function(error, committed, snapshot) {
@@ -99,7 +139,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       });
     });
 
-  }
+  };
 
   $scope.deleteItem = function(item) {
     //Delete Item from Inventory

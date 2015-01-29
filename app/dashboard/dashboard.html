@@ -55,8 +55,9 @@
 								</div>
 								<div collapse="itemCollapse" ng-init="itemCollapse = true">
 									<hr>
-									<progressbar value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></progressbar>
+									<progressbar ng-if="items[items.$indexFor(item.$id)].minstock > 0" value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></progressbar>
 									<i class="fa fa-check" style="color: green;"> {{items[items.$indexFor(item.$id)].stock}}</i>
+									<i class="fa fa-shopping-cart"> <small>{{items[items.$indexFor(item.$id)].lastpurchase | date: 'mediumDate'}}</small></i>
 								</div>
 							</li>
 						</ul>
@@ -91,7 +92,7 @@
 							</div>
 							<div class="list-group">
 								<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
-									<input type="checkbox" ng-model="item.gotit" ng-change="listItems.$save(item)">
+									<input type="checkbox" ng-model="item.gotit" ng-change="removeFromCart(item)">
 									<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} <small>Qty: {{item.quantity}}</small></span>
 								</div>
 							</div>
@@ -102,5 +103,3 @@
 		</div>
 	</div>
 </div>
-
-{{1422501137226 | date:'medium':'UTC'}}
