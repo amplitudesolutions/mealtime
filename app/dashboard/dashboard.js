@@ -26,7 +26,11 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   $scope.items = fbItem.$asArray();
   $scope.list = fbList.$asArray();
   $scope.listItems = fbListItems.$asArray();
+  $scope.categories = fb.$asArray();
+
   $scope.categoryEdit = null;
+  $scope.addCategoryState = false;
+  $scope.categoryEditId = null;
 
   $scope.populate = function() {
     fb.$set({
@@ -40,10 +44,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     fbItem.$set({});
   };
 
-  $scope.addCategoryState = false;
-	$scope.categories = fb.$asArray();
-
-  $scope.categoryEditId = null;
+  
 
   $scope.addToCart = function(item) {
     //$scope.list.$save(item);
