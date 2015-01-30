@@ -118,12 +118,16 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   };
 
   $scope.editCategory = function (category) {
-    $scope.categoryEdit = angular.copy(category)
-    $scope.categoryEditId = category.$id;
+    if (category === null) {
+      $scope.categoryEditId = null;
+    } else {
+      $scope.categoryEdit = angular.copy(category)
+      $scope.categoryEditId = category.$id;
+    }
   };
 
   $scope.saveCategory = function(category) {
-    var name = $scope.categories[$scope.categories.$indexFor(category.$id)].name.trim();
+    var name = $scope.categoryEdit.name.trim();
     if (name) {
       category.name = $scope.categoryEdit.name;
       $scope.categories.$save(category);
