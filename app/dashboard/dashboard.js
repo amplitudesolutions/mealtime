@@ -86,20 +86,30 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     //Check if item exists, if not create it.
     listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
       if (gotit !== null) {
-      //     //Item in list.. need to tell them
-      // } else {
+        //Item in list.. need to tell them
         //Add a Transaction
-        var purchaseDate = Firebase.ServerValue.TIMESTAMP;
         
-        itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
-          return purchaseDate;
+        transactions.orderByChild("item").endAt(item.$id).limitToLast(2).once("value", function(snapShot) {
+          var nIndex = 1;
+          snapShot.forEach(function(itemSnap) {
+            if (nIndex === 1) {
+              // Set the last purchase date = to the previous transaction
+              itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
+                return itemSnap.val().date;
+              });
+            } else if(nIndex === 2) {
+              //delete the last transaction. When they uncheck in the cart, assuming Undo.
+              transactions.child(itemSnap.key()).remove();
+            }
+            nIndex++;
+          });
         });
-
+        
         itemsRef.child(item.$id + "/stock").transaction(function(stock) {
           return stock-item.quantity;
         });
 
-        transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
+        // transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
         return !gotit;
       }
     }, function(error, committed, snapshot) {
