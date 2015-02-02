@@ -3,9 +3,9 @@
 		<div class="col-sm-12">
 			<div class="row">
 				<div class="col-xs-10 col-sm-5 col-md-offset-3">
-					<form ng-submit="addNewItem()">
+					<form ng-submit="addNewItem()" name="newItemForm">
 						<div class="form-group">
-							<input type="text" class="form-control no-radius input-lg" placeholder="Search or Add New Item" ng-model="itemname">
+							<input type="text" class="form-control no-radius input-lg" placeholder="Search or Add New Item" ng-model="itemname" name="item" >
 						</div>
 					</form>
 				</div>
