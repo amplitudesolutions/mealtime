@@ -39,7 +39,7 @@
 					<tr ng-repeat="i in items | filter: {name: itemname, category: filterText } | orderBy: 'name'" class="fader">
 						<td>
 							<span ng-click="editItem(i.$id)" ng-hide="isItemEditing(i.$id)" class="hand">{{i.name}} <small ng-if="i.price > 0">Price: ${{i.price}}</small></span>
-							<form ng-submit="saveItem(i)" ng-show="isItemEditing(i.$id);" class="form-inline">
+							<form ng-submit="saveItem(i)" ng-show="isItemEditing(i.$id)" class="form-inline">
 								<input type="text" class="form-control" ng-model="i.name">
 								<input type="text" class="form-control" placeholder="Price" ng-model="i.price">
 								<button class="btn btn-danger">Cancel</button>

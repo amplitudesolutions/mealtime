@@ -15,8 +15,15 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/dashboard'});
 }])
 
-.controller('MenuCtrl', ['$scope', '$location', function($scope, $location) {
-	$scope.$location = $location;
+.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', function($scope, $location, getDBUrl, $firebase) {
+	var baseRef = new Firebase(getDBUrl.path);
+  var inventoryRef = baseRef.child('items')
+  
+  var stockRef = inventoryRef.orderByChild('stock').startAt(1);
+  var fbStockItems = $firebase(stockRef);
+  $scope.inventory = fbStockItems.$asArray();
+
+  $scope.$location = $location;
 
 	$scope.navbarCollapsed = true;
 	$scope.$on('$routeChangeSuccess', function () {

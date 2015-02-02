@@ -35,8 +35,24 @@
           <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+          <li dropdown is-open="inventory.isopen">
+            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-tasks fa-lg"></i></a>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="item in inventory">
+                <div>
+                  <div style="display: inline-block; width: 200px; padding-left: 15px; padding-right: 15px;">
+                     {{item.name}}
+                    <div><small style="white-space: normal;">Current Stock: {{item.stock}}</small></div>
+                  </div>
+                  <!-- <div style="display: inline-block; vertical-align: top;">
+                    <button class="btn btn-default btn-xs"><i class="fa fa-cart-arrow-down"></i> <b>Add</b></button>
+                  </div> -->
+                </div>
+              </li>
+            </ul>
+          </li>
           <li dropdown is-open="status.isopen">
-            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell" style="color: #FFD633;"></i></a>
+            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell fa-lg" style="color: #FFD633;"></i></a>
             <ul class="dropdown-menu" role="menu">
               <!-- <li style="padding: 8px;">
                 <div class="msg" style="border: #CCC solid thin; height: 53px;">
@@ -83,7 +99,7 @@
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
-
+  
   <div ng-view></div>
 
   <!-- In production use:
