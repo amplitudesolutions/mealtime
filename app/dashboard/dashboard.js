@@ -255,25 +255,28 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     var defaultCategory = getDefaultCategory();
 		var existingItem = null;
 
-    itemsRef.orderByChild("name").startAt($scope.itemname.name).endAt($scope.itemname.name).once('value', function(dataSnapshot) {
-      //Will only be one.
-      dataSnapshot.forEach(function(snap){
-        existingItem = $scope.items.$getRecord(snap.key()); 
-      });
-      
-      if (existingItem === null) {
-        //Create New Item
-        $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
-          categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
-          $scope.addItem($scope.items.$getRecord(ref.key()));
+    if ($scope.itemname) {
 
+      itemsRef.orderByChild("name").startAt($scope.itemname.name).endAt($scope.itemname.name).once('value', function(dataSnapshot) {
+        //Will only be one.
+        dataSnapshot.forEach(function(snap){
+          existingItem = $scope.items.$getRecord(snap.key()); 
         });
-      } else {
-        $scope.addItem(existingItem);
-      }
+        
+        if (existingItem === null) {
+          //Create New Item
+          $scope.items.$add({ name: $scope.itemname.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+            categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
+            $scope.addItem($scope.items.$getRecord(ref.key()));
 
-      $scope.itemname.name = "";
-    });
+          });
+        } else {
+          $scope.addItem(existingItem);
+        }
+
+        $scope.itemname.name = "";
+      });
+    }
 
 	};
 

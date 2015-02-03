@@ -59,21 +59,22 @@ angular.module('myApp.inventory', ['ngRoute'])
 		var defaultCategory = getDefaultCategory();
 		$scope.itemAdded = "";
 
-	    itemsRef.orderByChild("name").startAt($scope.itemname).endAt($scope.itemname).once('value', function(dataSnapshot) {
-
-	      if (dataSnapshot.val() === null) {
-	        //Create New Item
-	        $scope.items.$add({ name: $scope.itemname, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
-	          categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
-	          $scope.itemAdded = ref.key();
-	        });
-	      } else {
-	      	dataSnapshot.forEach(function(snap){
-		    	$scope.itemExists = $scope.items.$getRecord(snap.key()).$id;
+		if ($scope.itemname) {
+		    itemsRef.orderByChild("name").startAt($scope.itemname).endAt($scope.itemname).once('value', function(dataSnapshot) {
+		      	if (dataSnapshot.val() === null) {
+			    	//Create New Item
+			        $scope.items.$add({ name: $scope.itemname, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+			          categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
+			          $scope.itemAdded = ref.key();
+			        });
+		      	} else {
+			      	dataSnapshot.forEach(function(snap){
+				    	$scope.itemExists = $scope.items.$getRecord(snap.key()).$id;
+				    });
+		      	}
+			    // $scope.itemname = "";
 		    });
-	      }
-	      $scope.itemname = "";
-	    });
+		}
 	};
 
 	$scope.changeCategory = function(item, category_id) {
