@@ -103,17 +103,16 @@
   <div id="wrapper" ng-class="{toggled: !open}" ng-init="open = true">
     <!-- Sidebar -->
     <div id="sidebar-wrapper" ng-controller="InventoryListCtrl">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <input type="text" class="form-control no-radius" placeholder="Search">
-            </li>
-            <li ng-repeat="item in inventory">
-                  <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock<span ng-bind="item.stock"></span></small>
-            </li>
-            <li>
-                <a href="#">Contact</a>
-            </li>
-        </ul>
+        <div class="sidebar-brand">
+          <input type="text" class="form-control no-radius" placeholder="Search">
+        </div>
+        <div class="menu-wrapper">
+          <div class="sidebar-nav">
+              <div ng-repeat="item in inventory" class="list">
+                    <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
+              </div>
+          </div>
+        </div>
     </div>
     <!-- /#sidebar-wrapper -->
     <div ng-view id="page-content-wrapper"></div>
