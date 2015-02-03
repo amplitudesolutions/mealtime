@@ -36,7 +36,7 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li dropdown is-open="inventory.isopen">
-            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-tasks fa-lg"></i></a>
+            <a dropdown-toggle class="dropdown-toggle hand" ng-click="open = !open"><i class="fa fa-tasks fa-lg"></i></a>
             <ul class="dropdown-menu" role="menu">
               <li ng-repeat="item in inventory">
                 <div>
@@ -100,7 +100,25 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
   
-  <div ng-view></div>
+  <div id="wrapper" ng-class="{toggled: !open}" ng-init="open = true">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" ng-controller="InventoryListCtrl">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <input type="text" class="form-control no-radius" placeholder="Search">
+            </li>
+            <li ng-repeat="item in inventory">
+                  <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock<span ng-bind="item.stock"></span></small>
+            </li>
+            <li>
+                <a href="#">Contact</a>
+            </li>
+        </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+    <div ng-view id="page-content-wrapper"></div>
+    <button class="btn btn-default" ng-click="open = !open">Open</button>
+  </div>
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>

@@ -38,6 +38,15 @@ config(['$routeProvider', function($routeProvider) {
     };
 }])
 
+.controller('InventoryListCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', function($scope, $location, getDBUrl, $firebase) {
+  var baseRef = new Firebase(getDBUrl.path);
+  var inventoryRef = baseRef.child('items')
+  
+  var stockRef = inventoryRef.orderByChild('stock').startAt(1);
+  var fbStockItems = $firebase(stockRef);
+  $scope.inventory = fbStockItems.$asArray();
+}])
+
 .factory('getDBUrl', ['$location', function($location) {
 	var dbURL = null;
 	if ($location.host() == 'localhost') {

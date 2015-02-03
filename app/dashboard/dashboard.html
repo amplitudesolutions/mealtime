@@ -37,7 +37,7 @@
 							<div class="list-group-item">
 								<form ng-submit="saveCategory(category)">
 									<div class="form-group">
-										<input type="text=" ng-model="categoryEdit.name" class="form-control">
+										<input type="text" ng-model="categoryEdit.name" class="form-control no-radius">
 									</div>
 									<button class="btn btn-danger" ng-click="editCategory(null)" type="button">Cancel</button>
 									<button class="btn btn-success">Save</button>
@@ -84,18 +84,14 @@
 				</div>
 			</div>
 			<div class="col-sm-4 col-md-3">
-				<div class="col-sm-12">
-					<div class="row">
-						<div class="panel panel-info">
-							<div class="panel-heading clearfix">
-								<i class="fa fa-trash-o fa-lg pull-right" style="padding-top: 4px;" ng-click="clearCart()"></i>In your basket 
-							</div>
-							<div class="list-group">
-								<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
-									<input type="checkbox" ng-model="item.gotit" ng-change="removeFromCart(item)">
-									<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} <small>Qty: {{item.quantity}}</small></span>
-								</div>
-							</div>
+				<div class="panel panel-info">
+					<div class="panel-heading clearfix">
+						<i class="fa fa-trash-o fa-lg pull-right" style="padding-top: 4px;" ng-click="clearCart()"></i>In your basket 
+					</div>
+					<div class="list-group">
+						<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
+							<input type="checkbox" ng-model="item.gotit" ng-change="removeFromCart(item)">
+							<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} <small>Qty: {{item.quantity}}</small></span>
 						</div>
 					</div>
 				</div>
