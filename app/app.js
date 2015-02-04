@@ -15,7 +15,7 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/dashboard'});
 }])
 
-.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', function($scope, $location, getDBUrl, $firebase) {
+.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, $location, getDBUrl, $firebase, sideBarNav) {
 	var baseRef = new Firebase(getDBUrl.path);
   var inventoryRef = baseRef.child('items')
   
@@ -26,25 +26,41 @@ config(['$routeProvider', function($routeProvider) {
   $scope.$location = $location;
 
 	$scope.navbarCollapsed = true;
-	$scope.$on('$routeChangeSuccess', function () {
-        $scope.navbarCollapsed = true;
-    });
 
-    $scope.isActive= function(item) {
-    	if (item == $location.path()) {
-    		return true;
-    	}
-    	return false;
-    };
+  $scope.sideBarState = function() {
+    sideBarNav.toggle();
+  };
+
+	$scope.$on('$routeChangeSuccess', function () {
+      $scope.navbarCollapsed = true;
+  });
+
+  $scope.isActive = function(item) {
+  	if (item == $location.path()) {
+  		return true;
+  	}
+  	return false;
+  };
 }])
 
-.controller('InventoryListCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', function($scope, $location, getDBUrl, $firebase) {
+.controller('InventoryListCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, $location, getDBUrl, $firebase, sideBarNav) {
   var baseRef = new Firebase(getDBUrl.path);
   var inventoryRef = baseRef.child('items')
   
   var stockRef = inventoryRef.orderByChild('stock').startAt(1);
   var fbStockItems = $firebase(stockRef);
   $scope.inventory = fbStockItems.$asArray();
+
+  $scope.sideBarState = sideBarNav.state();
+
+  $scope.$watch(function () { return sideBarNav.state(); }, function (newValue) {
+    $scope.sideBarState = newValue;
+  });
+
+  $scope.sideBarState3 = function() {
+    // sideBarNav.toggle();
+    return sideBarNav.toggle();
+  };
 }])
 
 .factory('getDBUrl', ['$location', function($location) {
@@ -57,4 +73,20 @@ config(['$routeProvider', function($routeProvider) {
 	}
 	
 	return {path: dbURL};
-}]);
+}])
+
+.factory('sideBarNav', [function() {
+  var isOpen = false;
+
+  return {
+    toggle: function() {
+      isOpen = !isOpen;
+    },
+    state: function() {
+      // console.log(isOpen);
+      return isOpen;
+    }
+  };
+
+}])
+;
