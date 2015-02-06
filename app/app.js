@@ -9,10 +9,21 @@ angular.module('myApp', [
   'myApp.list',
   'myApp.version',
   'ui.bootstrap',
-  'firebase'
+  'firebase',
+  'ngTouch'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/dashboard'});
+}])
+
+.controller('MainCtrl', ['$scope', 'sideBarNav', function($scope, sideBarNav) { 
+  $scope.sideBarOpen = function() {
+    sideBarNav.swipeOpen();
+  };
+
+  $scope.sideBarClose = function() {
+    sideBarNav.swipeClose();
+  };
 }])
 
 .controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, $location, getDBUrl, $firebase, sideBarNav) {
@@ -43,7 +54,7 @@ config(['$routeProvider', function($routeProvider) {
   };
 }])
 
-.controller('InventoryListCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, $location, getDBUrl, $firebase, sideBarNav) {
+.controller('InventoryListCtrl', ['$scope', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, getDBUrl, $firebase, sideBarNav) {
   var baseRef = new Firebase(getDBUrl.path);
   var inventoryRef = baseRef.child('items')
   
@@ -78,6 +89,12 @@ config(['$routeProvider', function($routeProvider) {
   var isOpen = false;
 
   return {
+    swipeOpen: function() {
+      isOpen = true;
+    },
+    swipeClose: function() {
+      isOpen = false;
+    },
     toggle: function() {
       isOpen = !isOpen;
     },

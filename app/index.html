@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="assets/css/animate.css">
   <link rel="stylesheet" href="app.css">
 </head>
-<body>
+<body ng-controller="MainCtrl" ng-swipe-left="sideBarOpen()" ng-swipe-right="sideBarClose()">
 
   <nav ng-controller="MenuCtrl" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -35,19 +35,12 @@
           <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
+          <li class="hidden-xs">
             <a class="hand" ng-click="sideBarState()"><i class="fa fa-tasks fa-lg"></i></a>
           </li>
           <li dropdown is-open="status.isopen">
             <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell fa-lg" style="color: #FFD633;"></i></a>
             <ul class="dropdown-menu" role="menu">
-              <!-- <li style="padding: 8px;">
-                <div class="msg" style="border: #CCC solid thin; height: 53px;">
-                  <div style="vertical-align: top; display: inline-block; padding-right: 15px; height: 60px;"><i class="fa fa-exclamation fa-lg"></i></div>
-                  <div style="padding-left: 10px; display: inline-block;">You are low on chicken! </div>
-                  <div style="display: inline-block; padding-left: 15px;"><button class="btn btn-default btn-xs"><i class="fa fa-cart-arrow-down"></i></button></div>
-                </div>
-              </li> -->
               <li>
                 <div>
                   <div style="display: inline-block; vertical-align: top;">
@@ -87,7 +80,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
   
-  <div id="wrapper" ng-class="{toggled: sideBarState}" ng-controller="InventoryListCtrl" ng-swipe-left="sideBarSwipe()">
+  <div id="wrapper" ng-class="{toggled: sideBarState}" ng-controller="InventoryListCtrl">
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <div class="sidebar-brand">
@@ -116,6 +109,7 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+  <script src="bower_components/angular-touch/angular-touch.min.js"></script>
   <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
   <script src='https://cdn.firebase.com/js/client/2.0.4/firebase.js'></script>
   <script src="https://cdn.firebase.com/libs/angularfire/0.9.1/angularfire.min.js"></script>
