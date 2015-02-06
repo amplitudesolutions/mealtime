@@ -57,9 +57,8 @@ config(['$routeProvider', function($routeProvider) {
     $scope.sideBarState = newValue;
   });
 
-  $scope.sideBarState3 = function() {
-    // sideBarNav.toggle();
-    return sideBarNav.toggle();
+  $scope.sideBarSwipe = function() {
+    sideBarNav.toggle();
   };
 }])
 
