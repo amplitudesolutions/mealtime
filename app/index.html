@@ -84,11 +84,11 @@
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <div class="sidebar-brand">
-          <input type="text" class="form-control no-radius" placeholder="Search">
+          <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem.name">
         </div>
         <div class="menu-wrapper">
           <div class="sidebar-nav">
-              <div ng-repeat="item in inventory | orderBy:'name':false" class="list">
+              <div ng-repeat="item in inventory | filter: searchitem | orderBy:'name':false" class="list">
                     <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
               </div>
           </div>

@@ -1,5 +1,5 @@
 {
-  "firebase": "intense-inferno-9799",
+  "firebase": "mealtimeprod",
   "public": "app",
   "ignore": [
     "firebase.json",

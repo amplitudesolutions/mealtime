@@ -75,10 +75,10 @@ config(['$routeProvider', function($routeProvider) {
 
 .factory('getDBUrl', ['$location', function($location) {
 	var dbURL = null;
-	if ($location.host() == 'localhost') {
+	if ($location.host() == 'localhost' || $location.host() == 'mealtimeprod.firebaseapp.com') {
 		// DEV DB
     	dbURL = "https://mealtimeprod.firebaseio.com";
-	} else {
+	} else if ($location.host() == 'intense-inferno-9799.firebaseapp.com') {
 		dbURL = "https://intense-inferno-9799.firebaseio.com";
 	}
 	
