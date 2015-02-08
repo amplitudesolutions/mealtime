@@ -31,6 +31,7 @@ angular.module('myApp.inventory', ['ngRoute'])
 
 	$scope.setFilter = function(category) {
 		$scope.filterText = category;
+		$scope.status.isopen = false;
 	};
 
 	$scope.isItemEditing = function(id) {

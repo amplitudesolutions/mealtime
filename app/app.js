@@ -62,14 +62,23 @@ config(['$routeProvider', function($routeProvider) {
   var fbStockItems = $firebase(stockRef);
   $scope.inventory = fbStockItems.$asArray();
 
+  var categoriesRef = baseRef.child('categories');
+  var fbCategories = $firebase(categoriesRef);
+
+  $scope.categories = fbCategories.$asArray();
+
+  $scope.filterText = "";
+  $scope.searchitem = "";
   $scope.sideBarState = sideBarNav.state();
 
   $scope.$watch(function () { return sideBarNav.state(); }, function (newValue) {
     $scope.sideBarState = newValue;
+    $scope.menuCategoryStatus.isopen = false;
   });
 
-  $scope.sideBarSwipe = function() {
-    sideBarNav.toggle();
+  $scope.setFilter = function(category) {
+    $scope.filterText = category;
+    $scope.menuCategoryStatus.isopen = false;
   };
 }])
 

@@ -31,7 +31,7 @@
       <div id="navbar" class="navbar-collapse" collapse="navbarCollapsed">
         <ul class="nav navbar-nav">
           <li ng-class="{active: isActive('/dashboard')}"><a href="#/dashboard"><i class="fa fa-calendar"></i> dashboard</a></li>
-          <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery"></i> receipes</a></li>
+          <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery"></i> recipes</a></li>
           <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -84,12 +84,23 @@
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <div class="sidebar-brand">
-          <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem.name">
+          <div class="input-group">
+            <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem">
+            <span class="input-group-btn">
+              <div class="btn-group" dropdown is-open="menuCategoryStatus.isopen" ng-init="menuCategoryStatus.isopen=false">
+                <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle ng-disabled="disabled"><i class="fa fa-list-ul"></i></button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                      <li ng-class="{active: filterText == ''}"><a class="hand" ng-click="setFilter('');">All</a></li>
+                      <li ng-repeat="c in categories" ng-class="{active: filterText == c.$id}"><a class="hand" ng-click="setFilter(c.$id)">{{c.name}}</a></li>
+                  </ul>
+              </div>
+            </span>
+          </div>
         </div>
         <div class="menu-wrapper">
           <div class="sidebar-nav">
-              <div ng-repeat="item in inventory | filter: searchitem | orderBy:'name':false" class="list">
-                    <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
+              <div ng-repeat="item in inventory | filter: {name: searchitem, category: filterText }| orderBy:'name':false" class="list">
+                <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
               </div>
           </div>
         </div>
