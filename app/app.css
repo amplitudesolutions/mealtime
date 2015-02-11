@@ -2,6 +2,38 @@
 
 body { padding-top: 51px; }
 
+.divider {
+  position: relative;
+  height: auto;
+  overflow: hidden;
+  line-height: 1.5;
+  /*text-align: center;*/
+  /*font-size: 1rem;*/
+  font-weight: 700;
+  margin-bottom: 5px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*.divider:before {
+  margin-left: calc(-50% - 1em);
+}*/
+
+.divider:after {
+  margin-left: 1em;
+}
+/*.divider:before,*/
+
+.divider:after {
+  position: absolute;
+  content: '';
+  z-index: 3;
+  height: 0;
+  width: 100%;
+  border-top: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid rgba(255,255,255,.2);
+  top: 50%;
+}
+
 .image-upload {
   height: 175px;
   border-style: dashed;
@@ -114,21 +146,9 @@ body { padding-top: 51px; }
 */
 
 @media(min-width:768px) {
-    /*#wrapper {
-        padding-right: 250px;
+    .modal-dialog {
+      margin: 119px auto;
     }
-
-    #wrapper.toggled {
-        padding-right: 0;
-    }
-
-    #sidebar-wrapper {
-        width: 250px;
-    }
-
-    #wrapper.toggled #sidebar-wrapper {
-        width: 0;
-    }*/
 
     #page-content-wrapper {
         padding: 20px;
@@ -233,6 +253,10 @@ body { padding-top: 51px; }
 
 .cursor-default {
   cursor: default;
+}
+
+.modal-content {
+  border-radius: 0px;
 }
 
 .fader.ng-enter {

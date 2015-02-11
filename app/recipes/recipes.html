@@ -10,28 +10,154 @@
 			</div>
 			<div class="col-xs-1 col-sm-1">
 				<div class="row">
-					<div class="btn-group" dropdown is-open="status.isopen">
-				      <button type="button" class="btn btn-default btn-lg dropdown-toggle" dropdown-toggle ng-disabled="disabled">
-				        <i class="fa fa-list-ul"></i>
-				      </button>
-				    </div>
+				    <button type="button" class="btn btn-default btn-lg" ng-click="addNewRecipe = !addNewRecipe">
+						<i class="fa fa-list-ul"></i>
+				    </button>
 				</div>
 			</div>
 		</div>
-	</div\
+	</div>
+	<div class="row">
+		<div class="col-sm-12 center-block">
+		   	<div class="col-sm-6 col-sm-offset-3" ng-show="addNewRecipe">
+				<div class="panel panel-default panel-box-shadow" style="border-radius: 0px;">
+					<form ng-submit="addRecipe()">
+					    <!-- <div class="panel-heading">
+					        Add New Recipe
+					    </div> -->
+					    <div class="panel-body">
+					     	<div class="row">
+						      	<div class="form-group">
+							      	<div class="image-upload">
+							      		<p>Drag Recipe Image Here</p>
+							      	</div>
+							    </div>
+							</div>
+							<div class="row">
+								<div class="col-sm-8">
+							      	<div class="form-group">
+							      		<label >Recipe Name</label>
+							      		<input type="text" class="form-control no-radius" placeholder="Recipe Name" ng-model="newRecipe.name">
+							      	</div>
+							    </div>
+							    <div class="col-sm-2">
+							    	<div class="form-group text-center">
+							      		<label>Prep <i class="fa fa-clock-o"></i></label>
+							      		<input type="text" class="form-control no-radius" placeholder="Time" ng-model="newRecipe.prep">
+							      	</div>
+							    </div>
+							    <div class="col-sm-2">
+							    	<div class="form-group text-center">
+							      		<label>Cook <i class="fa fa-clock-o"></i></label>
+							      		<input type="text" class="form-control no-radius" placeholder="Time" ng-model="newRecipe.cook">
+							      	</div>
+							    </div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							      	<div class="form-group">
+							      		<label >Description</label>
+							      		<input type="text" class="form-control no-radius" placeholder="Brief Description" ng-model="newRecipe.description">
+							      	</div>
+							    </div>
+					      	</div>
+					      	<div class="divider">Ingredients</div>
+					      	<div class="row" ng-repeat="item in newIngredients">
+					      		<div class="col-sm-6">
+					      			<div class="form-group">
+					      				<input type="text" class="form-control no-radius" placeholder="Item name" ng-model="item.name" typeahead="i as i.name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="updateIngredient($item)" typeahead-focus-first="false">
+					      			</div>
+					      		</div>
+					      		<div class="col-sm-2">
+					      			<div class="form-group">
+						      			<input type="text" class="form-control no-radius" placeholder="Unit" ng-model="item.quantity">
+						      		</div>
+					      		</div>
+					      		<div class="col-sm-4">
+					      			<div class="form-group">
+						      			<div class="input-group">
+							      			<select class="form-control no-radius" ng-model="item.uom">
+							      				<option value="pieces">Pieces</option>
+							      				<option value="teaspoon">Teaspoon</option>
+							      				<option value="tablespoon">Tablespoon</option>
+							      				<option value="ounce">Ounce</option>
+							      			</select>
+							      			<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle"></i></a></span>
+							      		</div>
+						      		</div>
+					      		</div>
+					      	</div>
+					      	<div class="row">
+				      			<div class="col-sm-6">
+				      				<div class="form-group">
+				      					<input type="text" class="form-control no-radius" placeholder="Item name" ng-model="ingredient.item" typeahead="i as i.	name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="addItem($item)" typeahead-focus-first="false">
+				      				</div>
+				      			</div>
+				      			<div class="col-sm-2">
+					      			<div class="form-group">
+						      			<input type="text" class="form-control no-radius" placeholder="Unit" ng-model="ingredient.quantity">
+						      		</div>
+				      			</div>
+				      			<div class="col-sm-4">
+				      				<div class="form-group">
+						      			<div class="input-group">
+							      			<select class="form-control no-radius" ng-model="ingredient.uom">
+							      				<option value="pieces">Pieces</option>
+							      				<option value="teaspoon">Teaspoon</option>
+							      				<option value="tablespoon">Tablespoon</option>
+							      				<option value="ounce">Ounce</option>
+							      			</select>
+							      			<span class="input-group-addon input-group-side-button"><a><i class="fa fa-plus-circle" ng-click="addIngredient()"></i></a></span>
+							      		</div>
+						      		</div>	
+				      			</div>
+					      	</div>
+					      	<div class="divider">Directions</div>
+					      	<div class="row" ng-repeat="step in newSteps">
+				      			<div class="col-sm-12">
+				      				<div class="form-group">
+				      					<div class="input-group">
+				      						<span class="input-group-addon no-radius">{{$index + 1}}</span>
+						      				<input type="text" class="form-control no-radius" placeholder="Details" ng-model='step.detail'>
+						      				<span class="input-group-addon input-group-side-button"><a><i class="fa fa-minus-circle"></i></a></span>
+						      			</div>
+						      		</div>
+				      			</div>
+				      		</div>
+				      		<div class="row">
+				      			<div class="col-sm-12">
+				      				<div class="form-group">
+				      					<div class="input-group">
+				      						<span class="input-group-addon no-radius">{{newSteps.length + 1}}</span>
+						      				<input type="text" class="form-control no-radius" placeholder="Details" ng-model="step">
+						      				<span class="input-group-addon input-group-side-button"><a><i class="fa fa-plus-circle" ng-click="addStep()"></i></a></span>
+						      			</div>
+						      		</div>
+				      			</div>
+				      		</div>
+					    </div>
+					    <div class="panel-footer">
+					      	<button class="btn btn-danger" ng-click="closeAdd()">Cancel</button>
+					     	<button class="btn btn-success" type="submit">Save</button>
+					    </div>
+					</form>
+			    </div>
+		   	</div>
+	   	</div>
+	</div>
 	<div class="col-sm-12">
-		<div class="col-sm-3">
+		<div class="col-sm-3" ng-repeat="r in recipes">
 			<div class="panel panel-default no-radius">
 		      <div class="panel-heading" style="padding: 0px;">
 		        <div style="position: relative">
 		          <img src="assets/images/chickendish.jpg" class="img-responsive">
 		          <div style="position: absolute; bottom: 10px;">
-		          <a href="http://allrecipes.com/Recipe/Quick-And-Easy-Mexican-Chicken/Detail.aspx?soid=carousel_0_rotd&prop24=rotd"><span style="z-index: 99;color: #fff; font-size: 1.25em; font-weight: bold; position: relative; top: 70%; padding: 10px;">Mexican Chicken</span></a>
+		          <a href="http://allrecipes.com/Recipe/Quick-And-Easy-Mexican-Chicken/Detail.aspx?soid=carousel_0_rotd&prop24=rotd"><span style="z-index: 99;color: #fff; font-size: 1.25em; font-weight: bold; position: relative; top: 70%; padding: 10px;">{{r.name}}</span></a>
 		          </div>
 		        </div>
 		      </div>
 		      <div class="panel-body" style="height: 125px;">
-		        <div>An easy entree with Mexican flair! Serve over rice or buttered noodles.</div>
+		        <div>{{r.description}}</div>
 		      </div>
 		      <div class="panel-footer clearfix text-center">
 		        <button class="btn btn-primary btn-xs">Su</button>
@@ -42,85 +168,6 @@
 		        <button class="btn btn-primary btn-xs">F</button>
 		        <button class="btn btn-primary btn-xs">S</button>
 		      </div>
-		    </div>
-	   	</div>
-	   	<div class="col-sm-3">
-			<div class="panel panel-default panel-box-shadow" style="border-radius: 0px;">
-				<form ng-submit="addRecipe()">
-				    <!-- <div class="panel-heading">
-				        Add New Recipe
-				    </div> -->
-				    <div class="panel-body">
-				     	<div class="row">
-					      	<div class="form-group">
-						      	<div class="image-upload">
-						      		<p>Drag Recipe Image Here</p>
-						      	</div>
-						    </div>
-						</div>
-				      	<div class="form-group">
-				      		<label >Recipe Name</label>
-				      		<input type="text" class="form-control no-radius" placeholder="Recipe Name" ng-model="newRecipe.name">
-				      	</div>
-				      	<div class="form-group">
-				      		<label >Description</label>
-				      		<input type="text" class="form-control no-radius" placeholder="Brief Description" ng-model="newRecipe.description">
-				      	</div>
-				      	<div>Ingredients</div>
-				      	<div class="form-inline" ng-repeat="item in newIngredients">
-				      		<div class="form-group">
-				      			<input type="text" class="form-control no-radius" placeholder="Add Item" ng-model="item.name" typeahead="i as i.name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="updateIngredient($item)" typeahead-focus-first="false" style="width: 174px;">
-				      		</div>
-				      		<div class="form-group">
-				      			<input type="text" class="form-control no-radius" style="width: 50px;" placeholder="Unit" ng-model="item.quantity">
-				      		</div>
-				      		<div class="form-group">
-				      			<div class="input-group">
-					      			<select class="form-control no-radius" style="width: 125px;" ng-model="item.uom">
-					      				<option value="pieces">Pieces</option>
-					      				<option value="teaspoon">Teaspoon</option>
-					      				<option value="tablespoon">Tablespoon</option>
-					      				<option value="ounce">Ounce</option>
-					      			</select>
-					      			<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle"></i></a></span>
-					      		</div>
-				      		</div>
-				      	</div>
-				      	<div class="form-inline">
-				      		<div class="form-group">
-				      			<input type="text" class="form-control no-radius" placeholder="Add Item" ng-model="ingredient.item" typeahead="i as i.name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="addItem($item)" typeahead-focus-first="false" style="width: 174px;">
-				      		</div>
-				      		<div class="form-group">
-				      			<input type="text" class="form-control no-radius" style="width: 50px;" placeholder="Unit" ng-model="ingredient.quantity">
-				      		</div>
-				      		<div class="form-group">
-				      			<div class="input-group">
-					      			<select class="form-control no-radius" style="width: 125px;" ng-model="ingredient.uom">
-					      				<option value="pieces">Pieces</option>
-					      				<option value="teaspoon">Teaspoon</option>
-					      				<option value="tablespoon">Tablespoon</option>
-					      				<option value="ounce">Ounce</option>
-					      			</select>
-					      			<span class="input-group-addon input-group-side-button"><a><i class="fa fa-plus-circle" ng-click="addIngredient()"></i></a></span>
-					      		</div>
-				      		</div>
-				      	</div>
-				      	<div>Directions</div>
-				    	<div>
-		      				<div class="form-group">
-		      					<div class="input-group">
-		      						<span class="input-group-addon no-radius">1</span>
-				      				<input type="text" class="form-control no-radius" placeholder="Details" style="max-width: 336px;">
-				      				<span class="input-group-addon input-group-side-button"><a><i class="fa fa-plus-circle"></i></a></span>
-				      			</div>
-				      		</div>
-				      	</div>
-				    </div>
-				    <div class="panel-footer">
-				      	<button class="btn btn-danger">Cancel</button>
-				     	<button class="btn btn-success" type="submit">Save</button>
-				    </div>
-				</form>
 		    </div>
 	   	</div>
 	</div>
