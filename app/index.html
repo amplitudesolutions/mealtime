@@ -71,6 +71,9 @@
               </li>
             </ul>
           </li>
+          <li ng-class="{active: isActive('/settings')}">
+            <a href="#/settings" class="hand" ng-click=""><i class="fa fa-cog fa-lg"></i></a>
+          </li>
         </ul>
       </div><!--/.nav-collapse -->
 
@@ -129,6 +132,7 @@
   <script src="inventory/inventory.js"></script>
   <script src="list/list.js"></script>
   <script src="recipes/recipes.js"></script>
+  <script src="settings/settings.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
