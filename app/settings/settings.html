@@ -14,11 +14,20 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						<label class="">Default List Name</label>
-						<input type="text" class="form-control">
+						<select ng-options="list.$id for list in lists track by list.$id" class="form-control" ng-model="settings.defaultlist"></select>
 					</div>
 				</div>
 				<div class="col-sm-4">
-					Unit of Measure
+					<label>Unit of Measure</label>
+					<p class="form-control-static">
+		            	<label class="radio-inline">
+		              	<input type="radio" name="uom" value="metric" ng-model="settings.uom"> Metric</label>
+		            	<label class="radio-inline">
+		              	<input type="radio" name="uom" value="standard" ng-model="settings.uom"> Standard</label>
+		            </p>
+				</div>
+				<div class="col-sm-12">
+					<button class="btn btn-success" type="submit">Update</button>
 				</div>
 			</div>
 		</div>

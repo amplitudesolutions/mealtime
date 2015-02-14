@@ -11,5 +11,9 @@ angular.module('myApp.settings', ['ngRoute', 'ngAnimate'])
 
 .controller('SettingsCtrl', ['$scope','$firebase', 'getDBUrl', function($scope, $firebase, getDBUrl) {
 	var baseRef = new Firebase(getDBUrl.path);
-	var recipeRef = baseRef.child('settings');
+	var settingsRef = baseRef.child('settings');
+	var listRef = baseRef.child('lists');
+
+	$scope.settings = $firebase(settingsRef).$asObject();
+	$scope.lists = $firebase(listRef).$asArray();
 }]);
