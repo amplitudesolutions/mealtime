@@ -23,6 +23,11 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
 	$scope.newSteps = [];
 	$scope.ingredient = '';
 	$scope.step = '';
+	$scope.selectedRecipe = '';
+
+	$scope.viewRecipe = function(id) {
+		$scope.selectedRecipe = $scope.recipes.$getRecord(id);
+	};
 
 	$scope.addRecipe = function() {
 		var newRecipe = $scope.newRecipe;
