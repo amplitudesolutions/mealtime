@@ -15,6 +15,7 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
 	$scope.recipes = $firebase(recipeRef).$asArray();
 	//var itemsRef = baseRef.child('items');
 	$scope.items = $firebase(baseRef.child('items')).$asArray();
+	$scope.units = $firebase(baseRef.child('units')).$asArray();
 
 	$scope.addNewRecipe = false;
 

@@ -1,3 +1,4 @@
+<toast></toast>
 <div class="container" ng-controller="SettingsCtrl">
 	<div class="col-sm-3">
 		<div class="list-group">
@@ -6,459 +7,57 @@
 		</div>
 	</div>
 	<div class="col-sm-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				General Settings
-			</div>
-			<div class="panel-body">
-				<div class="col-sm-4">
-					<div class="form-group">
-						<label class="">Default List Name</label>
-						<select ng-options="list.$id for list in lists track by list.$id" class="form-control" ng-model="settings.defaultlist"></select>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						General Settings
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label class="">Default List Name</label>
+								<select ng-options="list.$id for list in lists track by list.$id" class="form-control" ng-model="settings.defaultlist"></select>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<label>Unit of Measure</label>
+							<p class="form-control-static">
+				            	<label class="radio-inline">
+				              	<input type="radio" name="uom" value="metric" ng-model="settings.uom"> Metric</label>
+				            	<label class="radio-inline">
+				              	<input type="radio" name="uom" value="standard" ng-model="settings.uom"> Standard</label>
+				            </p>
+						</div>
+						<div class="col-sm-12">
+							<button class="btn btn-success" type="submit">Update</button>
+						</div>
 					</div>
 				</div>
-				<div class="col-sm-4">
-					<label>Unit of Measure</label>
-					<p class="form-control-static">
-		            	<label class="radio-inline">
-		              	<input type="radio" name="uom" value="metric" ng-model="settings.uom"> Metric</label>
-		            	<label class="radio-inline">
-		              	<input type="radio" name="uom" value="standard" ng-model="settings.uom"> Standard</label>
-		            </p>
-				</div>
-				<div class="col-sm-12">
-					<button class="btn btn-success" type="submit">Update</button>
+			</div>
+			<div class="col-sm-5">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Unit Types
+					</div>
+					<div class="panel-body">
+						<div class="form-group" ng-repeat="unit in units">
+							<div class="input-group">
+								<input type="text" name="unittype" class="form-control no-radius" ng-model="unit.name">
+								<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="removeUnit(unit)"></i></a></span>
+							</div>
+						</div>
+						<form ng-submit="addUnit()" name="newUnitForm">
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control no-radius" ng-model="newUnit" placeholder="Enter unit name here">
+									<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-plus-circle" ng-click="addUnit()"></i></a></span>
+								</div>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
-<!-- <div class="container-fluid">
-	<div class="table-responsive">
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-					<th>
-						<div class="form-group">
-							<select class="form-control">
-								<option>Select...</option>
-								<option>CWP</option>
-								<option>Drawing Number</option>
-								<option>Sheet Number</option>
-								<option>Task Category</option>
-								<option>Task Type</option>
-								<option>Material Description</option>
-								<option>Engineering Tag Number</option>
-								<option>Quantity</option>
-								<option>UOM</option>
-								<option>Spool Number</option>
-							</select>
-						</div>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>CWP</td>
-					<td>Commodity</td>
-					<td>Service Code</td>
-					<td>Drawing</td>
-					<td>Line Number</td>
-					<td>Commodity Type</td>
-					<td>Shop/Field</td>
-					<td>Description</td>
-					<td>UOM</td>
-					<td>ISO</td>
-					<td>Rev</td>
-					<td>+++ Descript</td>
-					<td>Sche</td>
-					<td>Qty</td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>Equipment Trim</td>
-					<td>EQT</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>24-EQT-000053-3-AUUK</td>
-					<td>PGSW2A30BRI 3</td>
-					<td>Field</td>
-					<td>Gasket</td>
-					<td></td>
-					<td>24-EQT-000053-12-01</td>
-					<td>0</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td></td>
-					<td>2</td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>Equipment Trim</td>
-					<td>EQT</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>24-EQT-000053-3-AUUK</td>
-					<td>PGSW2A30BRI 3</td>
-					<td>Field</td>
-					<td>Gasket</td>
-					<td></td>
-					<td>24-EQT-000053-12-01</td>
-					<td>0</td>
-					<td>CL300 GSKT SPWD 1/8' THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td></td>
-					<td>2</td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>Equipment Trim</td>
-					<td>EQT</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>24-EQT-000053-3-AUUK</td>
-					<td>PGSW2A30BRI 3</td>
-					<td>Field</td>
-					<td>Gasket</td>
-					<td></td>
-					<td>24-EQT-000053-12-01</td>
-					<td>0</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td></td>
-					<td>2</td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>Equipment Trim</td>
-					<td>EQT</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>24-EQT-000053-3-AUUK</td>
-					<td>PGSW2A30BRI 3</td>
-					<td>Field</td>
-					<td>Gasket</td>
-					<td></td>
-					<td>24-EQT-000053-12-01</td>
-					<td>0</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td></td>
-					<td>2</td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>Equipment Trim</td>
-					<td>EQT</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>24-EQT-000053-3-AUUK</td>
-					<td>PGSW2A30BRI 3</td>
-					<td>Field</td>
-					<td>Gasket</td>
-					<td></td>
-					<td>24-EQT-000053-12-01</td>
-					<td>0</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td></td>
-					<td>2</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-
-<div class="container-fluid">
-	<div class="table-responsive">
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>
-						CWP
-					</th>
-					<th>
-						Drawing
-					</th>
-					<th>
-						Task Type
-					</th>
-					<th>
-						Material Description
-					</th>
-					<th>
-						QTY
-					</th>
-					<th>
-						Issues?
-					</th>
-					<th>
-						Actions
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>5009</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>Gasket</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td>2</td>
-					<td></td>
-					<td><button class="btn btn-xs btn-primary">Edit</button></td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>Gasket</td>
-					<td><p class="text-danger">CL300 GSKT SPWD 1/8' THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</p>
-						<p><strong>Did you mean?</strong></p>
-						<p><a href="#">CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</a></p>
-					</td>
-					<td>2</td>
-					<td>Material Not Found</td>
-					<td><button class="btn btn-xs btn-primary">Edit</button></td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>Gasket</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td>2</td>
-					<td></td>
-					<td><button class="btn btn-xs btn-primary">Edit</button></td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>Gasket</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td>2</td>
-					<td></td>
-					<td><button class="btn btn-xs btn-primary">Edit</button></td>
-				</tr>
-				<tr>
-					<td>5009</td>
-					<td>24-EQT-000053-12-01</td>
-					<td>Gasket</td>
-					<td>CL300 GSKT SPWD 1/8" THK 316 SS WINDINGS W/FLEX GRAPHITE FILLER B16.20 RF, B16.5 CS OUTER RING, 316SS INNER RING  | 3  |</td>
-					<td>2</td>
-					<td></td>
-					<td><button class="btn btn-xs btn-primary">Edit</button></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div> -->
