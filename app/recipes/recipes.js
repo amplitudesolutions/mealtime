@@ -25,8 +25,36 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
 	$scope.step = '';
 	$scope.selectedRecipe = '';
 
-	$scope.viewRecipe = function(id) {
-		$scope.selectedRecipe = $scope.recipes.$getRecord(id);
+	$scope.scheduleRecipe = function(recipe, selectedDay) {
+		// Need to Add scheduled date to Recipe record in Firebase as well.
+
+		baseRef.child('schedule/' + selectedDay).transaction(function(stock) {
+			console.log(recipe.$id);
+	     	return recipe.$id;
+	    }), function(error, committed, snapshot) {
+	      if (error) {
+	        console.log('Transaction failed abnormally!', error);
+	      }
+	    };
+		
+	};
+
+	$scope.viewRecipe = function(recipe) {
+		$scope.selectedRecipe = recipe;
+	};
+
+	$scope.editRecipe = function() {
+		$scope.newRecipe = angular.copy($scope.selectedRecipe);
+		$scope.newIngredients = $scope.newRecipe.ingredients;
+		console.log($scope.newIngredients);
+		if ($scope.newIngredients == null) {
+			$scope.newIngredients = {};
+		}
+		$scope.newSteps = $scope.newRecipe.steps;
+		if ($scope.newSteps == null) {
+			$scope.newSteps = [];
+		}
+		$scope.addNewRecipe = true;
 	};
 
 	$scope.addRecipe = function() {
@@ -44,13 +72,20 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
 		}
 
 		newRecipe.steps = newSteps;
-
+		console.log(newRecipe);
 		var newIngredient = $scope.ingredient;
-		if (newIngredient != '') {
+		if (newIngredient != '') {			
 			newRecipe.ingredients[newIngredient.item.$id] = {name: newIngredient.item.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
 		}
 
-		$scope.recipes.$add(newRecipe);
+		if ($scope.selectedRecipe != '') {
+			//console.log(newRecipe);
+			$scope.recipes[$scope.recipes.$indexFor(newRecipe.$id)] = newRecipe;
+			$scope.recipes.$save($scope.recipes.$indexFor(newRecipe.$id));
+			$scope.selectedRecipe = $scope.recipes[$scope.recipes.$indexFor(newRecipe.$id)];
+		} else {
+			$scope.recipes.$add(newRecipe);
+		}
 
 		$scope.closeAdd();
 	};

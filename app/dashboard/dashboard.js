@@ -138,7 +138,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     if (category === null) {
       $scope.categoryEditId = null;
     } else {
-      $scope.categoryEdit = angular.copy(category)
+      $scope.categoryEdit = angular.copy(category);
       $scope.categoryEditId = category.$id;
     }
   };

@@ -30,11 +30,14 @@
       </div>
       <div id="navbar" class="navbar-collapse" collapse="navbarCollapsed">
         <ul class="nav navbar-nav">
-          <li ng-class="{active: isActive('/dashboard')}"><a href="#/dashboard"><i class="fa fa-calendar"></i> dashboard</a></li>
-          <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery"></i> recipes</a></li>
-          <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text"></i> inventory</a></li>
+          <li ng-class="{active: isActive('/dashboard')}"><a href="#/dashboard"><i class="fa fa-bars fa-lg"></i> dashboard</a></li>
+          <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery fa-lg"></i> recipes</a></li>
+          <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text fa-lg"></i> inventory</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+          <li ng-class="{active: isActive('/settings')}">
+            <a href="#/settings" class="hand" ng-click=""><i class="fa fa-calendar fa-lg"></i></a>
+          </li>
           <li class="hidden-xs">
             <a class="hand" ng-click="sideBarState()"><i class="fa fa-tasks fa-lg"></i></a>
           </li>

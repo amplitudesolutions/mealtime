@@ -17,9 +17,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="row" ng-hide="1 == 1">
+	<div class="row" ng-hide="selectedRecipe == '' || addNewRecipe == true">
 		<div class="col-sm-12 center-block">
-		   	<div class="col-sm-3 col-sm-offset-3">
+		   	<div class="col-sm-5 col-sm-offset-3">
 				<div class="panel panel-default panel-box-shadow no-radius">
 					<div class="panel-body">
 						<div class="row">
@@ -38,13 +38,13 @@
 						    </div>
 						    <div class="col-sm-2">
 						    	<div class="form-group text-center">
-						      		<label>Prep <i class="fa fa-clock-o"></i></label>
+						      		<label><i class="fa fa-clock-o"></i></label>
 						      		<p class="form-control-static">{{selectedRecipe.prep}}</p>
 						      	</div>
 						    </div>
 						    <div class="col-sm-2">
 						    	<div class="form-group text-center">
-						      		<label>Cook <i class="fa fa-fire"></i></label>
+						      		<label><i class="fa fa-fire"></i></label>
 						      		<p class="form-control-static">{{selectedRecipe.cook}}</p>
 						      	</div>
 						    </div>
@@ -75,9 +75,23 @@
 					      		</div>
 				      		</div>
 				      	</div>
+				      	<div class="divider">Steps</div>
+				      	<div class="row" ng-repeat="(index, key) in selectedRecipe.steps">
+				      		<div class="col-sm-1">
+				      			<div class="form-group">
+				      				<p class="form-control-static">{{index + 1}}</p>
+				      			</div>
+				      		</div>
+				      		<div class="col-sm-11">
+				      			<div class="form-group">
+					      			<p class="form-control-static">{{key.detail}}</p>
+					      		</div>
+				      		</div>
+				      	</div>
 					</div>
 					<div class="panel-footer">
-				      	<button class="btn btn-danger" ng-click="selectedRecipe = ''">Close</button>
+				      	<button class="btn btn-danger" ng-click="selectedRecipe = ''" type="button">Close</button>
+				      	<button class="btn btn-success" ng-click="editRecipe()">Edit</button>
 				    </div>
 				</div>
 			</div>
@@ -85,7 +99,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12 center-block">
-		   	<div class="col-sm-4 col-sm-offset-3" ng-show="addNewRecipe">
+		   	<div class="col-sm-5 col-sm-offset-3" ng-show="addNewRecipe">
 				<div class="panel panel-default panel-box-shadow no-radius">
 					<form ng-submit="addRecipe()">
 					    <!-- <div class="panel-heading">
@@ -203,7 +217,7 @@
 				      		</div>
 					    </div>
 					    <div class="panel-footer">
-					      	<button class="btn btn-danger" ng-click="closeAdd()">Cancel</button>
+					      	<button class="btn btn-danger" ng-click="closeAdd()" type="button">Cancel</button>
 					     	<button class="btn btn-success" type="submit">Save</button>
 					    </div>
 					</form>
@@ -212,108 +226,22 @@
 	   	</div>
 	</div>
 	<div class="col-sm-12">
-		<div ng-repeat="r in recipes" ng-class="{'col-sm-2': selectedRecipe.$id != r.$id, 'col-sm-3': selectedRecipe.$id == r.$id}">
+		<div ng-repeat="r in recipes" class="col-sm-2">
 			<div class="panel panel-default no-radius panel-box-shadow">
 				<div class="panel-body">
-					<div ng-hide="selectedRecipe.$id == r.$id">
-						<div><a ng-click="viewRecipe(r.$id)" class="hand">{{r.name}}</a></div>
+					<div>
+						<div><a ng-click="viewRecipe(r)" class="hand">{{r.name}}</a></div>
 						<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{r.prep}} +</div>
 						<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{r.cook}} =</div>
 						<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(r.prep*1)+(r.cook*1)}}</div>
-					</div>
-					<div ng-show="selectedRecipe.$id == r.$id">
-						<div class="row">
-					      	<div class="form-group">
-						      	<div class="image-upload">
-						      		<p>Drag Recipe Image Here</p>
-						      	</div>
-						    </div>
+						<div>
+							<ul class="list-inline">
+							  <li ng-repeat="day in [1,2,3,4,5,6,7]" ng-click="scheduleRecipe(r, day)">{{ ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day-1] }}</li>
+							</ul>
 						</div>
-						<div class="row">
-							<div class="col-sm-8">
-						      	<div class="form-group">
-						      		<label >Recipe Name</label>
-						      		<p class="form-control-static">{{selectedRecipe.name}}</p>
-						      	</div>
-						    </div>
-						    <div class="col-sm-2">
-						    	<div class="form-group text-center">
-						      		<label>Prep <i class="fa fa-clock-o"></i></label>
-						      		<p class="form-control-static">{{selectedRecipe.prep}}</p>
-						      	</div>
-						    </div>
-						    <div class="col-sm-2">
-						    	<div class="form-group text-center">
-						      		<label>Cook <i class="fa fa-fire"></i></label>
-						      		<p class="form-control-static">{{selectedRecipe.cook}}</p>
-						      	</div>
-						    </div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						      	<div class="form-group">
-						      		<label >Description</label>
-						      		<p class="form-control-static">{{selectedRecipe.description}}</p>
-						      	</div>
-						    </div>
-				      	</div>
-				      	<div class="divider">Ingredients</div>
-				      	<div class="row" ng-repeat="item in selectedRecipe.ingredients">
-				      		<div class="col-sm-6">
-				      			<div class="form-group">
-				      				<p class="form-control-static">{{item.name}}</p>
-				      			</div>
-				      		</div>
-				      		<div class="col-sm-2">
-				      			<div class="form-group">
-					      			<p class="form-control-static">{{item.quantity}}</p>
-					      		</div>
-				      		</div>
-				      		<div class="col-sm-4">
-				      			<div class="form-group">
-				      				<p class="form-control-static">{{item.uom}}</p>
-					      		</div>
-				      		</div>
-				      	</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- <div class="col-sm-3">
-			<div class="panel panel-default panel-box-shadow no-radius">
-				<div class="panel-body">
-					
-				</div>
-				<div class="panel-footer">
-			      	<button class="btn btn-danger" ng-click="selectedRecipe = ''">Close</button>
-			    </div>
-			</div>
-		</div> -->
 	</div>
-	<!-- <div class="col-sm-12">
-		<div class="col-sm-3" ng-repeat="r in recipes">
-			<div class="panel panel-default no-radius">
-		      <div class="panel-heading" style="padding: 0px;">
-		        <div style="position: relative">
-		          <img src="assets/images/chickendish.jpg" class="img-responsive">
-		          <div style="position: absolute; bottom: 10px;">
-		          <a href="http://allrecipes.com/Recipe/Quick-And-Easy-Mexican-Chicken/Detail.aspx?soid=carousel_0_rotd&prop24=rotd"><span style="z-index: 99;color: #fff; font-size: 1.25em; font-weight: bold; position: relative; top: 70%; padding: 10px;">{{r.name}}</span></a>
-		          </div>
-		        </div>
-		      </div>
-		      <div class="panel-body" style="height: 125px;">
-		        <div>{{r.description}}</div>
-		      </div>
-		      <div class="panel-footer clearfix text-center">
-		        <button class="btn btn-primary btn-xs">Su</button>
-		        <button class="btn btn-info btn-xs">M</button>
-		        <button class="btn btn-primary btn-xs">T</button>
-		        <button class="btn btn-primary btn-xs">W</button>
-		        <button class="btn btn-primary btn-xs">Th</button>
-		        <button class="btn btn-primary btn-xs">F</button>
-		        <button class="btn btn-primary btn-xs">S</button>
-		      </div>
-		    </div>
-	   	</div>
-	</div> -->
 </div>
