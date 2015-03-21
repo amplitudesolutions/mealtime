@@ -1,21 +1,30 @@
 'use strict';
 
-angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
+angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
   $routeProvider.when('/recipes', {
     templateUrl: 'recipes/recipes.html',
     controller: 'RecipesCtrl'
   });
+  ngToastProvider.configure({
+  	animation: 'slide',
+  	horizontalPosition: 'right',
+  	verticalPosition: 'bottom',
+  	maxNumber: 0,
+  	className: 'info',
+  	dismissButton: true,
+  });
 }])
 
-.controller('RecipesCtrl', ['$scope','$firebase', 'getDBUrl', function($scope, $firebase, getDBUrl) {
+.controller('RecipesCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', function($scope, $firebase, getDBUrl, ngToast) {
 	var baseRef = new Firebase(getDBUrl.path);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
 	//var itemsRef = baseRef.child('items');
 	$scope.items = $firebase(baseRef.child('items')).$asArray();
 	$scope.units = $firebase(baseRef.child('units')).$asArray();
+	var schedule = $firebase(baseRef.child('schedule')).$asArray();
 
 	$scope.addNewRecipe = false;
 
@@ -29,15 +38,14 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate'])
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.
 
-		baseRef.child('schedule/' + selectedDay).transaction(function(stock) {
-			console.log(recipe.$id);
+		baseRef.child('schedule/' + selectedDay + '/recipe').transaction(function(stock) {
 	     	return recipe.$id;
 	    }), function(error, committed, snapshot) {
 	      if (error) {
 	        console.log('Transaction failed abnormally!', error);
 	      }
 	    };
-		
+		ngToast.create(recipe.name + ' added for ' + schedule[selectedDay].name);
 	};
 
 	$scope.viewRecipe = function(recipe) {

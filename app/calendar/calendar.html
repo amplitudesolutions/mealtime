@@ -1,0 +1,148 @@
+<div class="container" ng-controller="CalendarCtrl">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-5 col-md-offset-3">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<input type="text" class="form-control no-radius input-lg" placeholder="search recipes...">
+							</div>
+						</div>
+						<div class="col-sm-12" ng-hide="true">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<p>Button Chicken</p>
+									<p><small>Delicious india dish, flavorful, with lots of chicken, so buttery!</small></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-5 col-md-offset-3">
+					<div class="panel panel-default" ng-repeat="day in days" ng-class="{'current-day': checkDay(day.$id)}">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="{'green': checkDay(day.$id)}">
+										{{day.abbrev}}
+									</div>
+								</div>
+								<div class="col-sm-10">
+									<p>{{recipes[recipes.$indexFor(day.recipe)].name}}</p>
+									
+									<p><small>{{recipes[recipes.$indexFor(day.recipe)].description}}</small></p>
+								</div>
+								<!-- <div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div> -->
+							</div>
+						</div>
+					</div>
+					<!-- <div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(2)">
+										T
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(3)">
+										W
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(4)">
+										Th
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(5)">
+										F
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(6)">
+										S
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-sm-2">
+									<div class="circle" ng-class="checkDay(0)">
+										Su
+									</div>
+								</div>
+								<div class="col-sm-9">
+									Cashew Chicken
+								</div>
+								<div class="col-sm-1">
+									<i class="fa fa-ellipsis-v"></i>
+								</div>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -303,3 +303,37 @@ body { padding-top: 51px; }
   border: 0;
   background-color: #fff;
 }
+
+.circle {
+  border-radius: 50px;
+  /*background: #000;*/
+  background:linear-gradient(to bottom, #40b3ff, #09f);
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  font-size: 20px;
+}
+
+/* Calender Options */
+
+.current-day {
+  margin-right: -25px;
+  margin-left: -25px;
+  /*height: 100px;*/
+
+}
+
+.circle.red {
+  background:linear-gradient(to bottom, #FF3300, #CC2900);
+}
+
+.circle.blue {
+  background:linear-gradient(to bottom, #40b3ff, #09f);
+}
+
+
+.circle.green {
+  background:linear-gradient(to bottom, #65B965, #57A057);
+}

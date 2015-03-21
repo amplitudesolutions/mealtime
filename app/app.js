@@ -7,6 +7,7 @@ angular.module('myApp', [
   'myApp.inventory',
   'myApp.recipes',
   'myApp.settings',
+  'myApp.calendar',
   'myApp.list',
   'myApp.version',
   'ui.bootstrap',
