@@ -4,11 +4,11 @@
 			<div class="row">
 				<div class="col-sm-5 col-md-offset-3">
 					<div class="row">
-						<div class="col-sm-12">
+						<!-- <div class="col-sm-12">
 							<div class="form-group">
 								<input type="text" class="form-control no-radius input-lg" placeholder="search recipes...">
 							</div>
-						</div>
+						</div> -->
 						<div class="col-sm-12" ng-hide="true">
 							<div class="panel panel-default">
 								<div class="panel-body">
@@ -28,14 +28,17 @@
 										{{day.abbrev}}
 									</div>
 								</div>
-								<div class="col-sm-10">
+								<div class="col-sm-8">
 									<p>{{recipes[recipes.$indexFor(day.recipe)].name}}</p>
 									
 									<p><small>{{recipes[recipes.$indexFor(day.recipe)].description}}</small></p>
+									<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{recipes[recipes.$indexFor(day.recipe)].prep}} +</div>
+									<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{recipes[recipes.$indexFor(day.recipe)].cook}} =</div>
+									<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(recipes[recipes.$indexFor(day.recipe)].prep*1)+(recipes[recipes.$indexFor(day.recipe)].cook*1)}}</div>
 								</div>
-								<!-- <div class="col-sm-1">
-									<i class="fa fa-ellipsis-v"></i>
-								</div> -->
+								<div class="col-sm-2 text-right">
+									<i class="fa fa-check fa-2x fa-fw" style="color: #ADADAD"></i>
+								</div>
 							</div>
 						</div>
 					</div>
