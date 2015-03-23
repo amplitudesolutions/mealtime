@@ -28,7 +28,7 @@
 						</div>
 						<div class="list-group" collapse="!isCategoryEditing(category.$id)">
 							<div class="list-group-item">
-								<form ng-submit="saveCategory(category)">
+								<form ng-submit="saveCategory(categoryEdit)">
 									<div class="form-group">
 										<input type="text" ng-model="categoryEdit.name" class="form-control no-radius">
 									</div>
@@ -96,3 +96,14 @@
 		</div>
 	</div>
 </div>
+
+<div class="div-start" style="" id="test" ng-class="{'div-playing': testClick}" ng-click="testClick = !testClick">
+	test
+</div>
+
+<div style="border: 1px solid black">
+	Test Dialog
+</div>
+
+<h1>test</h1>
+

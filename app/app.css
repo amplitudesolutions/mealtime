@@ -2,6 +2,71 @@
 
 body { padding-top: 51px; }
 
+/* playing */
+
+.div-start {
+  height: 20px;
+}
+
+.div-playing {
+  animation-duration: 3s;
+  animation-name: slideopen;
+  -webkit-animation-name: slideopen; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 0.5s; /* Chrome, Safari, Opera */
+  height: 50px;
+}
+
+.div-close{
+  animation-duration: 3s;
+  animation-name: slideopen;
+  -webkit-animation-name: slideclose; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 0.5s; /* Chrome, Safari, Opera */
+  height: 50px;
+}
+
+@-webkit-keyframes slideopen {
+  from {
+    height: 20px;
+  }
+
+  to {
+    font-size: 100%;
+    height: 50px;
+  }
+}
+
+@-webkit-keyframes slidclose {
+  from {
+    height: 50px;
+  }
+
+  to {
+    font-size: 100%;
+    height: 20px;
+  }
+}
+
+h1 {
+  animation-duration: 3s;
+  animation-name: slidein;
+  -webkit-animation-name: slidein; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 4s; /* Chrome, Safari, Opera */
+
+}
+
+@-webkit-keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 300%; 
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
+}
+
+
 .divider {
   position: relative;
   height: auto;

@@ -9,7 +9,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', function($scope, $firebase, getDBUrl, sideBarNav) {
+.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', function($scope, $firebase, getDBUrl, sideBarNav, list, category) {
   // connect to firebase
   var baseRef = new Firebase(getDBUrl.path);
 
@@ -24,11 +24,10 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   $scope.categories = fb.$asArray();
   $scope.items = fbItem.$asArray();
-  $scope.list = fbList.$asArray();
-  $scope.listItems = fbListItems.$asArray();
+  $scope.list = list.get(); //fbList.$asArray();
+  $scope.listItems = list.getListItems(); //fbListItems.$asArray();
   $scope.categories = fb.$asArray();
-
-  $scope.categoryEdit = null;
+  $scope.categoryEdit = {};
   $scope.addCategoryState = false;
   $scope.categoryEditId = null;
 
@@ -49,81 +48,38 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
       $scope.addToCart(item);
     }
   };
-  
 
   $scope.addToCart = function(item) {
-    //$scope.list.$save(item);
-    // if (sideBarNav.state() == false) {
-      var transactions = baseRef.child("transactions");
-      //Add Transaction to Transaction table
-
-      var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-      //Check if item exists, if not create it.
-      listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
-        if (gotit !== null) {
-        //     //Item in list.. need to tell them
-        // } else {
-          //Add a Transaction
-          var purchaseDate = Firebase.ServerValue.TIMESTAMP;
-          
-          itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
-            return purchaseDate;
-          });
-
-          itemsRef.child(item.$id + "/stock").transaction(function(stock) {
-            return stock+item.quantity;
-          });
-
-          transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
-          return !gotit;
-        }
-      }, function(error, committed, snapshot) {
-        if (error) {
-          console.log('Transaction failed abnormally!', error);
-        }
-      });
-    // }
+    list.addToCart(item);
   };
 
   $scope.removeFromCart = function(item) {
-    var transactions = baseRef.child("transactions");
-    //Add Transaction to Transaction table
+    list.removeFromCart(item);
+  };
 
-    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-    //Check if item exists, if not create it.
-    listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
-      if (gotit !== null) {
-        //Item in list.. need to tell them
-        //Add a Transaction
-        
-        transactions.orderByChild("item").endAt(item.$id).limitToLast(2).once("value", function(snapShot) {
-          var nIndex = 1;
-          snapShot.forEach(function(itemSnap) {
-            if (nIndex === 1) {
-              // Set the last purchase date = to the previous transaction
-              itemsRef.child(item.$id + "/lastpurchase").transaction(function(lastpurchase) {
-                return itemSnap.val().date;
-              });
-            } else if(nIndex === 2) {
-              //delete the last transaction. When they uncheck in the cart, assuming Undo.
-              transactions.child(itemSnap.key()).remove();
-            }
-            nIndex++;
-          });
-        });
-        
-        itemsRef.child(item.$id + "/stock").transaction(function(stock) {
-          return stock-item.quantity;
-        });
+  $scope.clearCart = function() {
+    // listRef.child('/Default/items').remove();
 
-        // transactions.push({list: $scope.list[0].$id, item: item.$id, date: purchaseDate});
-        return !gotit;
-      }
-    }, function(error, committed, snapshot) {
-      if (error) {
-        console.log('Transaction failed abnormally!', error);
-      }
+    listRef.child('/Default/items').orderByChild('gotit').startAt(true).endAt(true).once('value', function(snap) {
+      snap.forEach(function(snapData) {
+        listRef.child('/Default/items/' + snapData.key()).remove();
+      });
     });
+
+  };
+
+  $scope.removeItem = function(item) {
+    list.remove(item);
+    //Remove Item From List
+    // listRef.child("/Default/items/" + item.$id).remove();
+  };
+
+  $scope.addQty = function(item) {
+    list.addQuantity(item, 1);
+  };
+
+  $scope.subtractQty = function(item) {
+    list.removeQuantity(item, 1);
   };
 
   $scope.isCategoryEditing = function(id) {
@@ -143,74 +99,9 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     }
   };
 
-  $scope.saveCategory = function(category) {
-    var name = $scope.categoryEdit.name.trim();
-    if (name) {
-      category.name = $scope.categoryEdit.name;
-      $scope.categories.$save(category);
-     }
+  $scope.saveCategory = function(cat) {
+    category.save(cat);
     $scope.categoryEditId = null;
-  };
-
-  $scope.clearCart = function() {
-    // listRef.child('/Default/items').remove();
-
-    listRef.child('/Default/items').orderByChild('gotit').startAt(true).endAt(true).once('value', function(snap) {
-      snap.forEach(function(snapData) {
-        listRef.child('/Default/items/' + snapData.key()).remove();
-      });
-    });
-
-  };
-
-  $scope.deleteItem = function(item) {
-    //Delete Item from Inventory
-    var category = null;
-
-    itemsRef.child(item.$id).once('value', function(data){
-        category = data.val().category;
-    });
-
-    categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
-    console.log("/Default/items/" + item.$id);
-    $scope.removeItem(item);
-    //listRef.child("/Default/items/" + item.$id).set(null);
-    itemsRef.child(item.$id).remove();
-  };
-
-  $scope.removeItem = function(item) {
-    //Remove Item From List
-    listRef.child("/Default/items/" + item.$id).remove();
-  };
-
-  $scope.addQty = function(item) {
-    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-    //Check if item exists, if not create it.
-
-    listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
-      return quantity+1;
-    }), function(error, committed, snapshot) {
-      if (error) {
-        console.log('Transaction failed abnormally!', error);
-      }
-    };
-  };
-
-  $scope.subtractQty = function(item) {
-    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-    //Check if item exists, if not create it.
-
-    listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
-      if (quantity <= 1) {
-        $scope.removeItem(item);
-      } else {
-        return quantity-1;
-      }
-    }), function(error, committed, snapshot) {
-      if (error) {
-        console.log('Transaction failed abnormally!', error);
-      }
-    };
   };
 
 	$scope.setAddCategoryState = function(state) {
@@ -221,30 +112,14 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     return $scope.addCategoryState;
   };
 
-  $scope.setDefaultCategory = function(categoryItem) {
-    categoryItem.child('default').set(true);
-  };
-
 	$scope.addCategory = function() {	
-    $scope.categories.$add({ name: $scope.categoryname, color: 'default' }).then(function(ref) {
-      //var id = ref;
-      if ($scope.categories.length == 1) {
-        $scope.setDefaultCategory(ref);
-      }
-    });
+    var cat = {};
+    cat.name = $scope.categoryname;
+    cat.color = 'default';
+    category.add(cat);
 
 		$scope.categoryname = '';
 	};
-
-  function getDefaultCategory() {
-    var returnData = null;
-    categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
-      snap.forEach(function(snapData) {
-        returnData = snapData.key();
-      });
-    });
-    return returnData;
-  };
 
   $scope.addLowItems = function () {
     //This function adds items to the list that are "Low" in stock as defined in the inventory.
@@ -259,7 +134,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   //Add New Item to Inventory
 	$scope.addNewItem = function() {
-    var defaultCategory = getDefaultCategory();
+    var defaultCategory = category.getDefault();
 		var existingItem = null;
 
     if ($scope.itemname) {
@@ -289,22 +164,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   //Add New Item to List
 	$scope.addItem = function(item) {
-
-    var listItemRef = listRef.child("/" + $scope.list[0].$id + "/items/");
-    //Check if item exists, if not create it.
-    listItemRef.child(item.$id).transaction(function(currentData){
-      if (currentData === null) {
-          return { quantity: 1, category: item.category, gotit: false};
-      } else {
-        listItemRef.child(item.$id + "/quantity").transaction(function(quantity) {
-          return quantity+1;
-        });
-      }
-    }, function(error, committed, snapshot) {
-      if (error) {
-        console.log('Transaction failed abnormally!', error);
-      }
-    });
+    list.add(item);
     $scope.itemname.name = "";
 	};
 
