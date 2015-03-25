@@ -17,7 +17,7 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
   });
 }])
 
-.controller('RecipesCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', function($scope, $firebase, getDBUrl, ngToast) {
+.controller('RecipesCtrl', ['$scope','$firebase', '$q', 'getDBUrl', 'ngToast', 'inventory', 'calendar', function($scope, $firebase, $q, getDBUrl, ngToast, inventory, calendar) {
 	var baseRef = new Firebase(getDBUrl.path);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
@@ -30,15 +30,20 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 
 	$scope.newRecipe = '';
 	$scope.newIngredients = {};
+
 	$scope.newSteps = [];
-	$scope.ingredient = '';
 	$scope.step = '';
+
+	$scope.ingredient = '';
+	$scope.ingredientItem = '';
+
 	$scope.selectedRecipe = '';
 
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.
 
 		baseRef.child('schedule/' + selectedDay + '/recipe').transaction(function(stock) {
+			calendar.addItemsToList(recipe);
 	     	return recipe.$id;
 	    }), function(error, committed, snapshot) {
 	      if (error) {
@@ -55,10 +60,11 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	$scope.editRecipe = function() {
 		$scope.newRecipe = angular.copy($scope.selectedRecipe);
 		$scope.newIngredients = $scope.newRecipe.ingredients;
-		console.log($scope.newIngredients);
+
 		if ($scope.newIngredients == null) {
 			$scope.newIngredients = {};
 		}
+
 		$scope.newSteps = $scope.newRecipe.steps;
 		if ($scope.newSteps == null) {
 			$scope.newSteps = [];
@@ -67,60 +73,124 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	};
 
 	$scope.addRecipe = function() {
-		var newRecipe = $scope.newRecipe;
-		var newIngredients = $scope.newIngredients;
-		var newSteps = $scope.newSteps;
-		if (!newRecipe.name.length) {
-			return;
-		}
-		newRecipe.ingredients = newIngredients;
+		createRecipe().then(function(response) {
+			if ($scope.selectedRecipe != '') {
+				$scope.recipes[$scope.recipes.$indexFor(response.$id)] = response;
+				$scope.recipes.$save($scope.recipes.$indexFor(response.$id));
+				$scope.selectedRecipe = $scope.recipes[$scope.recipes.$indexFor(response.$id)];
+			} else {
+				$scope.recipes.$add(response);
+			}
+
+			$scope.closeAdd();
+		});
 		
-		var newStep = $scope.step;
-		if (newStep != '') {
-			newSteps.push({detail: newStep});
-		}
-
-		newRecipe.steps = newSteps;
-		console.log(newRecipe);
-		var newIngredient = $scope.ingredient;
-		if (newIngredient != '') {			
-			newRecipe.ingredients[newIngredient.item.$id] = {name: newIngredient.item.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-		}
-
-		if ($scope.selectedRecipe != '') {
-			//console.log(newRecipe);
-			$scope.recipes[$scope.recipes.$indexFor(newRecipe.$id)] = newRecipe;
-			$scope.recipes.$save($scope.recipes.$indexFor(newRecipe.$id));
-			$scope.selectedRecipe = $scope.recipes[$scope.recipes.$indexFor(newRecipe.$id)];
-		} else {
-			$scope.recipes.$add(newRecipe);
-		}
-
-		$scope.closeAdd();
 	};
 
-	$scope.addIngredient = function() {
+	var addStep = function(newStep) {
+		var deferred = $q.defer();
+		if (newStep != '') {
+			$scope.newSteps.push({detail: newStep});
+			deferred.resolve('Success');
+		}
+		return deferred.promise;
+	}
+
+	var addIngredient = function() {
+		var deferred = $q.defer();
+
+		var newIngredient = {};
+		if ($scope.ingredient.name === undefined) {
+			newIngredient.name = $scope.ingredient;
+		} else {
+			newIngredient = $scope.ingredient;
+		}
+
+		newIngredient.quantity = $scope.ingredientItem.quantity;
+		newIngredient.uom = $scope.ingredientItem.uom
+
+		inventory.add(newIngredient).then(function(response) {
+			if (response != '') {
+				$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
+				deferred.resolve(response);
+			}
+		}, function (reason) {
+			console.log(reason);
+		});
+
+		return deferred.promise;
+	}
+	
+	var createRecipe = function () {
+		var deferred = $q.defer();
+
+		var newRecipe = $scope.newRecipe;
+
+		var newStep = $scope.step;
+		if (newStep != '') {
+			var p1 = addStep(newStep);
+		}
+		
 		var newIngredient = $scope.ingredient;
 		if (newIngredient != '') {
-			$scope.newIngredients[newIngredient.item.$id] = {name: newIngredient.item.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-			$scope.ingredient = '';
+			var p2 = addIngredient();
 		}
+
+		$q.all([p1, p2]).then(function(data){
+			newRecipe.ingredients = $scope.newIngredients;
+			newRecipe.steps = $scope.newSteps;
+
+			deferred.resolve(newRecipe);
+		});
+
+		return deferred.promise;
 	};
 
-	$scope.addStep = function() {
-		var newStep = $scope.step;
-		if (newStep != '') {
-			$scope.newSteps[$scope.newSteps.length] = {detail: newStep};
-			$scope.step = '';	
-		}
+	$scope.btnAddIngredient = function() {
+		addIngredient();
+		$scope.ingredient = '';
+		$scope.ingredientItem = '';
+	};
+
+	$scope.btnAddStep = function() {
+		addStep($scope.step);
+		$scope.step = '';
 	};
 
 	$scope.closeAdd = function() {
 		$scope.newRecipe = '';
 		$scope.ingredient = '';
-		$scope.newIngredients = '';
+		$scope.newIngredients = {};
+		$scope.ingredientItem = '';
 		$scope.step = '';
-		$scope.newSteps = '';
+		$scope.newSteps = [];
 		$scope.addNewRecipe = false;
 	};
-}]);
+}])
+
+.factory('recipe', ['$q', '$firebase', 'getDBUrl', 'inventory', function($q, $firebase, getDBUrl, inventory){
+  	var baseRef = new Firebase(getDBUrl.path);
+	var recipeRef = baseRef.child('recipes');
+	var recipes = $firebase(recipeRef).$asArray();
+
+
+	return {
+	  	get: function() {
+	  		return recipes;
+	  	},
+	  	addRecipe: function(recipe) {
+
+	  	},
+	  	addStep: function() {
+
+		},
+	  	addIngredient: function() {
+			var deferred = $q.defer();
+			
+			
+			return deferred.promise;
+	  	}
+	}
+}])
+
+;

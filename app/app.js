@@ -117,6 +117,33 @@ config(['$routeProvider', function($routeProvider) {
 
 }])
 
+.factory('calendar', ['$firebase', 'getDBUrl', 'list', function($firebase, getDBUrl, list){
+  var baseRef = new Firebase(getDBUrl.path);
+
+  // var addItemsToList = function(receipe) {
+    
+
+  //   //list.addToCart(item);
+  // }
+
+
+  return {
+    addItemsToList: function(recipe) {
+      angular.forEach(recipe.ingredients, function(value, key) {
+        var itemsRef = baseRef.child('items/' + key);
+        itemsRef.once('value', function(dataSnap) {
+          //Get items from Recipe and add them to the grocery list.
+          var item = {};
+          item = dataSnap.val();
+          item.$id = dataSnap.key();
+          list.add(item);
+        })
+      })
+    }
+  };
+
+}])
+
 .factory('category', ['$firebase', 'getDBUrl', function($firebase, getDBUrl){
   var baseRef = new Firebase(getDBUrl.path);
   var categoriesRef = baseRef.child('categories');
@@ -186,7 +213,6 @@ config(['$routeProvider', function($routeProvider) {
     },
     addToCart: function(item) {
       //This is used when the checkbox of an item is checked and then added to "In your basket"
-
       var listItemRef = listRef.child("/items");
       //Check if item exists, if not create it.
       listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
@@ -301,7 +327,7 @@ config(['$routeProvider', function($routeProvider) {
   }
 }])
 
-.factory('inventory', ['$firebase', 'getDBUrl', 'category', function($firebase, getDBUrl, category){
+.factory('inventory', ['$q', '$firebase', 'getDBUrl', 'category', function($q, $firebase, getDBUrl, category){
   var baseRef = new Firebase(getDBUrl.path);
   
   var listRef = baseRef.child('lists');
@@ -316,26 +342,29 @@ config(['$routeProvider', function($routeProvider) {
       return items;
     },
     add: function(item) {
-      var defaultCategory = category.getDefault(); //getDefaultCategory();
-      //$scope.itemAdded = "";
+      var deferred = $q.defer();
 
+      var defaultCategory = category.getDefault();
+      
       if (item.name) {
-          itemsRef.orderByChild("name").startAt(item.name).endAt(item.name).once('value', function(dataSnapshot) {
-              if (dataSnapshot.val() === null) {
-              //Create New Item
-                items.$add({ name: item.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
-                  categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
-                  return ref.key();
-                  //$scope.itemAdded = ref.key();
-                });
-              } else {
-                dataSnapshot.forEach(function(snap){
-                return 0;
-                //$scope.itemExists = $scope.items.$getRecord(snap.key()).$id;
+        itemsRef.orderByChild("name").startAt(item.name).endAt(item.name).once('value', function(dataSnapshot) {
+            if (dataSnapshot.val() === null) {
+            //Create New Item
+              items.$add({ name: item.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+                categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
+                deferred.resolve(items.$getRecord(ref.key()));
               });
-              }
-          });
+            } else {
+              dataSnapshot.forEach(function(snap){
+                deferred.resolve(items.$getRecord(snap.key()));
+              });
+            }
+        });
+      } else {
+        deferred.reject('Issue retrieving information, please try again.')
       }
+
+      return deferred.promise;
     },
     remove: function(item) {
       //Delete Item from Inventory

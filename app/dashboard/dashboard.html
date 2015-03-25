@@ -97,13 +97,10 @@
 	</div>
 </div>
 
-<div class="div-start" style="" id="test" ng-class="{'div-playing': testClick}" ng-click="testClick = !testClick">
+<div class="div-start" style="" id="test" ng-click="testClick = !testClick">
 	test
 </div>
 
-<div style="border: 1px solid black">
+<div style="border: 1px solid black" ng-show="testClick" class="animate-hide">
 	Test Dialog
 </div>
-
-<h1>test</h1>
-

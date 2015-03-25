@@ -20,7 +20,7 @@
 					</div>
 				</div>
 				<div class="col-sm-5 col-md-offset-3">
-					<div class="panel panel-default" ng-repeat="day in days" ng-class="{'current-day': checkDay(day.$id)}">
+					<div class="panel panel-default panel-box-shadow" ng-repeat="day in days" ng-class="{'current-day': checkDay(day.$id)}">
 						<div class="panel-body">
 							<div class="row">
 								<div class="col-sm-2">
@@ -31,7 +31,7 @@
 								<div class="col-sm-8">
 									<p>{{recipes[recipes.$indexFor(day.recipe)].name}}</p>
 									
-									<p><small>{{recipes[recipes.$indexFor(day.recipe)].description}}</small></p>
+									<!-- <p><small>{{recipes[recipes.$indexFor(day.recipe)].description}}</small></p> -->
 									<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{recipes[recipes.$indexFor(day.recipe)].prep}} +</div>
 									<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{recipes[recipes.$indexFor(day.recipe)].cook}} =</div>
 									<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(recipes[recipes.$indexFor(day.recipe)].prep*1)+(recipes[recipes.$indexFor(day.recipe)].cook*1)}}</div>
