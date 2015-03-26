@@ -13,8 +13,16 @@ angular.module('myApp', [
   'ui.bootstrap',
   'firebase',
   'ngTouch'
-]).
-config(['$routeProvider', function($routeProvider) {
+])
+
+
+// lo dash, that way you can use Dependency injection.
+.constant('_', window._)
+.run(function ($rootScope) {
+  $rootScope._ = window._;
+})
+
+.config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/dashboard'});
 }])
 
@@ -129,6 +137,8 @@ config(['$routeProvider', function($routeProvider) {
 
   return {
     addItemsToList: function(recipe) {
+      // Add's recipe items to the grocery list
+      // Need to check current inventory and adjust accordingly
       angular.forEach(recipe.ingredients, function(value, key) {
         var itemsRef = baseRef.child('items/' + key);
         itemsRef.once('value', function(dataSnap) {
@@ -139,6 +149,10 @@ config(['$routeProvider', function($routeProvider) {
           list.add(item);
         })
       })
+    },
+    removeItemsFromList: function(recipe) {
+      // If the user changes recipes, removes a recipe from one of the days, need to update the inventory.
+
     }
   };
 

@@ -17,7 +17,7 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
   });
 }])
 
-.controller('RecipesCtrl', ['$scope','$firebase', '$q', 'getDBUrl', 'ngToast', 'inventory', 'calendar', function($scope, $firebase, $q, getDBUrl, ngToast, inventory, calendar) {
+.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar) {
 	var baseRef = new Firebase(getDBUrl.path);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
@@ -94,7 +94,25 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 			deferred.resolve('Success');
 		}
 		return deferred.promise;
-	}
+	};
+
+	var removeStep = function(step) {
+		var deferred = $q.defer();
+
+		$scope.newSteps.splice($scope.newSteps.indexOf(step), 1);
+		deferred.resolve('Success');
+
+		return deferred.promise;
+	};
+
+	var removeIngredient = function(ingredient) {
+		var deferred = $q.defer();
+		delete $scope.newIngredients[_.findKey($scope.newIngredients, {'name': ingredient.name})];
+
+		deferred.resolve('Success');
+
+		return deferred.promise;
+	};	
 
 	var addIngredient = function() {
 		var deferred = $q.defer();
@@ -107,7 +125,10 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 		}
 
 		newIngredient.quantity = $scope.ingredientItem.quantity;
-		newIngredient.uom = $scope.ingredientItem.uom
+		newIngredient.uom = $scope.ingredientItem.uom;
+
+		// Need to check current inventory levels and what is current scheduled for the week and adjust qty on
+		// grocery list as needed.
 
 		inventory.add(newIngredient).then(function(response) {
 			if (response != '') {
@@ -119,7 +140,7 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 		});
 
 		return deferred.promise;
-	}
+	};
 	
 	var createRecipe = function () {
 		var deferred = $q.defer();
@@ -146,10 +167,23 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 		return deferred.promise;
 	};
 
+	$scope.btnRemoveStep = function(step) {
+		removeStep(step).then(function(response) {
+			ngToast.create('Step removed UNDO');
+		});
+	};
+
+	$scope.btnRemoveIngredient = function(ingredient) {
+		removeIngredient(ingredient).then(function(response) {
+			ngToast.create(ingredient.name + ' removed UNDO');
+		});
+	};
+
 	$scope.btnAddIngredient = function() {
-		addIngredient();
-		$scope.ingredient = '';
-		$scope.ingredientItem = '';
+		addIngredient().then(function(response){
+			$scope.ingredient = '';
+			$scope.ingredientItem = '';
+		});
 	};
 
 	$scope.btnAddStep = function() {
