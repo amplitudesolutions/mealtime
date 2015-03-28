@@ -39,7 +39,7 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 	
 	$scope.getRecipe = function(id) {
 		var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
-		console.log(recipe);
+		//console.log(recipe);
 		//return recipe.name;
 	};
 

@@ -92,6 +92,40 @@ angular.module('myApp', [
   };
 }])
 
+.controller('RecipeBoxCtrl', ['$scope', 'recipe', 'calendar', function($scope, recipe, calendar) {
+  $scope.recipes = recipe.get();
+  $scope.schedule = calendar.getSchedule();
+  $scope.hover = false;
+  
+  var date = new Date();
+  $scope.days = $scope.schedule;
+
+  var today = date.getDay();
+
+  var index = today;
+  var dayOrder = [];
+
+  $scope.days.$loaded().then(function(days){
+    for (var i = 0; i < days.length; i++) {
+      dayOrder.push($scope.days[index]);
+      if (index == 6) {
+        index = -1;
+      }
+      index ++
+    }
+    $scope.days = dayOrder;
+  });
+
+  $scope.checkDay = function(day) {
+    var date = new Date();
+    if (day == date.getDay()) {
+      return true;
+    }
+    return false;
+  };
+
+}])
+
 .factory('getDBUrl', ['$location', function($location) {
 	var dbURL = null;
 	if ($location.host() == 'localhost' || $location.host() == 'mealtimeprod.firebaseapp.com') {
@@ -127,15 +161,13 @@ angular.module('myApp', [
 
 .factory('calendar', ['$firebase', 'getDBUrl', 'list', function($firebase, getDBUrl, list){
   var baseRef = new Firebase(getDBUrl.path);
-
-  // var addItemsToList = function(receipe) {
-    
-
-  //   //list.addToCart(item);
-  // }
-
+  var scheduleRef = baseRef.child('schedule');
+  var schedule = $firebase(scheduleRef).$asArray();
 
   return {
+    getSchedule: function() {
+      return schedule;
+    },
     addItemsToList: function(recipe) {
       // Add's recipe items to the grocery list
       // Need to check current inventory and adjust accordingly
@@ -156,6 +188,21 @@ angular.module('myApp', [
     }
   };
 
+}])
+
+.factory('recipe', ['$firebase', 'getDBUrl', function($firebase, getDBUrl) {
+  var baseRef = new Firebase(getDBUrl.path);
+  var recipesRef = baseRef.child('recipes');
+  var recipes = $firebase(recipesRef).$asArray();
+
+  return {
+    get: function() {
+      return recipes;
+    },
+    getRecipe: function(recipeId) {
+      return $firebase(recipesRef.child(id)).$asArray();
+    }
+  }
 }])
 
 .factory('category', ['$firebase', 'getDBUrl', function($firebase, getDBUrl){

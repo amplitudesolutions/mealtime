@@ -43,6 +43,9 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 		// Need to Add scheduled date to Recipe record in Firebase as well.
 
 		baseRef.child('schedule/' + selectedDay + '/recipe').transaction(function(stock) {
+
+			// Need to get also remove the previous recipes items if they were added to the grocery list.
+			
 			calendar.addItemsToList(recipe);
 	     	return recipe.$id;
 	    }), function(error, committed, snapshot) {
