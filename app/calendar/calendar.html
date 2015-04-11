@@ -37,7 +37,7 @@
 									<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(recipes[recipes.$indexFor(day.recipe)].prep*1)+(recipes[recipes.$indexFor(day.recipe)].cook*1)}}</div>
 								</div>
 								<div class="col-sm-2 text-right">
-									<i class="fa fa-check fa-2x fa-fw" style="color: #ADADAD"></i>
+									<i class="fa fa-check fa-2x fa-fw" style="color: #ADADAD" ng-click="completeClick(day)"></i>
 								</div>
 							</div>
 						</div>

@@ -36,6 +36,11 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 		}
 		$scope.days = dayOrder;
 	});
+
+	$scope.completeClick = function(day) {
+		//Need to remove items from inventory and then remove from calendar list.
+		
+	};
 	
 	$scope.getRecipe = function(id) {
 		var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();

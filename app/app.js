@@ -185,6 +185,9 @@ angular.module('myApp', [
     removeItemsFromList: function(recipe) {
       // If the user changes recipes, removes a recipe from one of the days, need to update the inventory.
 
+    },
+    markComplete: function() {
+      
     }
   };
 
