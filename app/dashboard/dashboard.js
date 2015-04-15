@@ -9,7 +9,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', function($scope, $firebase, getDBUrl, sideBarNav, list, category) {
+.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter) {
   // connect to firebase
   var baseRef = new Firebase(getDBUrl.path);
 
@@ -41,6 +41,17 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     })
 
     fbItem.$set({});
+  };
+
+  $scope.categoryEmpty = function(category) {
+    var listItems = [];
+    var empty = true;
+    listItems = filterFilter($scope.listItems, {category: category.$id, gotit: false});
+    if (listItems.length >= 1) {
+      empty = false;
+    }
+
+    return empty;
   };
 
   $scope.checkInventoryOpen = function(item) {

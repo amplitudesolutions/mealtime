@@ -21,7 +21,7 @@
 	<div class="col-sm-12">
 		<div class="row">
 			<div ng-repeat="category in categories | orderBy: 'name'">  <!-- ng-init="item = items.$load(category.$id)" -->
-				<div class="col-sm-4 col-md-3">
+				<div class="col-sm-4 col-md-3" ng-class="{'hidden-xs': categoryEmpty(category)}">
 					<div class="hand panel panel-{{category.color}}" droppable drop="handleDrop" id="{{category.$id}}" bin="bin">
 						<div class="panel-heading hand" ng-click="editCategory(category)">
 							{{category.name}}
@@ -38,7 +38,7 @@
 							</div>
 						</div>
 						<ul class="list-group" id="List{{category.$id}}">
-							<li ng-repeat="item in listItems | filter: {category: category.$id, gotit: 'false'}" class="list-group-item hand clearfix fader" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}" ng-swipe-right="checkInventoryOpen(item)">
+							<li ng-repeat="item in filtered = (listItems | filter: {category: category.$id, gotit: 'false'})" class="list-group-item hand clearfix fader" draggable item="item" id="{{item.$id}}" data-cat="{{category.id}}" ng-swipe-right="checkInventoryOpen(item)">
 								<input type="checkbox" ng-model="item.gotit" ng-change="addToCart(item)">
 								<span  ng-click="itemCollapse = !itemCollapse">{{items[items.$indexFor(item.$id)].name}}</span>
 								<div class="btn-group btn-group-xs pull-right" role="group">
@@ -57,7 +57,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-4 col-md-3">
+			<div class="col-sm-4 col-md-3 hidden-xs">
 				<div class="panel panel-success">
 					<div class="panel-heading" ng-click="setAddCategoryState(true)">
 						Add New Category
