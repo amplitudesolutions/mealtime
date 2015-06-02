@@ -168,6 +168,10 @@ angular.module('myApp', [
     getSchedule: function() {
       return schedule;
     },
+    addScheduleItem: function(day, recipe) {
+      // Need to add promise in here.
+      
+    },
     addItemsToList: function(recipe) {
       // Add's recipe items to the grocery list
       // Need to check current inventory and adjust accordingly

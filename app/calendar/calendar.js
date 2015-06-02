@@ -40,13 +40,19 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 	$scope.completeClick = function(day) {
 		//Need to remove items from inventory and then remove from calendar list.
 		
+		//Grab the recipe selected for that day.
+		var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
+
+		//loop through items in the recipe and minus quantity from inventory.
+
+		//set calendar day as complete.
 	};
 	
-	$scope.getRecipe = function(id) {
-		var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
-		//console.log(recipe);
-		//return recipe.name;
-	};
+	// $scope.getRecipe = function(id) {
+	// 	var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
+	// 	//console.log(recipe);
+	// 	//return recipe.name;
+	// };
 
 	$scope.checkDay = function(day) {
 		var date = new Date();

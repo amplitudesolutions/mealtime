@@ -42,17 +42,23 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.
 
-		baseRef.child('schedule/' + selectedDay + '/recipe').transaction(function(stock) {
+		var scheduleDate = Firebase.ServerValue.TIMESTAMP;
 
+		baseRef.child('schedule/' + selectedDay + '/recipe').transaction(function() {
 			// Need to get also remove the previous recipes items if they were added to the grocery list.
-			
 			calendar.addItemsToList(recipe);
 	     	return recipe.$id;
-	    }), function(error, committed, snapshot) {
-	      if (error) {
-	        console.log('Transaction failed abnormally!', error);
-	      }
-	    };
+	    });
+
+	    baseRef.child('schedule/' + selectedDay + '/lastupdated').transaction(function() {
+	    	return scheduleDate;
+	    });
+	    
+	    // , function(error, committed, snapshot) {
+	    //   if (error) {
+	    //     console.log('Transaction failed abnormally!', error);
+	    //   }
+	    // };
 		ngToast.create(recipe.name + ' added for ' + schedule[selectedDay].name);
 	};
 
