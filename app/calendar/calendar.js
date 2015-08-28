@@ -9,9 +9,9 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', function($scope, $firebase, getDBUrl) {
+.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'user', function($scope, $firebase, getDBUrl, user) {
 
-	var baseRef = new Firebase(getDBUrl.path);
+	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
 	$scope.schedule = $firebase(baseRef.child('schedule')).$asArray();
 	$scope.recipes = $firebase(baseRef.child('recipes')).$asArray();

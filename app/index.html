@@ -17,9 +17,9 @@
   <link rel="stylesheet" href="assets/css/animate.css">
   <link rel="stylesheet" href="app.css">
 </head>
-<body ng-controller="MainCtrl" ng-swipe-left="sideBarOpen()" ng-swipe-right="sideBarClose()">
+<body ng-controller="MainCtrl" ng-swipe-left="sideBarOpen()" ng-swipe-right="sideBarClose()" ng-class="{'appSettings': signedIn}">
 
-  <nav ng-controller="MenuCtrl" class="navbar navbar-inverse navbar-fixed-top">
+  <nav ng-controller="MenuCtrl" class="navbar navbar-inverse navbar-fixed-top" ng-if="signedIn">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" ng-click="navbarCollapsed = !navbarCollapsed">
@@ -79,6 +79,9 @@
           <li ng-class="{active: isActive('/settings')}">
             <a href="#/settings" class="hand" ng-click=""><i class="fa fa-cog fa-lg"></i></a>
           </li>
+          <li>
+            <a class="hand" ng-click="logout()"><i class="fa fa-sign-out fa-lg"></i></a>
+          </li>
         </ul>
       </div><!--/.nav-collapse -->
 
@@ -88,36 +91,37 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
   
-  <div id="wrapper" ng-class="{toggled: sideBarState}" ng-controller="InventoryListCtrl">
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <div class="sidebar-brand">
-          <div class="input-group">
-            <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem">
-            <span class="input-group-btn">
-              <div class="btn-group" dropdown is-open="menuCategoryStatus.isopen" ng-init="menuCategoryStatus.isopen=false">
-                <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle ng-disabled="disabled"><i class="fa fa-list-ul"></i></button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                      <li ng-class="{active: filterText == ''}"><a class="hand" ng-click="setFilter('');">All</a></li>
-                      <li ng-repeat="c in categories" ng-class="{active: filterText == c.$id}"><a class="hand" ng-click="setFilter(c.$id)">{{c.name}}</a></li>
-                  </ul>
-              </div>
-            </span>
-          </div>
+<div id="wrapper" ng-class="{toggled: sideBarState}" ng-controller="InventoryListCtrl" ng-if="signedIn">
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+      <div class="sidebar-brand">
+        <div class="input-group">
+          <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem">
+          <span class="input-group-btn">
+            <div class="btn-group" dropdown is-open="menuCategoryStatus.isopen" ng-init="menuCategoryStatus.isopen=false">
+              <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle ng-disabled="disabled"><i class="fa fa-list-ul"></i></button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li ng-class="{active: filterText == ''}"><a class="hand" ng-click="setFilter('');">All</a></li>
+                    <li ng-repeat="c in categories" ng-class="{active: filterText == c.$id}"><a class="hand" ng-click="setFilter(c.$id)">{{c.name}}</a></li>
+                </ul>
+            </div>
+          </span>
         </div>
-        <div class="menu-wrapper">
-          <div class="sidebar-nav">
-              <div ng-repeat="item in inventory | filter: {name: searchitem, category: filterText }| orderBy:'name':false" class="list">
-                <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
-              </div>
-          </div>
+      </div>
+      <div class="menu-wrapper">
+        <div class="sidebar-nav">
+            <div ng-repeat="item in inventory | filter: {name: searchitem, category: filterText }| orderBy:'name':false" class="list">
+              <span ng-bind="item.name"></span> <small style="white-space: normal;">Stock: <span ng-bind="item.stock"></span></small>
+            </div>
         </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
-    <div ng-view id="page-content-wrapper"></div>
+      </div>
   </div>
+  <!-- /#sidebar-wrapper -->
+</div>
 
-<nav class="navbar navbar-default navbar-fixed-bottom" style="display: none;" role="navigation">
+<div ng-view id="page-content-wrapper"></div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom" style="display: none;" role="navigation" ng-if="signedIn">
   <footer class="footer">
     <div class="container-fluid">
       <div ng-controller="RecipeBoxCtrl">
@@ -171,6 +175,7 @@
   <script src="https://cdn.firebase.com/libs/angularfire/0.9.1/angularfire.min.js"></script>
   <script src="assets/js/lodash.min.js"></script>
   <script src="app.js"></script>
+  <script src="login/login.js"></script>
   <script src="dashboard/dashboard.js"></script>
   <script src="inventory/inventory.js"></script>
   <script src="list/list.js"></script>

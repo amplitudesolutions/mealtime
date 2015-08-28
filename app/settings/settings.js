@@ -5,7 +5,15 @@ angular.module('myApp.settings', ['ngRoute', 'ngAnimate', 'ngToast'])
 .config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
   $routeProvider.when('/settings', {
     templateUrl: 'settings/settings.html',
-    controller: 'SettingsCtrl'
+    controller: 'SettingsCtrl',
+    resolve: {
+	    // controller will not be loaded until $waitForAuth resolves
+	    // Auth refers to our $firebaseAuth wrapper in the example above
+	    "currentAuth": ["Auth", function(Auth) {
+	      // $waitForAuth returns a promise so the resolve waits for it to complete]\
+	      return Auth.$requireAuth();
+	    }]
+	}
   });
   ngToastProvider.configure({
   	animation: 'slide',
@@ -17,8 +25,8 @@ angular.module('myApp.settings', ['ngRoute', 'ngAnimate', 'ngToast'])
   });
 }])
 
-.controller('SettingsCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', function($scope, $firebase, getDBUrl, ngToast) {
-	var baseRef = new Firebase(getDBUrl.path);
+.controller('SettingsCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
+	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var settingsRef = baseRef.child('settings');
 	var listRef = baseRef.child('lists');
 	var unitsRef = baseRef.child('units');

@@ -7,7 +7,30 @@ html {
 
 body { 
   padding-top: 51px;
-  margin-bottom: 125px; 
+  /*margin-bottom: 125px; */
+  background: -webkit-linear-gradient(281deg,#0c63aa,#7ac5fa);
+  background: linear-gradient(169deg,#0c63aa,#7ac5fa);
+  background-color: #0c63aa;
+}
+
+.appSettings {
+  padding-top: 51px;
+  background: #ffffff;
+  background-color: #ffffff;
+}
+
+.content-block {
+    /*margin-top: -71px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-top: 60px;
+    padding-bottom: 60px;*/
+}
+
+.content-block .blue {
+  /*background: -webkit-linear-gradient(281deg,#0c63aa,#7ac5fa);
+  background: linear-gradient(169deg,#0c63aa,#7ac5fa);
+  background-color: #0c63aa;*/
 }
 
 .footer {
@@ -148,7 +171,7 @@ body {
 #page-content-wrapper {
     width: 100%;
     position: absolute;
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 #page-content-wrapper div {
@@ -407,4 +430,19 @@ body {
 
 .green {
   background:linear-gradient(to bottom, #65B965, #57A057);
+}
+
+.bounce.ng-hide-remove {
+  -webkit-animation: bouce 1s;
+  -moz-animation: bounce 1s;
+  -ms-animation: bounce 1s;
+  animation: bounce 1s;
+}
+
+
+.errorBounce {
+ -webkit-animation: bounceIn 1s;
+  -moz-animation: bounceIn 1s;
+  -ms-animation: bounceIn 1s;
+  animation: bounceIn 1s; 
 }

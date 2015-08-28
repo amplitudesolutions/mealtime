@@ -9,6 +9,7 @@ angular.module('myApp', [
   'myApp.settings',
   'myApp.calendar',
   'myApp.list',
+  'myApp.login',
   'myApp.version',
   'ui.bootstrap',
   'firebase',
@@ -18,15 +19,31 @@ angular.module('myApp', [
 
 // lo dash, that way you can use Dependency injection.
 .constant('_', window._)
-.run(function ($rootScope) {
-  $rootScope._ = window._;
-})
+// .run(function ($rootScope) {
+//   $rootScope._ = window._;
+// })
+
+.run(['$rootScope', '$location', function ($rootScope, $location) {
+    $rootScope._ = window._;
+
+    $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
+      // We can catch the error thrown when the $requireAuth promise is rejected
+      // and redirect the user back to the home page
+      if (error === "AUTH_REQUIRED") {
+        $location.path("/login");
+      }
+  });
+}])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/dashboard'});
 }])
 
-.controller('MainCtrl', ['$scope', 'sideBarNav', function($scope, sideBarNav) { 
+.controller('MainCtrl', ['$scope', 'sideBarNav', 'Auth', 'user', function($scope, sideBarNav, Auth, user) { 
+  Auth.$onAuth(function(authData) {
+    $scope.signedIn = user.get();
+  });
+
   $scope.sideBarOpen = function() {
     sideBarNav.swipeOpen();
   };
@@ -36,7 +53,7 @@ angular.module('myApp', [
   };
 }])
 
-.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, $location, getDBUrl, $firebase, sideBarNav) {
+.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', 'user', function($scope, $location, getDBUrl, $firebase, sideBarNav, user) {
 	var baseRef = new Firebase(getDBUrl.path);
   var inventoryRef = baseRef.child('items')
   
@@ -62,10 +79,15 @@ angular.module('myApp', [
   	}
   	return false;
   };
+
+  $scope.logout = function() {
+    user.logout();
+    $location.path("/login");
+  };
 }])
 
-.controller('InventoryListCtrl', ['$scope', 'getDBUrl', '$firebase', 'sideBarNav', function($scope, getDBUrl, $firebase, sideBarNav) {
-  var baseRef = new Firebase(getDBUrl.path);
+.controller('InventoryListCtrl', ['$scope', 'getDBUrl', '$firebase', 'sideBarNav', 'user', function($scope, getDBUrl, $firebase, sideBarNav, user) {
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var inventoryRef = baseRef.child('items')
   
   var stockRef = inventoryRef.orderByChild('stock').startAt(1);
@@ -138,6 +160,47 @@ angular.module('myApp', [
 	return {path: dbURL};
 }])
 
+
+.factory('Auth', ['$firebaseAuth', 'getDBUrl', function($firebaseAuth, getDBUrl) {
+    var ref = new Firebase(getDBUrl.path);
+    return $firebaseAuth(ref);
+  }
+])
+
+.factory('user', ['$q', 'Auth', function($q, Auth) {
+
+  return {
+    get: function() {
+      return Auth.$getAuth();
+    },
+    login: function(user) {
+      var deferred = $q.defer();
+
+      Auth.$authWithPassword(user).then(function(authData) {
+        deferred.resolve(authData);
+      }).catch(function(error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    },
+    logout: function() {
+      return Auth.$unauth();
+    },
+    create: function(user) {
+      var deferred = $q.defer();
+
+      Auth.$createUser(user).then(function(userData) {
+        deferred.resolve(userData);
+      }).catch(function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    }
+  }
+}])
+
 .factory('sideBarNav', [function() {
   var isOpen = false;
 
@@ -159,8 +222,8 @@ angular.module('myApp', [
 
 }])
 
-.factory('calendar', ['$firebase', 'getDBUrl', 'list', function($firebase, getDBUrl, list){
-  var baseRef = new Firebase(getDBUrl.path);
+.factory('calendar', ['$firebase', 'getDBUrl', 'list', 'user', function($firebase, getDBUrl, list, user){
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var scheduleRef = baseRef.child('schedule');
   var schedule = $firebase(scheduleRef).$asArray();
 
@@ -197,8 +260,8 @@ angular.module('myApp', [
 
 }])
 
-.factory('recipe', ['$firebase', 'getDBUrl', function($firebase, getDBUrl) {
-  var baseRef = new Firebase(getDBUrl.path);
+.factory('recipe', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var recipesRef = baseRef.child('recipes');
   var recipes = $firebase(recipesRef).$asArray();
 
@@ -212,8 +275,8 @@ angular.module('myApp', [
   }
 }])
 
-.factory('category', ['$firebase', 'getDBUrl', function($firebase, getDBUrl){
-  var baseRef = new Firebase(getDBUrl.path);
+.factory('category', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user){
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var categoriesRef = baseRef.child('categories');
 
   var fbCategories = $firebase(categoriesRef);
@@ -236,6 +299,9 @@ angular.module('myApp', [
     setDefault: function(category) {
       setDefault(category);
     },
+    get: function() {
+      return categories;
+    },
     add: function(category) {
       categories.$add({ name: category.name, color: category.color }).then(function(ref) {
         //var id = ref;
@@ -257,8 +323,8 @@ angular.module('myApp', [
 
 }])
 
-.factory('list', ['$firebase', 'getDBUrl', 'inventory', function($firebase, getDBUrl, inventory){
-  var baseRef = new Firebase(getDBUrl.path);
+.factory('list', ['$firebase', 'getDBUrl', 'inventory', 'user', function($firebase, getDBUrl, inventory, user){
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var listRef = baseRef.child('lists/Default');
   var itemsRef = baseRef.child('items');
   var transactions = baseRef.child("transactions");
@@ -395,8 +461,8 @@ angular.module('myApp', [
   }
 }])
 
-.factory('inventory', ['$q', '$firebase', 'getDBUrl', 'category', function($q, $firebase, getDBUrl, category){
-  var baseRef = new Firebase(getDBUrl.path);
+.factory('inventory', ['$q', '$firebase', 'getDBUrl', 'category', 'user', function($q, $firebase, getDBUrl, category, user){
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   
   var listRef = baseRef.child('lists');
   var categoriesRef = baseRef.child('categories');

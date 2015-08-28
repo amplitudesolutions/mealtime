@@ -5,13 +5,21 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/dashboard', {
     templateUrl: 'dashboard/dashboard.html',
-    controller: 'DashboardCtrl'
+    controller: 'DashboardCtrl',
+    resolve: {
+      // controller will not be loaded until $waitForAuth resolves
+      // Auth refers to our $firebaseAuth wrapper in the example above
+      "currentAuth": ["Auth", function(Auth) {
+        // $waitForAuth returns a promise so the resolve waits for it to complete]\
+        return Auth.$requireAuth();
+      }]
+  }
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter) {
+.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter, user) {
   // connect to firebase
-  var baseRef = new Firebase(getDBUrl.path);
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
   var categoriesRef = baseRef.child('categories');
   var itemsRef = baseRef.child('items');
@@ -221,7 +229,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
   }
 }])
 
-.directive('droppable', ['getDBUrl', function(getDBUrl) {
+.directive('droppable', ['getDBUrl', 'user', function(getDBUrl, user) {
   return {
     scope: {
       drop: '&',
@@ -271,7 +279,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
           var item = document.getElementById(e.dataTransfer.getData('Text'));
           var list = document.getElementById("List" + binId);
 
-          var baseRef = new Firebase(getDBUrl.path);
+          var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
           var categoryRef = baseRef.child('categories')
           var itemsRef = baseRef.child('/items/' + item.id);

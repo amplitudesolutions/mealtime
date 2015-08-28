@@ -5,7 +5,15 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 .config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
   $routeProvider.when('/recipes', {
     templateUrl: 'recipes/recipes.html',
-    controller: 'RecipesCtrl'
+    controller: 'RecipesCtrl',
+    resolve: {
+	    // controller will not be loaded until $waitForAuth resolves
+	    // Auth refers to our $firebaseAuth wrapper in the example above
+	    "currentAuth": ["Auth", function(Auth) {
+	      // $waitForAuth returns a promise so the resolve waits for it to complete]\
+	      return Auth.$requireAuth();
+	    }]
+	}
   });
   ngToastProvider.configure({
   	animation: 'slide',
@@ -17,8 +25,8 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
   });
 }])
 
-.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar) {
-	var baseRef = new Firebase(getDBUrl.path);
+.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user) {
+	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
 	//var itemsRef = baseRef.child('items');
@@ -211,8 +219,8 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	};
 }])
 
-.factory('recipe', ['$q', '$firebase', 'getDBUrl', 'inventory', function($q, $firebase, getDBUrl, inventory){
-  	var baseRef = new Firebase(getDBUrl.path);
+.factory('recipe', ['$q', '$firebase', 'getDBUrl', 'inventory', 'user', function($q, $firebase, getDBUrl, inventory, user){
+  	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var recipeRef = baseRef.child('recipes');
 	var recipes = $firebase(recipeRef).$asArray();
 
