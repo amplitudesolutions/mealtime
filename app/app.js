@@ -82,7 +82,7 @@ angular.module('myApp', [
 
   $scope.logout = function() {
     user.logout();
-    $location.path("/login");
+//    $location.path("/login");
   };
 }])
 
@@ -193,7 +193,7 @@ angular.module('myApp', [
             // Will worry about it when I add multiple list support for users.
 
             // Setup Default Settings
-            baseRef.child('settings').set({defaultlist: 'default', uom: 'metric'});
+            baseRef.child('settings').set({defaultlist: 'Default', uom: 'metric'});
 
             // Setup Receipe Schedule
             var scheduleRef = baseRef.child('schedule');
