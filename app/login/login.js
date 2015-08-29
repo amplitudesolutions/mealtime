@@ -24,8 +24,8 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 		$scope.isProcessing = true;
 		var userCopy = angular.copy($scope.user);
 		userCopy.email += '@mealtime.io'; //or maybe get mealtime.guru
+		
 		user.login(userCopy).then(function(userObj) {
-			//$location.path("/dashboard");
 			window.location.href = "#/dashboard";
 		}).catch(function(error) {
 			// Need to show error message on screen indicating error. ie) Bad username or password

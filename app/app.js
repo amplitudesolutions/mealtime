@@ -54,7 +54,7 @@ angular.module('myApp', [
 }])
 
 .controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', 'user', function($scope, $location, getDBUrl, $firebase, sideBarNav, user) {
-	var baseRef = new Firebase(getDBUrl.path);
+	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var inventoryRef = baseRef.child('items')
   
   var stockRef = inventoryRef.orderByChild('stock').startAt(1);
@@ -167,7 +167,7 @@ angular.module('myApp', [
   }
 ])
 
-.factory('user', ['$q', 'Auth', function($q, Auth) {
+.factory('user', ['$q', 'Auth', '$firebase', 'getDBUrl', function($q, Auth, $firebase, getDBUrl) {
 
   return {
     get: function() {
@@ -177,6 +177,36 @@ angular.module('myApp', [
       var deferred = $q.defer();
 
       Auth.$authWithPassword(user).then(function(authData) {
+
+        var baseRef = new Firebase(getDBUrl.path + '/' + authData.uid);
+
+        baseRef.once("value", function(snapshot) {
+          if (!snapshot.exists()) {
+
+            // Initial Setup of Default Values on first login.
+            // Will need to eventually move to User Create Method, so it does it on intial create of the user.
+
+            // Setup Default Category
+            baseRef.child("categories").push({color: 'default', default: true, name: 'Default Category'})
+
+            // Setup Default List
+            // Will worry about it when I add multiple list support for users.
+
+            // Setup Default Settings
+            baseRef.child('settings').set({defaultlist: 'default', uom: 'metric'});
+
+            // Setup Receipe Schedule
+            var scheduleRef = baseRef.child('schedule');
+            scheduleRef.child(0).set({abbrev: 'Su', name: 'Sunday'});
+            scheduleRef.child(1).set({abbrev: 'M', name: 'Monday'});
+            scheduleRef.child(2).set({abbrev: 'T', name: 'Tuesday'});
+            scheduleRef.child(3).set({abbrev: 'W', name: 'Wednesday'});
+            scheduleRef.child(4).set({abbrev: 'Th', name: 'Thursday'});
+            scheduleRef.child(5).set({abbrev: 'F', name: 'Friday'});
+            scheduleRef.child(6).set({abbrev: 'S', name: 'Saturday'});
+          }
+        });
+
         deferred.resolve(authData);
       }).catch(function(error) {
         deferred.reject(error);
