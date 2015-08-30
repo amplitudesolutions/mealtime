@@ -82,7 +82,7 @@ angular.module('myApp', [
 
   $scope.logout = function() {
     user.logout();
-//    $location.path("/login");
+    $location.path("/login");
   };
 }])
 
