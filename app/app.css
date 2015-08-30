@@ -305,6 +305,11 @@ body {
     /*transform: rotate(3deg);*/
 }
 
+/* Added so that a btn-link button that uses a Glyphicon will have 4px after the icon for the name */
+.btn-link .glyphicon {
+  margin: 4px;
+}
+
 .over {
   /*border-color: red;*/
   box-shadow: 2px 2px 2px #888888;
