@@ -81,9 +81,6 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 				window.location.href = "#/dashboard";
 			})
 		}).catch(function(error) {
-			console.log(error);;
-			// Need to Add Error Handling
-
 			switch(error.code) {
 				case "INVALID_EMAIL":
 					$scope.createErrorCaught = true;

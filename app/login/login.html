@@ -55,7 +55,7 @@
 					<input type="password" class="form-control" name="createGroupPassword" ng-model="create.password" required>
 				</div>
 				<div class="clearfix">
-					<button class="btn btn-link" type="button" ng-click="createGroup = false"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back</button>
+					<button class="btn btn-link" type="button" ng-click="createGroup = false" ng-disabled="isProcessing"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back</button>
 					<button class="btn btn-primary pull-right" ng-disabled="isProcessing">Create Group</button>
 				</div>
 			</div>
@@ -82,11 +82,13 @@
 
 <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-body">
-        <h5>Please enter your email to reset your password</h5>
+        <h5>Please enter your group name and an email will be sent to the email address associated with it.</h5>
         <div class="form-group">
-        	<label class="sr-only">Email Address</label>
+        	<label class="sr-only">Group Name</label>
         	<input type="email" class="form-control">
        	</div>
-       	<button class="btn btn-primary" type="button" ng-click="ok()">Send Email</button>
+       	<div class="clearfix">
+       		<button class="btn btn-primary pull-right" type="button" ng-click="ok()">Reset Password</button>
+       	</div>
     </div>
 </script>
