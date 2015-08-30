@@ -77,14 +77,29 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 
 		user.create(create).then(function(createObj) {
 			user.login(create).then(function(userObj) {
-				//$location.path("/dashboard");
 				$scope.isProcessing = false;
 				window.location.href = "#/dashboard";
 			})
 		}).catch(function(error) {
 			console.log(error);;
 			// Need to Add Error Handling
+
+			switch(error.code) {
+				case "INVALID_EMAIL":
+					$scope.createErrorCaught = true;
+					break;
+				case "EMAIL_TAKEN":
+					$scope.createErrorCaught = true;
+					break;
+				default:
+					console.log(error);
+			}
+			$scope.isProcessing = false;
 		});
+	};
+
+	$scope.checkGroupName = function() {
+
 	};
 }])
 

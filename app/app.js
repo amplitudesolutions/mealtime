@@ -170,7 +170,7 @@ angular.module('myApp', [
 .factory('user', ['$q', 'Auth', '$firebase', 'getDBUrl', function($q, Auth, $firebase, getDBUrl) {
 
   // Used to setup any defaults for the user in firebase.
-  function setupUser(user) {
+  function setupUser(user, email) {
     var baseRef = new Firebase(getDBUrl.path + '/' + user.uid);
 
     baseRef.once("value", function(snapshot) {
@@ -185,9 +185,8 @@ angular.module('myApp', [
         // Will worry about it when I add multiple list support for users.
 
         // Setup Default Settings
-        baseRef.child('settings').set({defaultlist: 'Default', uom: 'metric'});
+        baseRef.child('settings').set({defaultlist: 'Default', uom: 'metric', email: email});
         // Check to see if email is part of user object, if not, don't bother adding it just yet.
-        // baseRef.child('settings').set({email: user.group});
 
         // Setup Receipe Schedule
         var scheduleRef = baseRef.child('schedule');
@@ -210,7 +209,7 @@ angular.module('myApp', [
       var deferred = $q.defer();
 
       Auth.$authWithPassword(user).then(function(authData) {
-        setupUser(authData);
+        setupUser(authData, user.group);
 
         deferred.resolve(authData);
       }).catch(function(error) {
