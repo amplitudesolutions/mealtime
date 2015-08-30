@@ -439,10 +439,35 @@ body {
   animation: bounce 1s;
 }
 
+/*.slideInDown.ng-hide-add {
+  -webkit-animation: slideInDown 1s;
+  -moz-animation: slideInDown 1s;
+  -ms-animation: slideInDown 1s;
+  animation: slideInDown 1s;
+}*/
+
+.slideInDown.ng-hide-remove {
+  -webkit-animation: flipInY 1s;
+  -moz-animation: flipInY 1s;
+  -ms-animation: flipInY 1s;
+  animation: flipInY 1s;
+}
+
+.slideInDown2.ng-hide-add {
+  -webkit-animation: slideInDown 1s;
+  -moz-animation: slideInDown 1s;
+  -ms-animation: slideInDown 1s;
+  animation: slideInDown 1s;
+}
+
 
 .errorBounce {
  -webkit-animation: bounceIn 1s;
   -moz-animation: bounceIn 1s;
   -ms-animation: bounceIn 1s;
   animation: bounceIn 1s; 
+}
+
+.text-white {
+  color: #ffffff;
 }

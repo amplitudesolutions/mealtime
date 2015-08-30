@@ -169,6 +169,39 @@ angular.module('myApp', [
 
 .factory('user', ['$q', 'Auth', '$firebase', 'getDBUrl', function($q, Auth, $firebase, getDBUrl) {
 
+  // Used to setup any defaults for the user in firebase.
+  function setupUser(user) {
+    var baseRef = new Firebase(getDBUrl.path + '/' + user.uid);
+
+    baseRef.once("value", function(snapshot) {
+      if (!snapshot.exists()) {
+
+        // Initial Setup of Default Values on first login.
+        
+        // Setup Default Category
+        baseRef.child("categories").push({color: 'default', default: true, name: 'Default Category'})
+
+        // Setup Default List
+        // Will worry about it when I add multiple list support for users.
+
+        // Setup Default Settings
+        baseRef.child('settings').set({defaultlist: 'Default', uom: 'metric'});
+        // Check to see if email is part of user object, if not, don't bother adding it just yet.
+        // baseRef.child('settings').set({email: user.group});
+
+        // Setup Receipe Schedule
+        var scheduleRef = baseRef.child('schedule');
+        scheduleRef.child(0).set({abbrev: 'Su', name: 'Sunday'});
+        scheduleRef.child(1).set({abbrev: 'M', name: 'Monday'});
+        scheduleRef.child(2).set({abbrev: 'T', name: 'Tuesday'});
+        scheduleRef.child(3).set({abbrev: 'W', name: 'Wednesday'});
+        scheduleRef.child(4).set({abbrev: 'Th', name: 'Thursday'});
+        scheduleRef.child(5).set({abbrev: 'F', name: 'Friday'});
+        scheduleRef.child(6).set({abbrev: 'S', name: 'Saturday'});
+      }
+    });
+  }
+
   return {
     get: function() {
       return Auth.$getAuth();
@@ -177,35 +210,7 @@ angular.module('myApp', [
       var deferred = $q.defer();
 
       Auth.$authWithPassword(user).then(function(authData) {
-
-        var baseRef = new Firebase(getDBUrl.path + '/' + authData.uid);
-
-        baseRef.once("value", function(snapshot) {
-          if (!snapshot.exists()) {
-
-            // Initial Setup of Default Values on first login.
-            // Will need to eventually move to User Create Method, so it does it on intial create of the user.
-
-            // Setup Default Category
-            baseRef.child("categories").push({color: 'default', default: true, name: 'Default Category'})
-
-            // Setup Default List
-            // Will worry about it when I add multiple list support for users.
-
-            // Setup Default Settings
-            baseRef.child('settings').set({defaultlist: 'Default', uom: 'metric'});
-
-            // Setup Receipe Schedule
-            var scheduleRef = baseRef.child('schedule');
-            scheduleRef.child(0).set({abbrev: 'Su', name: 'Sunday'});
-            scheduleRef.child(1).set({abbrev: 'M', name: 'Monday'});
-            scheduleRef.child(2).set({abbrev: 'T', name: 'Tuesday'});
-            scheduleRef.child(3).set({abbrev: 'W', name: 'Wednesday'});
-            scheduleRef.child(4).set({abbrev: 'Th', name: 'Thursday'});
-            scheduleRef.child(5).set({abbrev: 'F', name: 'Friday'});
-            scheduleRef.child(6).set({abbrev: 'S', name: 'Saturday'});
-          }
-        });
+        setupUser(authData);
 
         deferred.resolve(authData);
       }).catch(function(error) {

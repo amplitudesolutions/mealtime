@@ -20,6 +20,8 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 .controller('LoginCtrl', ['$scope', '$location', '$modal', 'user', function($scope, $location, $modal, user) {
 	$scope.user = '';
 
+	$scope.createGroup = false;
+
 	$scope.signInClick = function() {
 		$scope.isProcessing = true;
 		var userCopy = angular.copy($scope.user);
@@ -68,12 +70,19 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 	    });
 	};
 
-	$scope.createAccountClick = function() {
-		user.create($scope.user).then(function(userObj) {
-			user.login($scope.user).then(function(userObj) {
+	$scope.createGroupClick = function() {
+		$scope.isProcessing = true;
+		var create = angular.copy($scope.create);
+		create.email += '@mealtime.io'; //or maybe get mealtime.guru
+
+		user.create(create).then(function(createObj) {
+			user.login(create).then(function(userObj) {
 				//$location.path("/dashboard");
+				$scope.isProcessing = false;
 				window.location.href = "#/dashboard";
-			});
+			})
+		}).catch(function(error) {
+			console.log(error);;
 			// Need to Add Error Handling
 		});
 	};
