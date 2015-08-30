@@ -35,6 +35,8 @@ angular.module('myApp.settings', ['ngRoute', 'ngAnimate', 'ngToast'])
 	$scope.lists = $firebase(listRef).$asArray();
 	$scope.units = $firebase(unitsRef).$asArray();
 
+	$scope.section = 'general'
+
 	$scope.newUnit = "";
 
 	$scope.addUnit = function() {

@@ -2,13 +2,14 @@
 <div class="container" ng-controller="SettingsCtrl">
 	<div class="col-sm-3">
 		<div class="list-group">
-			<a class="list-group-item">General</a>
-			<a class="list-group-item">Unit Types</a>
+			<a class="list-group-item hand" ng-click="section = 'general'" ng-class="{'active': section === 'general'}">General</a>
+			<a class="list-group-item hand" ng-click="section = 'units'" ng-class="{'active': section === 'units', 'hand': 'active'}">Unit Types</a>
+			<a class="list-group-item hand" ng-click="section = 'group'" ng-class="{'active': section === 'group'}">Group Settings</a>
 		</div>
 	</div>
 	<div class="col-sm-9">
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-12" ng-show="section === 'general'">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						General Settings
@@ -35,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-5">
+			<div class="col-sm-5" ng-show="section === 'units'">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Unit Types
@@ -55,6 +56,36 @@
 								</div>
 							</div>
 						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12" ng-show="section === 'group'">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Group Settings
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label class="">Group Name</label>
+								<input type="text" class="form-control">
+							</div>
+						</div>
+						
+						<div class="col-sm-12">
+							<button class="btn btn-success" type="submit">Update</button>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Delete Group
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<p><b>Deleting the group is permanent and can <u>NOT</u> be undone</b></p>
+							<button class="btn btn-danger" type="submit">Delete Group</button>
+						</div>
 					</div>
 				</div>
 			</div>
