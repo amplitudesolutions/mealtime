@@ -2,7 +2,7 @@
 	<div class="container" ng-controller="LoginCtrl">		
 		<form novalidate name="login"  ng-submit="login.$valid && signInClick()" class="slideInDown" ng-hide="createGroup">
 			
-			<div class="well bounce" style="max-width: 330px; margin: 0 auto;">
+			<div class="well" style="max-width: 330px; margin: 0 auto;">
 				<div class="text-center">
 					<h2><span>Meal</span><span class="text-primary">Time</span><small style="position:absolute; font-size: 12px;">beta</small></h2>
 				</div>
@@ -11,7 +11,7 @@
 					<hr>
 					<!-- <p>Enter your group name to acccess your lsit</p> -->
 				</div>
-				<div class="alert alert-danger bounce" ng-show="errorCaught">
+				<div class="alert alert-danger" bounce-error="errorCaught" ng-show="errorCaught">
 					The group name or password you entered is incorrect.
 				</div>
 				<div class="form-group" ng-class="{'has-error': login.$submitted && !login.userEmail.$valid || errorCaught}">

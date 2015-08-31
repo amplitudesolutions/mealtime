@@ -23,16 +23,15 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 	$scope.createGroup = false;
 
 	$scope.signInClick = function() {
+		$scope.errorCaught = false;
 		$scope.isProcessing = true;
 		var userCopy = angular.copy($scope.user);
 		userCopy.email += '@mealtime.io'; //or maybe get mealtime.guru
 		
 		user.login(userCopy).then(function(userObj) {
+			
 			window.location.href = "#/dashboard";
 		}).catch(function(error) {
-			// Need to show error message on screen indicating error. ie) Bad username or password
-			$scope.errorCaught = false;
-
 			switch(error.code) {
 				case "INVALID_EMAIL":
 					$scope.errorCaught = true;

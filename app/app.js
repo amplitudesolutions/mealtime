@@ -3,6 +3,7 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
   'ngRoute',
+  'ngAnimate',
   'myApp.dashboard',
   'myApp.inventory',
   'myApp.recipes',
@@ -611,6 +612,23 @@ angular.module('myApp', [
     }
 
   }
+}])
+
+.directive('bounceError', ['$animate', function($animate) {
+  return {
+    link: function(scope, element, attrs) {
+      var el = element[0];
+
+      scope.$watch(attrs.bounceError, function(value) {
+        if (value === true) {
+          $animate.addClass(el, 'bounce').then(function() {
+            $animate.removeClass(el, 'bounce');
+          }); 
+        }
+      });
+
+    }
+  };
 }])
 
 ;

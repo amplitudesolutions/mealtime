@@ -6,7 +6,7 @@ html {
 }
 
 body { 
-  padding-top: 51px;
+  padding-top: 60px;
   /*margin-bottom: 125px; */
   background: -webkit-linear-gradient(281deg,#0c63aa,#7ac5fa);
   background: linear-gradient(169deg,#0c63aa,#7ac5fa);
@@ -14,7 +14,7 @@ body {
 }
 
 .appSettings {
-  padding-top: 51px;
+  padding-top: 60px;
   background: #ffffff;
   background-color: #ffffff;
 }
@@ -435,6 +435,13 @@ body {
 
 .green {
   background:linear-gradient(to bottom, #65B965, #57A057);
+}
+
+.bounce{
+  -webkit-animation: bouce 1s;
+  -moz-animation: bounce 1s;
+  -ms-animation: bounce 1s;
+  animation: bounce 1s;
 }
 
 .bounce.ng-hide-remove {
