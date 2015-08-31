@@ -399,7 +399,7 @@ angular.module('myApp', [
             return stock+item.quantity;
           });
 
-          transactions.push({list: 'Default', item: item.$id, date: purchaseDate});
+          transactions.push({list: 'Default', item: item.$id, date: purchaseDate, quantity: item.quantity});
           return !gotit;
         }
       }, function(error, committed, snapshot) {
