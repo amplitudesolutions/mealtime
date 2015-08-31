@@ -1,5 +1,5 @@
 {
-  "firebase": "mealtimeprod",
+  "firebase": "mealtimedev",
   "public": "app",
   "ignore": [
     "firebase.json",

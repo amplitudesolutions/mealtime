@@ -151,11 +151,12 @@ angular.module('myApp', [
 
 .factory('getDBUrl', ['$location', function($location) {
 	var dbURL = null;
-	if ($location.host() == 'localhost' || $location.host() == 'mealtimeprod.firebaseapp.com') {
+	if ($location.host() == 'localhost' || $location.host() == 'mealtimedev.firebaseapp.com') {
 		// DEV DB
-    	dbURL = "https://mealtimeprod.firebaseio.com";
-	} else if ($location.host() == 'intense-inferno-9799.firebaseapp.com') {
-		dbURL = "https://intense-inferno-9799.firebaseio.com";
+    	dbURL = "https://mealtimedev.firebaseio.com";
+	// } else if ($location.host() == 'intense-inferno-9799.firebaseapp.com') {
+  } else if ($location.host() == 'mealtimeprod.firebaseapp.com') {
+		dbURL = "https://mealtimeprod.firebaseio.com";
 	}
 	
 	return {path: dbURL};
