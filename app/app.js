@@ -63,6 +63,7 @@ angular.module('myApp', [
   $scope.inventory = fbStockItems.$asArray();
 
   $scope.$location = $location;
+  $scope.user = user.get();
 
 	$scope.navbarCollapsed = true;
 

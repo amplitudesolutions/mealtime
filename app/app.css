@@ -119,14 +119,19 @@ body {
 .image-upload {
   height: 175px;
   border-style: dashed;
-  border-width: thin;
+  /*border-width: thin;*/
   border-color: #909090;
   background-color: #E8E8E8;
+  margin-top: -15px;
+  display: table;
+  width: 100%;
 }
 
 .image-upload p {
-  vertical-align: middle;
-  display: table-cell;
+  font-weight: bold;
+  display: table-cell; 
+  vertical-align: middle; 
+  text-align: center; 
 }
 
 .panel-box-shadow {

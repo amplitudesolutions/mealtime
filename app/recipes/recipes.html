@@ -112,13 +112,16 @@
 					        Add New Recipe
 					    </div> -->
 					    <div class="panel-body">
-					     	<div class="row">
+					     	<!-- <div class="row"> -->
 						      	<div class="form-group">
-							      	<div class="image-upload">
-							      		<p>Drag Recipe Image Here</p>
-							      	</div>
+						      		<a id="recipeImage" onclick="document.getElementById('recipeImage').click()">
+								      	<div class="image-upload">
+									      	<p>Drag Recipe Image Here</p>
+								      	</div>
+							      	</a>
+							      	<input type="file" class="hidden" id="recipeImage">
 							    </div>
-							</div>
+							<!-- </div> -->
 							<div class="row">
 								<div class="col-sm-8">
 							      	<div class="form-group">
