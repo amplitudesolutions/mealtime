@@ -85,23 +85,15 @@
 					<div class="panel-heading clearfix">
 						<i class="fa fa-trash-o fa-lg pull-right" style="padding-top: 4px;" ng-click="clearCart()"></i>In your basket 
 					</div>
-					<div class="list-group">
-						<div ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
+
+					<ul class="list-group">
+						<li ng-repeat="item in listItems | filter: {gotit: true}" id="{{id}}" class="list-group-item fader">
 							<input type="checkbox" ng-model="item.gotit" ng-change="removeFromCart(item)">
 							<span class="done-{{item.gotit}}">{{items[items.$indexFor(item.$id)].name}} <small>Qty: {{item.quantity}}</small></span>
-						</div>
-					</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<!-- 
-<div class="div-start" style="" id="test" ng-click="testClick = !testClick">
-	test
-</div>
-
-<div style="border: 1px solid black" ng-show="testClick" class="animate-hide">
-	Test Dialog
-</div>
- -->

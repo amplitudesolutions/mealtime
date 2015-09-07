@@ -249,6 +249,33 @@ body {
     }
 }
 
+@media(max-width: 767px) {
+  .panel {
+    margin-left: -30px;
+    margin-right: -30px;
+  }
+
+  .panel > ul > li {
+    min-height: 60px;
+    font-size: 18px;
+    padding-top: 18px;
+  }
+
+  .panel > ul > li > span {
+    padding-left: 10px;
+  }
+  
+  input[type=checkbox] {
+    /* All browsers except webkit*/
+    transform: scale(1.5);
+
+    /* Webkit browsers*/
+    -webkit-transform: scale(1.5);
+  }
+
+
+}
+
 .list-group-item:first-child {
   border-radius: 0;
 }
