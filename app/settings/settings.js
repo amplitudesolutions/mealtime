@@ -58,11 +58,4 @@ angular.module('myApp.settings', ['ngRoute', 'ngAnimate', 'ngToast'])
 
 		}
 	};
-
-	$scope.removeUnit = function(unit) {
-		// Will need to check if any inventory items use this, if not, then can be removed.
-		$scope.units.$remove(unit);
-		ngToast.create('<b>' + unit.name + '</b> has been removed');
-	};
-
 }]);
