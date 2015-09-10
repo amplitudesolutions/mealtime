@@ -70,6 +70,7 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 	};
 
 	$scope.createGroupClick = function() {
+		$scope.createErrorCaught = false;
 		$scope.isProcessing = true;
 		var create = angular.copy($scope.create);
 		create.email += '@mealtime.io'; //or maybe get mealtime.guru

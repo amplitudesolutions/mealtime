@@ -39,7 +39,7 @@
 					<p><b>Start meal planning... </b></p>
 					<hr>
 				</div>
-				<div class="alert alert-danger bounce" ng-show="createErrorCaught">
+				<div class="alert alert-danger" bounce-error="createErrorCaught" ng-show="createErrorCaught">
 					The group name you tried to use is already taken, please try another.
 				</div>
 				<div class="form-group" ng-class="{'has-error': create.$submitted && !create.createGroupName.$valid || createErrorCaught}">
