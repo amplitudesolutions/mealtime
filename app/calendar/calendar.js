@@ -1,13 +1,13 @@
 'use strict';
 
-angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
+angular.module('myApp.calendar', ['ui.router', 'ngAnimate'])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/calendar', {
-    templateUrl: 'calendar/calendar.html',
-    controller: 'CalendarCtrl'
-  });
-}])
+// .config(['$routeProvider', function($routeProvider) {
+//   $routeProvider.when('/calendar', {
+//     templateUrl: 'calendar/calendar.html',
+//     controller: 'CalendarCtrl'
+//   });
+// }])
 
 .controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'user', function($scope, $firebase, getDBUrl, user) {
 

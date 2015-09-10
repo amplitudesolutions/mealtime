@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
-  'ngRoute',
+  'ui.router',
   'ngAnimate',
   'myApp.dashboard',
   'myApp.inventory',
@@ -24,21 +24,38 @@ angular.module('myApp', [
 //   $rootScope._ = window._;
 // })
 
-.run(['$rootScope', '$location', function ($rootScope, $location) {
-    $rootScope._ = window._;
+// .run(['$rootScope', '$location', function ($rootScope, $location) {
+//     $rootScope._ = window._;
 
-    $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
-      // We can catch the error thrown when the $requireAuth promise is rejected
-      // and redirect the user back to the home page
-      if (error === "AUTH_REQUIRED") {
-        $location.path("/login");
-      }
-  });
+//     $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
+//       // We can catch the error thrown when the $requireAuth promise is rejected
+//       // and redirect the user back to the home page
+//       if (error === "AUTH_REQUIRED") {
+//         $location.path("/login");
+//       }
+//   });
+// }])
+
+.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,$urlRouterProvider) {
+
+  $urlRouterProvider.otherwise('/dashboard');
+
+  $stateProvider
+    .state('dashboard', {
+      url: '/dashboard',
+      templateUrl: 'dashboard/dashboard.html'
+
+    })
+
+    .state('receipes', {
+      url: '/receipes',
+      templateUrl: 'receipes/receipes.html'
+    });
 }])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/dashboard'});
-}])
+// .config(['$routeProvider', function($routeProvider) {
+//   $routeProvider.otherwise({redirectTo: '/dashboard'});
+// }])
 
 .controller('MainCtrl', ['$scope', 'sideBarNav', 'Auth', 'user', function($scope, sideBarNav, Auth, user) { 
   Auth.$onAuth(function(authData) {

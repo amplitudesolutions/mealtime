@@ -1,21 +1,21 @@
 'use strict';
 
-angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
+angular.module('myApp.login', ['ui.router', 'ngAnimate'])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/login', {
-    templateUrl: 'login/login.html',
-    controller: 'LoginCtrl',
-    resolve: {
-	    // controller will not be loaded until $waitForAuth resolves
-	    // Auth refers to our $firebaseAuth wrapper in the example above
-	    "currentAuth": ["Auth", function(Auth) {
-	      // $waitForAuth returns a promise so the resolve waits for it to complete
-	      return Auth.$waitForAuth();
-	    }]
-  	}
-  });
-}])
+// .config(['$routeProvider', function($routeProvider) {
+//   $routeProvider.when('/login', {
+//     templateUrl: 'login/login.html',
+//     controller: 'LoginCtrl',
+//     resolve: {
+// 	    // controller will not be loaded until $waitForAuth resolves
+// 	    // Auth refers to our $firebaseAuth wrapper in the example above
+// 	    "currentAuth": ["Auth", function(Auth) {
+// 	      // $waitForAuth returns a promise so the resolve waits for it to complete
+// 	      return Auth.$waitForAuth();
+// 	    }]
+//   	}
+//   });
+// }])
 
 .controller('LoginCtrl', ['$scope', '$location', '$modal', 'user', function($scope, $location, $modal, user) {
 	$scope.user = '';
