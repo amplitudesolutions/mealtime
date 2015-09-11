@@ -29,7 +29,6 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate'])
 		userCopy.email += '@mealtime.io'; //or maybe get mealtime.guru
 		
 		user.login(userCopy).then(function(userObj) {
-			
 			window.location.href = "#/dashboard";
 		}).catch(function(error) {
 			switch(error.code) {
