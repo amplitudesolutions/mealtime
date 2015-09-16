@@ -247,6 +247,13 @@ body {
         position: relative;
         margin-right: 0;
     }
+
+    .btn-fab.bottom-right {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 999;
+    }
 }
 
 @media(max-width: 767px) {
@@ -271,6 +278,13 @@ body {
 
     /* Webkit browsers*/
     -webkit-transform: scale(1.5);
+  }
+
+  .btn-fab.bottom-right {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    z-index: 999;
   }
 
 
@@ -515,4 +529,11 @@ body {
 
 .text-white {
   color: #ffffff;
+}
+
+.btn-fab {
+  border-radius: 100%;
+  width: 56px;
+  height: 56px;
+  font-size: 26px;
 }
