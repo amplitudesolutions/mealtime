@@ -118,6 +118,10 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     }
   };
 
+  $scope.deleteCategory = function(categorySelected) {
+    category.delete(categorySelected);
+  };
+
   $scope.saveCategory = function(cat) {
     category.save(cat);
     $scope.categoryEditId = null;

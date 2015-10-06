@@ -312,7 +312,7 @@ angular.module('myApp', [
   }
 }])
 
-.factory('category', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user){
+.factory('category', ['$firebase', 'getDBUrl', 'user', 'inventory', function($firebase, getDBUrl, user, inventory){
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var categoriesRef = baseRef.child('categories');
 
@@ -322,16 +322,27 @@ angular.module('myApp', [
   function setDefault(category) {
     category.child('default').set(true);
   }
+
+  function defaultCategory() {
+    var returnData = null;
+    categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
+      snap.forEach(function(snapData) {
+        returnData = snapData.key();
+      });
+    });
+
+    return returnData;
+  }
   
   return {
     getDefault: function() {
-      var returnData = null;
-      categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
-        snap.forEach(function(snapData) {
-          returnData = snapData.key();
-        });
-      });
-      return returnData;
+      // var returnData = null;
+      // categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
+      //   snap.forEach(function(snapData) {
+      //     returnData = snapData.key();
+      //   });
+      // });
+      return defaultCategory();
     },
     setDefault: function(category) {
       setDefault(category);
@@ -355,6 +366,45 @@ angular.module('myApp', [
         categories[cat] = category;
         categories.$save(cat);
        }
+    },
+    delete: function(category) {
+      // Check to see if items exist in the category
+
+      // If there is, move them to the default category
+      // Get Default Category
+      var itemRef = '';
+      var listItemRef = '';
+      var itemsRef = baseRef.child('items');
+      itemsRef.orderByChild('category').startAt(category.$id).endAt(category.$id).once('value', function(snapShot) {
+         snapShot.forEach(function(data) {
+
+  // changeCategory: function(item, category_id) { 
+          inventory.changeCategory(data, defaultCategory());         
+
+          // itemRef = baseRef.child('items/' + data.key() + '/category');
+          // itemRef.transaction(function(currentCategory) {
+          //   return defaultCategory();
+          // });
+
+          // listItemRef = baseRef.child('lists/Default/items/' + data.key() + '/category');
+          // listItemRef.transaction(function(currentCategory) {
+          //   return defaultCategory();
+          // });
+
+         })
+      });
+
+
+      // Delete the category
+
+
+      // itemsRef.child(item.$id).once('value', function(data){
+      //     category = data.val().category;
+      // });
+
+      // categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
+      // listRef.child("/Default/items/" + item.$id).remove();
+      // itemsRef.child(item.$id).remove();
     }
   }
 
