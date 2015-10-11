@@ -1,3 +1,4 @@
+<toast></toast>
 <script type="text/ng-template" id="customTemplate.html">
   <a>
   	<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
@@ -32,9 +33,10 @@
 									<div class="form-group">
 										<input type="text" ng-model="categoryEdit.name" class="form-control no-radius">
 									</div>
-									<button class="btn btn-danger" ng-click="editCategory(null)" type="button">Cancel</button>
+									<!-- <button class="btn btn-danger" ng-click="editCategory(null)" type="button">Cancel</button> -->
+									<a ng-click="deleteCategory(category)" class="btn btn-danger" ng-disabled="isDefaultCategory(category)">Delete</a>
 									<button class="btn btn-success">Save</button>
-									<a ng-click="deleteCategory(category)" class="">delete</a>
+									
 								</form>
 							</div>
 						</div>

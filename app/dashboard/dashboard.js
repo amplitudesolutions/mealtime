@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
+angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate','ngToast'])
 
-.config(['$routeProvider', function($routeProvider) {
+.config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
   $routeProvider.when('/dashboard', {
     templateUrl: 'dashboard/dashboard.html',
     controller: 'DashboardCtrl',
@@ -13,11 +13,19 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
         // $waitForAuth returns a promise so the resolve waits for it to complete]\
         return Auth.$requireAuth();
       }]
-  }
+    }
+  });
+  ngToastProvider.configure({
+    animation: 'slide',
+    horizontalPosition: 'right',
+    verticalPosition: 'bottom',
+    maxNumber: 0,
+    className: 'info',
+    dismissButton: true,
   });
 }])
 
-.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter, user) {
+.controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', 'ngToast', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter, user, ngToast) {
   // connect to firebase
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
@@ -101,6 +109,14 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
     list.removeQuantity(item, 1);
   };
 
+  $scope.isDefaultCategory = function(categorySelected) {
+    var defaultCategory = false;
+    if (categorySelected.$id === category.getDefault()) {
+      defaultCategory = true;
+    }
+    return defaultCategory;
+  };
+
   $scope.isCategoryEditing = function(id) {
     if ($scope.categoryEditId == id) {
       return true;
@@ -120,6 +136,7 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate'])
 
   $scope.deleteCategory = function(categorySelected) {
     category.delete(categorySelected);
+    ngToast.create('Category Deleted');
   };
 
   $scope.saveCategory = function(cat) {

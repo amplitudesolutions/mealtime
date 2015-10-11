@@ -312,7 +312,7 @@ angular.module('myApp', [
   }
 }])
 
-.factory('category', ['$firebase', 'getDBUrl', 'user', 'inventory', function($firebase, getDBUrl, user, inventory){
+.factory('category', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user){
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var categoriesRef = baseRef.child('categories');
 
@@ -336,12 +336,6 @@ angular.module('myApp', [
   
   return {
     getDefault: function() {
-      // var returnData = null;
-      // categoriesRef.orderByChild('default').startAt(true).endAt(true).once('value', function(snap) {
-      //   snap.forEach(function(snapData) {
-      //     returnData = snapData.key();
-      //   });
-      // });
       return defaultCategory();
     },
     setDefault: function(category) {
@@ -352,7 +346,6 @@ angular.module('myApp', [
     },
     add: function(category) {
       categories.$add({ name: category.name, color: category.color }).then(function(ref) {
-        //var id = ref;
         if (categories.length == 1) {
           setDefault(ref);
         }
@@ -376,35 +369,20 @@ angular.module('myApp', [
       var listItemRef = '';
       var itemsRef = baseRef.child('items');
       itemsRef.orderByChild('category').startAt(category.$id).endAt(category.$id).once('value', function(snapShot) {
-         snapShot.forEach(function(data) {
+        snapShot.forEach(function(data) {
+          itemRef = baseRef.child('items/' + data.key() + '/category');
+          itemRef.transaction(function(currentCategory) {
+            return defaultCategory();
+          });
 
-  // changeCategory: function(item, category_id) { 
-          inventory.changeCategory(data, defaultCategory());         
-
-          // itemRef = baseRef.child('items/' + data.key() + '/category');
-          // itemRef.transaction(function(currentCategory) {
-          //   return defaultCategory();
-          // });
-
-          // listItemRef = baseRef.child('lists/Default/items/' + data.key() + '/category');
-          // listItemRef.transaction(function(currentCategory) {
-          //   return defaultCategory();
-          // });
-
-         })
+          listItemRef = baseRef.child('lists/Default/items/' + data.key() + '/category');
+          listItemRef.transaction(function(currentCategory) {
+            return defaultCategory();
+          });
+        })
       });
 
-
-      // Delete the category
-
-
-      // itemsRef.child(item.$id).once('value', function(data){
-      //     category = data.val().category;
-      // });
-
-      // categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
-      // listRef.child("/Default/items/" + item.$id).remove();
-      // itemsRef.child(item.$id).remove();
+      categoriesRef.child(category.$id).remove();
     }
   }
 
@@ -558,6 +536,8 @@ angular.module('myApp', [
   var fbItems = $firebase(itemsRef);
   var items = fbItems.$asArray();
 
+  
+
   return {
     get: function() {
       return items;
@@ -607,6 +587,13 @@ angular.module('myApp', [
       }
     },
     changeCategory: function(item, category_id) {
+      // If category === null then set to default category.
+      // var defaultCategory = category.getDefault();
+
+      // if (category_id === null) {
+      //   category_id = defaultCategory;
+      // };
+
       itemsRef.child(item.$id + "/category").transaction(function(category) {
         listRef.child('/Default/items/' + item.$id + '/category').transaction(function(category){
           if (category !== null)
