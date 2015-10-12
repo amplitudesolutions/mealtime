@@ -271,7 +271,12 @@ angular.module('myApp', [
     },
     addCook: function(cook) {
       var userRef = baseRef.child('users');
-      userRef.push(cook);
+      var addedCook = userRef.push(cook);
+      return addedCook.key();
+    },
+    getCook: function(cookId) {
+      var userRef = baseRef.child('users/' + cookId);
+      return $firebase(userRef).$asObject();
     }
   };
 }])

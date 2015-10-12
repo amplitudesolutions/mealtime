@@ -59,12 +59,16 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 		calendar.selectCook(cook, day);
 	};
 
-	$scope.addCook = function() {
+	$scope.addCook = function(day) {
 		var modalInstance = $modal.open({
 			animation:false,
 			templateUrl: 'templates/addCookTmpl.html',
 			controller: 'addCookCtrl',
 			size: 'sm'
+		});
+
+		modalInstance.result.then(function (cook) {
+			calendar.selectCook(utility.getCook(cook), day);
 		});
 	};
 
@@ -79,10 +83,13 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 
 .controller('addCookCtrl', ['$scope', '$modalInstance', 'utility', function($scope, $modalInstance, utility) {
 	$scope.user = '';
-	$scope.ok = function() {
+	$scope.add = function() {
 		$scope.user.color = '#40b3ff'
-		utility.addCook($scope.user);
-		$modalInstance.close();
+		$modalInstance.close(utility.addCook($scope.user));
+	};
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
 	};
 }])
 ;

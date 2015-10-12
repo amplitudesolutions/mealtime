@@ -1,9 +1,10 @@
-<form novalidate name="addCook" ng-submit="addCook.$valid && ok()">
-	<div class="modal-body">	
-		<div class="form-group">
+<form novalidate name="addCook" ng-submit="addCook.$valid && add()">
+	<div class="modal-body clearfix">	
+		<div class="form-group" ng-class="{'has-error': addCook.$submitted && !addCook.cookName.$valid}">
 			<label class="control-label">Name</label>
 			<input type="text" class="form-control" id="cookName" placeholder="Enter the person cookings name" name="cookName" ng-model="user.name" required>
 		</div>
-		<button class="btn btn-primary">Add</button>
+		<button class="btn btn-link" type="button" ng-click="cancel()">Cancel</button>
+		<button class="btn btn-primary pull-right">Add</button>
 	</div>
 </form>
