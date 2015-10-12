@@ -9,13 +9,13 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'utility', 'user', '$modal', 'calendar', function($scope, $firebase, getDBUrl, utility, user, $modal, calendar) {
+.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'cook', 'user', '$modal', 'calendar', function($scope, $firebase, getDBUrl, cook, user, $modal, calendar) {
 
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
 	$scope.schedule = calendar.getSchedule();
 	$scope.recipes = $firebase(baseRef.child('recipes')).$asArray();
-	$scope.users = utility.getUsers();
+	$scope.cooks = cook.getCooks();
 
 	var date = new Date();
 	// $scope.currentDay = date.getDay();
@@ -67,8 +67,8 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 			size: 'sm'
 		});
 
-		modalInstance.result.then(function (cook) {
-			calendar.selectCook(utility.getCook(cook), day);
+		modalInstance.result.then(function (addedCook) {
+			calendar.selectCook(cook.getCook(addedCook), day);
 		});
 	};
 
@@ -81,11 +81,11 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 	};
 }])
 
-.controller('addCookCtrl', ['$scope', '$modalInstance', 'utility', function($scope, $modalInstance, utility) {
-	$scope.user = {};
-	$scope.user.color = '40b3ff';
+.controller('addCookCtrl', ['$scope', '$modalInstance', 'cook', function($scope, $modalInstance, cook) {
+	$scope.cook = {};
+	$scope.cook.color = '40b3ff';
 	$scope.add = function() {
-		$modalInstance.close(utility.addCook($scope.user));
+		$modalInstance.close(cook.addCook($scope.cook));
 	};
 
 	$scope.cancel = function() {
@@ -93,7 +93,7 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 	};
 
 	$scope.selectColor = function(selectedColor) {
-		$scope.user.color = selectedColor;
+		$scope.cook.color = selectedColor;
 	};
 }])
 ;

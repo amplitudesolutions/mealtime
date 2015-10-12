@@ -23,11 +23,11 @@
 										<div style="display: inline-block;">
 											<div class="btn-group" dropdown>
 												<button dropdown-toggle class="dropdown-toggle btn-link">
-													<i class="fa fa-user" style="color: #{{users[users.$indexFor(day.cook)].color}}"></i> {{users[users.$indexFor(day.cook)].name}}
+													<i class="fa fa-user" style="color: #{{cooks[cooks.$indexFor(day.cook)].color}}"></i> {{cooks[cooks.$indexFor(day.cook)].name}}
 												</button>
 												<ul class="dropdown-menu" role="menu">
-									              	<li ng-repeat="u in users">
-										                <a class="hand" ng-click="selectCook(u, day)">{{u.name}}</a>
+									              	<li ng-repeat="c in cooks">
+										                <a class="hand" ng-click="selectCook(c, day)">{{c.name}}</a>
 									              	</li>
 									              	<li>
 									              		<a class="hand" ng-click="addCook(day)"><b>Someone else?</b></a>

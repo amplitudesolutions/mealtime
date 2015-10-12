@@ -259,24 +259,24 @@ angular.module('myApp', [
 
 }])
 
-.factory('utility', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
+.factory('cook', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
   return {
-    getUsers: function() {
-      var userRef = baseRef.child('users');
-      var users = $firebase(userRef).$asArray();
+    getCooks: function() {
+      var cookRef = baseRef.child('cooks');
+      var cooks = $firebase(cookRef).$asArray();
 
-      return users;
+      return cooks;
     },
     addCook: function(cook) {
-      var userRef = baseRef.child('users');
-      var addedCook = userRef.push(cook);
+      var cookRef = baseRef.child('cooks');
+      var addedCook = cookRef.push(cook);
       return addedCook.key();
     },
     getCook: function(cookId) {
-      var userRef = baseRef.child('users/' + cookId);
-      return $firebase(userRef).$asObject();
+      var cookRef = baseRef.child('cooks/' + cookId);
+      return $firebase(cookRef).$asObject();
     }
   };
 }])
