@@ -458,6 +458,13 @@ body {
 
 }
 
+.color-select {
+  float: left;
+  width:20px;
+  padding-left:3px;
+  color:#ffffff;
+}
+
 .red {
   background:linear-gradient(to bottom, #FF3300, #CC2900);
 }

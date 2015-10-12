@@ -82,14 +82,18 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 }])
 
 .controller('addCookCtrl', ['$scope', '$modalInstance', 'utility', function($scope, $modalInstance, utility) {
-	$scope.user = '';
+	$scope.user = {};
+	$scope.user.color = '40b3ff';
 	$scope.add = function() {
-		$scope.user.color = '#40b3ff'
 		$modalInstance.close(utility.addCook($scope.user));
 	};
 
 	$scope.cancel = function() {
 		$modalInstance.dismiss('cancel');
+	};
+
+	$scope.selectColor = function(selectedColor) {
+		$scope.user.color = selectedColor;
 	};
 }])
 ;

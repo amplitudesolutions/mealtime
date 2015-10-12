@@ -1,8 +1,28 @@
 <form novalidate name="addCook" ng-submit="addCook.$valid && add()">
 	<div class="modal-body clearfix">	
 		<div class="form-group" ng-class="{'has-error': addCook.$submitted && !addCook.cookName.$valid}">
-			<label class="control-label">Name</label>
-			<input type="text" class="form-control" id="cookName" placeholder="Enter the person cookings name" name="cookName" ng-model="user.name" required>
+			<label class="control-label">Name 
+				<div class="btn-group" dropdown>
+		      		<button id="single-button" type="button" class="btn btn-default btn-xs" dropdown-toggle>
+		        		Color <span class="caret"></span>
+		      		</button>
+		      		<ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+		        		<li role="menuitem"><a class="hand" ng-click="selectColor('40b3ff')"><span style="background-color:#40b3ff;" class="color-select"><i class="fa fa-check text-center" ng-show="user.color==='40b3ff'"></i>&nbsp;</span>&nbsp;Blue</a></li>
+
+		        		<li role="menuitem"><a class="hand" ng-click="selectColor('eb5a46')"><span style="background-color:#eb5a46;" class="color-select"><i class="fa fa-check text-center" ng-show="user.color==='eb5a46'"></i>&nbsp;</span>&nbsp;Red</a></li>
+		        		
+		        		<li role="menuitem"><a class="hand" ng-click="selectColor('57A057')"><span style="background-color:#57A057;" class="color-select"><i class="fa fa-check text-center" ng-show="user.color==='57A057'"></i>&nbsp;</span>&nbsp;Green</a></li>
+		        		
+		        		<li role="menuitem"><a class="hand" ng-click="selectColor('ffab4a')"><span style="background-color:#ffab4a;" class="color-select"><i class="fa fa-check text-center" ng-show="user.color==='ffab4a'"></i>&nbsp;</span>&nbsp;Orange</a></li>
+		        		
+		        		<li role="menuitem"><a class="hand" ng-click="selectColor('c377e0')"><span style="background-color:#c377e0;" class="color-select"><i class="fa fa-check text-center" ng-show="user.color==='c377e0'"></i>&nbsp;</span>&nbsp;Purple</a></li>
+		      		</ul>
+		    	</div>
+			</label>
+			<input type="text" class="form-control no-radius" id="cookName" placeholder="Enter the person cookings name" name="cookName" ng-model="user.name" required>
+		</div>
+		<div class="">
+			<input type="text" name="color" id="color" ng-model="user.color" class="hidden">
 		</div>
 		<button class="btn btn-link" type="button" ng-click="cancel()">Cancel</button>
 		<button class="btn btn-primary pull-right">Add</button>
