@@ -1,0 +1,9 @@
+<form novalidate name="addCook" ng-submit="addCook.$valid && ok()">
+	<div class="modal-body">	
+		<div class="form-group">
+			<label class="control-label">Name</label>
+			<input type="text" class="form-control" id="cookName" placeholder="Enter the person cookings name" name="cookName" ng-model="user.name" required>
+		</div>
+		<button class="btn btn-primary">Add</button>
+	</div>
+</form>

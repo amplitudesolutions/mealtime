@@ -259,6 +259,23 @@ angular.module('myApp', [
 
 }])
 
+.factory('utility', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
+  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
+
+  return {
+    getUsers: function() {
+      var userRef = baseRef.child('users');
+      var users = $firebase(userRef).$asArray();
+
+      return users;
+    },
+    addCook: function(cook) {
+      var userRef = baseRef.child('users');
+      userRef.push(cook);
+    }
+  };
+}])
+
 .factory('calendar', ['$firebase', 'getDBUrl', 'list', 'user', function($firebase, getDBUrl, list, user){
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
   var scheduleRef = baseRef.child('schedule');
@@ -292,6 +309,11 @@ angular.module('myApp', [
     },
     markComplete: function() {
       
+    },
+    selectCook: function(cook, day) {
+      scheduleRef.child(day.$id + "/cook").transaction(function(currentCook) {
+        return cook.$id;
+      });
     }
   };
 

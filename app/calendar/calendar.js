@@ -9,12 +9,13 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
   });
 }])
 
-.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'user', function($scope, $firebase, getDBUrl, user) {
+.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'utility', 'user', '$modal', 'calendar', function($scope, $firebase, getDBUrl, utility, user, $modal, calendar) {
 
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
-	$scope.schedule = $firebase(baseRef.child('schedule')).$asArray();
+	$scope.schedule = calendar.getSchedule();
 	$scope.recipes = $firebase(baseRef.child('recipes')).$asArray();
+	$scope.users = utility.getUsers();
 
 	var date = new Date();
 	// $scope.currentDay = date.getDay();
@@ -54,6 +55,19 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 	// 	//return recipe.name;
 	// };
 
+	$scope.selectCook = function(cook, day) {
+		calendar.selectCook(cook, day);
+	};
+
+	$scope.addCook = function() {
+		var modalInstance = $modal.open({
+			animation:false,
+			templateUrl: 'templates/addCookTmpl.html',
+			controller: 'addCookCtrl',
+			size: 'sm'
+		});
+	};
+
 	$scope.checkDay = function(day) {
 		var date = new Date();
 		if (day == date.getDay()) {
@@ -61,4 +75,14 @@ angular.module('myApp.calendar', ['ngRoute', 'ngAnimate'])
 		}
 		return false;
 	};
-}]);
+}])
+
+.controller('addCookCtrl', ['$scope', '$modalInstance', 'utility', function($scope, $modalInstance, utility) {
+	$scope.user = '';
+	$scope.ok = function() {
+		$scope.user.color = '#40b3ff'
+		utility.addCook($scope.user);
+		$modalInstance.close();
+	};
+}])
+;
