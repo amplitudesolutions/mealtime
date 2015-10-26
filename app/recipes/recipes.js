@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
+angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast', 'angular-filepicker'])
 
-.config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
+.config(['$routeProvider', 'ngToastProvider','filepickerProvider' , function($routeProvider, ngToastProvider, filepickerProvider) {
   $routeProvider.when('/recipes', {
     templateUrl: 'recipes/recipes.html',
     controller: 'RecipesCtrl',
@@ -15,6 +15,7 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	    }]
 	}
   });
+  
   ngToastProvider.configure({
   	animation: 'slide',
   	horizontalPosition: 'right',
@@ -23,9 +24,11 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
   	className: 'info',
   	dismissButton: true,
   });
+
+  filepickerProvider.setKey('AAUaLgZbrTHCCtgVlr0OWz');
 }])
 
-.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user) {
+.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', 'filepickerService', '$window', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user, filepickerService, $window) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
@@ -46,6 +49,27 @@ angular.module('myApp.recipes', ['ngRoute', 'ngAnimate', 'ngToast'])
 	$scope.ingredientItem = '';
 
 	$scope.selectedRecipe = '';
+
+
+	$scope.file = JSON.parse($window.localStorage.getItem('file'));
+
+    $scope.pickFile = pickFile;
+
+    $scope.onSuccess = onSuccess;
+
+    function pickFile(){
+        filepickerService.pick(
+            {mimetype: 'image/*', services: ['COMPUTER', 'CONVERT']},//, cropDim: [725,200], cropForce: true},
+            onSuccess
+
+        );
+    };
+
+    function onSuccess(Blob){
+        $scope.file = Blob;
+        $window.localStorage.setItem('file', JSON.stringify($scope.file));
+    };
+
 
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.

@@ -25,8 +25,8 @@
 					<div class="panel-body">
 						<div class="row">
 					      	<div class="form-group">
-						      	<div class="image-upload">
-						      		<p>Drag Recipe Image Here</p>
+						      	<div>
+						      		<img src="{{file.url | fpConvert:{w:738, h:200,fit:'crop'} }}" id="filePickerImage">
 						      	</div>
 						    </div>
 						</div>
@@ -112,14 +112,10 @@
 					        Add New Recipe
 					    </div> -->
 					    <div class="panel-body">
-					     	<!-- <div class="row"> -->
 						      	<div class="form-group">
-						      		<a id="recipeImage" onclick="document.getElementById('recipeImage').click()">
-								      	<div class="image-upload">
-									      	<p>Drag Recipe Image Here</p>
-								      	</div>
-							      	</a>
-							      	<!-- <input type="file" class="" id="recipeImage"> -->
+							      	<div class="image-upload" ng-click="pickFile()">
+							      		<img src="{{file.url}}" id="filePickerImage">
+							      	</div>
 							    </div>
 							<!-- </div> -->
 							<div class="row">
@@ -239,14 +235,19 @@
 			<div class="panel panel-default no-radius panel-box-shadow">
 				<div class="panel-body">
 					<div>
-						<div><a ng-click="viewRecipe(r)" class="hand">{{r.name}}</a></div>
-						<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{r.prep}} +</div>
-						<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{r.cook}} =</div>
-						<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(r.prep*1)+(r.cook*1)}}</div>
-						<div>
-							<ul class="list-inline">
-							  <li ng-repeat="day in [0,1,2,3,4,5,6]" ng-click="scheduleRecipe(r, day)" class="small-circle">{{ ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'][day] }}</li>
-							</ul>
+						<div style="display: inline-block; position: float; margin-top: -15px; margin-left: -15px; margin-bottom: -15px; vertical-align:top; padding-right:12px;">
+							<div><img src="{{file.url | fpConvert:{w:105, h:105, fit:'crop'} }}" alt="..." class=""></div>
+						</div>
+						<div style="display: inline-block;">
+							<div><a ng-click="viewRecipe(r)" class="hand">{{r.name}}</a></div>
+							<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{r.prep}} +</div>
+							<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{r.cook}} =</div>
+							<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(r.prep*1)+(r.cook*1)}}</div>
+							<div>
+								<ul class="list-inline">
+								  <li ng-repeat="day in [0,1,2,3,4,5,6]" ng-click="scheduleRecipe(r, day)" class="small-circle">{{ ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'][day] }}</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
