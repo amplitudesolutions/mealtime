@@ -2,13 +2,6 @@
 
 angular.module('myApp.calendar', ['ui.router', 'ngAnimate'])
 
-// .config(['$routeProvider', function($routeProvider) {
-//   $routeProvider.when('/calendar', {
-//     templateUrl: 'calendar/calendar.html',
-//     controller: 'CalendarCtrl'
-//   });
-// }])
-
 .controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'user', function($scope, $firebase, getDBUrl, user) {
 
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
