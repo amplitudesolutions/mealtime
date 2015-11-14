@@ -32,13 +32,13 @@
       </div>
       <div id="navbar" class="navbar-collapse" collapse="navbarCollapsed">
         <ul class="nav navbar-nav">
-          <li ng-class="{active: isActive('/dashboard')}"><a href="#/dashboard"><i class="fa fa-bars fa-lg"></i> dashboard</a></li>
-          <li ng-class="{active: isActive('/recipes')}"><a href="#/recipes"><i class="fa fa-cutlery fa-lg"></i> recipes</a></li>
-          <li ng-class="{active: isActive('/inventory')}"><a href="#/inventory"><i class="fa fa-file-text fa-lg"></i> inventory</a></li>
+          <li ng-class="{active: isActive('/dashboard')}"><a ui-sref="dashboard"><i class="fa fa-bars fa-lg"></i> dashboard</a></li>
+          <li ng-class="{active: isActive('/recipes')}"><a ui-sref="recipes"><i class="fa fa-cutlery fa-lg"></i> recipes</a></li>
+          <li ng-class="{active: isActive('/inventory')}"><a ui-sref="inventory"><i class="fa fa-file-text fa-lg"></i> inventory</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li ng-class="{active: isActive('/calendar')}">
-            <a href="#/calendar" class="hand"><i class="fa fa-calendar fa-lg"></i> <span class="visible-xs-inline">calendar</span></a>
+            <a ui-sref="calendar" class="hand"><i class="fa fa-calendar fa-lg"></i> <span class="visible-xs-inline">calendar</span></a>
           </li>
           <li class="hidden-xs">
             <a class="hand" ng-click="sideBarState()"><i class="fa fa-tasks fa-lg"></i></a>
@@ -79,7 +79,7 @@
           <li dropdown is-open="userDropDown.isOpen"><a dropdown-toggle class="downdown-toggle hand" ng-cloak><i class="fa fa-lg fa-user"></i>&nbsp;&nbsp;{{user.password.email.split('@')[0]}}</a>
             <ul class="dropdown-menu" role="menu">
               <li>
-                <a href="#/settings" class="hand"><span>Options</span></a>
+                <a ui-sref="settings" class="hand"><span>Options</span></a>
               </li>
               <li>
                 <a class="hand" ng-click="logout()"><span>Sign Out</span></a>
@@ -123,7 +123,7 @@
   <!-- /#sidebar-wrapper -->
 </div>
 
-<div ng-view id="page-content-wrapper"></div>
+<div ui-view id="page-content-wrapper"></div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="display: none;" role="navigation" ng-if="signedIn">
   <footer class="footer">
@@ -169,7 +169,7 @@
   
 
   <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
   <script src="bower_components/ngToast/dist/ngToast.min.js"></script>

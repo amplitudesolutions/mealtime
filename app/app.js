@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
-  'ngRoute',
+  'ui.router',
   'ngAnimate',
   'myApp.dashboard',
   'myApp.inventory',
@@ -20,24 +20,103 @@ angular.module('myApp', [
 
 // lo dash, that way you can use Dependency injection.
 .constant('_', window._)
-// .run(function ($rootScope) {
-//   $rootScope._ = window._;
-// })
 
-.run(['$rootScope', '$location', function ($rootScope, $location) {
-    $rootScope._ = window._;
-
-    $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
-      // We can catch the error thrown when the $requireAuth promise is rejected
-      // and redirect the user back to the home page
-      if (error === "AUTH_REQUIRED") {
-        $location.path("/login");
-      }
+.run(["$rootScope", "$state", function($rootScope, $state) {
+  $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+    // We can catch the error thrown when the $requireAuth promise is rejected
+    // and redirect the user back to the login page
+    if (error === "AUTH_REQUIRED") {
+      $state.go("login");
+    }
   });
 }])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/dashboard'});
+.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,$urlRouterProvider) {
+
+  $urlRouterProvider.otherwise('/dashboard');
+
+  $stateProvider
+
+    .state('login', {
+      url: '/login',
+      templateUrl: 'login/login.html',
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+         // Auth refers to our $firebaseAuth wrapper in the example above
+         "currentAuth": ["Auth", function(Auth) {
+           // $waitForAuth returns a promise so the resolve waits for it to complete
+           return Auth.$waitForAuth();
+         }]
+      }
+    })
+
+    .state('dashboard', {
+      url: '/dashboard',
+      templateUrl: 'dashboard/dashboard.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('recipes', {
+      url: '/recipes',
+      templateUrl: 'recipes/recipes.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('calendar', {
+      url: '/calendar',
+      templateUrl: 'calendar/calendar.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('inventory', {
+      url: '/inventory',
+      templateUrl: 'inventory/inventory.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('settings', {
+      url: '/settings',
+      templateUrl: 'settings/settings.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+    ;
+
+    $urlRouterProvider.otherwise('/login');
 }])
 
 .controller('MainCtrl', ['$scope', 'sideBarNav', 'Auth', 'user', function($scope, sideBarNav, Auth, user) { 

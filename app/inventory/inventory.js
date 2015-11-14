@@ -1,21 +1,6 @@
 'use strict';
 
-angular.module('myApp.inventory', ['ngRoute'])
-
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/inventory', {
-    templateUrl: 'inventory/inventory.html',
-    controller: 'InventoryCtrl',
-    resolve: {
-	    // controller will not be loaded until $waitForAuth resolves
-	    // Auth refers to our $firebaseAuth wrapper in the example above
-	    "currentAuth": ["Auth", function(Auth) {
-	      // $waitForAuth returns a promise so the resolve waits for it to complete]\
-	      return Auth.$requireAuth();
-	    }]
-	}
-  });
-}])
+angular.module('myApp.inventory', ['ui.router'])
 
 .controller('InventoryCtrl', ['$scope', 'inventory', 'category', function($scope, inventory, category) {
 	$scope.filterText = "";

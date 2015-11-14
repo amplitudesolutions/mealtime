@@ -1,20 +1,9 @@
 'use strict';
 
-angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate','ngToast'])
+<<<<<<< HEAD
+angular.module('myApp.dashboard', ['ngAnimate','ngToast'])
 
-.config(['$routeProvider', 'ngToastProvider', function($routeProvider, ngToastProvider) {
-  $routeProvider.when('/dashboard', {
-    templateUrl: 'dashboard/dashboard.html',
-    controller: 'DashboardCtrl',
-    resolve: {
-      // controller will not be loaded until $waitForAuth resolves
-      // Auth refers to our $firebaseAuth wrapper in the example above
-      "currentAuth": ["Auth", function(Auth) {
-        // $waitForAuth returns a promise so the resolve waits for it to complete]\
-        return Auth.$requireAuth();
-      }]
-    }
-  });
+.config(['ngToastProvider', function(ngToastProvider) {
   ngToastProvider.configure({
     animation: 'slide',
     horizontalPosition: 'right',
@@ -24,6 +13,9 @@ angular.module('myApp.dashboard', ['ngRoute', 'ngAnimate','ngToast'])
     dismissButton: true,
   });
 }])
+=======
+angular.module('myApp.dashboard', ['ui.router', 'ngAnimate'])
+>>>>>>> changerouter
 
 .controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', 'ngToast', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter, user, ngToast) {
   // connect to firebase
