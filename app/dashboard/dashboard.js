@@ -1,21 +1,18 @@
 'use strict';
+// angular.module('myApp.dashboard', ['ngAnimate','ngToast'])
 
-<<<<<<< HEAD
-angular.module('myApp.dashboard', ['ngAnimate','ngToast'])
+angular.module('myApp.dashboard', ['ui.router', 'ngAnimate', 'ngToast'])
 
-.config(['ngToastProvider', function(ngToastProvider) {
-  ngToastProvider.configure({
-    animation: 'slide',
-    horizontalPosition: 'right',
-    verticalPosition: 'bottom',
-    maxNumber: 0,
-    className: 'info',
-    dismissButton: true,
-  });
+  .config(['ngToastProvider', function(ngToastProvider) {
+    ngToastProvider.configure({
+      animation: 'slide',
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+      maxNumber: 0,
+      className: 'info',
+      dismissButton: true,
+    });
 }])
-=======
-angular.module('myApp.dashboard', ['ui.router', 'ngAnimate'])
->>>>>>> changerouter
 
 .controller('DashboardCtrl', ['$scope', '$firebase', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', 'ngToast', function($scope, $firebase, getDBUrl, sideBarNav, list, category, filterFilter, user, ngToast) {
   // connect to firebase
