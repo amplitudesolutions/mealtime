@@ -14,7 +14,7 @@ angular.module('myApp.dashboard', ['myApp.services.dashboardService', 'myApp.dir
     });
 }])
 
-.controller('DashboardCtrl', ['$scope', 'getDBUrl', 'sideBarNav', 'list', 'category', 'filterFilter', 'user', 'ngToast', 'inventory', function($scope, getDBUrl, sideBarNav, list, category, filterFilter, user, ngToast, inventory) {
+.controller('DashboardCtrl', ['$scope', 'sideBarNav', 'list', 'category', 'filterFilter', 'ngToast', 'inventory', function($scope, sideBarNav, list, category, filterFilter, ngToast, inventory) {
   $scope.categories = category.get();
   $scope.items = inventory.get();
   $scope.list = list.get();

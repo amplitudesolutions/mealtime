@@ -6,12 +6,12 @@ angular.module('myApp.settings', ['myApp.services.settingsService'])
 
 }])
 
-.controller('SettingGeneralCtrl', ['$scope','$firebaseArray', '$firebaseObject', 'getDBUrl', 'ngToast', 'settings', 'list', function($scope, $firebaseArray, $firebaseObject, getDBUrl, ngToast, settings, list) {
+.controller('SettingGeneralCtrl', ['$scope','ngToast', 'settings', 'list', function($scope, ngToast, settings, list) {
 	$scope.settings = settings.getGeneral();
 	$scope.lists = list.get();
 }])
 
-.controller('SettingUnitCtrl', ['$scope','$firebaseArray', 'getDBUrl', 'ngToast', 'settings', function($scope, $firebaseArray, getDBUrl, ngToast, settings) {
+.controller('SettingUnitCtrl', ['$scope','ngToast', 'settings', function($scope, ngToast, settings) {
 	$scope.units = settings.getUnits();
 	$scope.newUnit = "";
 

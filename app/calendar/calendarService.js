@@ -43,24 +43,34 @@ angular.module('myApp.services.calendarService', [])
 
   }])
 
-  .factory('cook', ['$firebaseArray', 'getDBUrl', 'user', function($firebaseArray, getDBUrl, user) {
+  .factory('cook', ['$q', '$firebaseArray', '$firebaseObject', 'getDBUrl', 'user', function($q, $firebaseArray, $firebaseObject, getDBUrl, user) {
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
+    var cookRef = baseRef.child('cooks');
 
     return {
       getCooks: function() {
-        var cookRef = baseRef.child('cooks');
-        var cooks = $firebaseArray(cookRef);
-
-        return cooks;
+        return $firebaseArray(cookRef);
       },
       addCook: function(cook) {
-        var cookRef = baseRef.child('cooks');
-        var addedCook = cookRef.push(cook);
-        return addedCook.key();
+        var deferred = $q.defer();
+
+        if (cook.name) {
+          cookRef.orderByChild("name").startAt(cook.name).endAt(cook.name).once('value', function(dataSnapshot) {
+            if (dataSnapshot.val() === null) {
+              deferred.resolve(cookRef.push(cook));
+            } else {
+              deferred.reject('Issue Creating Cook');
+            }
+          });
+        } else {
+          deferred.reject('Cook name is blank');
+        }
+
+        return deferred.promise;
       },
       getCook: function(cookId) {
         var cookRef = baseRef.child('cooks/' + cookId);
-        return $firebaseArray(cookRef);
+        return $firebaseObject(cookRef);
       }
     };
   }])

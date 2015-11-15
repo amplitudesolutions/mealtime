@@ -2,7 +2,7 @@
 
 angular.module('myApp.calendar', ['myApp.services.calendarService'])
 
-	.controller('CalendarCtrl', ['$scope', 'getDBUrl', 'cook', 'user', '$uibModal', 'calendar', 'recipe', function($scope, getDBUrl, cook, user, $uibModal, calendar, recipe) {
+	.controller('CalendarCtrl', ['$scope', 'cook', '$uibModal', 'calendar', 'recipe', function($scope, cook, $uibModal, calendar, recipe) {
 		$scope.schedule = calendar.getSchedule();
 		$scope.recipes = recipe.get();
 		$scope.cooks = cook.getCooks();
@@ -62,15 +62,17 @@ angular.module('myApp.calendar', ['myApp.services.calendarService'])
 		};
 	}])
 
-	.controller('addCookCtrl', ['$scope', '$modalInstance', 'cook', function($scope, $modalInstance, cook) {
+	.controller('addCookCtrl', ['$scope', '$uibModalInstance', 'cook', function($scope, $uibModalInstance, cook) {
 		$scope.cook = {};
 		$scope.cook.color = '40b3ff';
 		$scope.add = function() {
-			$modalInstance.close(cook.addCook($scope.cook));
+			cook.addCook($scope.cook).then(function(data) {
+				$uibModalInstance.close(data.key());
+			});
 		};
 
 		$scope.cancel = function() {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		$scope.selectColor = function(selectedColor) {

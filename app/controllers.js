@@ -14,7 +14,7 @@ angular.module('myApp.controllers', [])
   };
 }])
 
-.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', 'sideBarNav', 'user', function($scope, $location, getDBUrl, sideBarNav, user) {
+.controller('MenuCtrl', ['$scope', '$location', 'sideBarNav', 'user', function($scope, $location, sideBarNav, user) {
   $scope.$location = $location;
   $scope.user = user.get();
 
@@ -41,7 +41,7 @@ angular.module('myApp.controllers', [])
   };
 }])
 
-.controller('InventoryListCtrl', ['$scope', 'getDBUrl', 'sideBarNav', 'user', 'inventory', 'category', function($scope, getDBUrl, sideBarNav, user, inventory, category) {
+.controller('InventoryListCtrl', ['$scope', 'sideBarNav', 'user', 'inventory', 'category', function($scope, sideBarNav, user, inventory, category) {
   $scope.inventory = inventory.get();
   $scope.categories = category.get();
  
