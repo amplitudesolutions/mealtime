@@ -2,14 +2,13 @@
 
 angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
-.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', '$uibModal', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user, $uibModal) {
+.controller('RecipesCtrl', ['$scope','$firebaseArray', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'recipe', 'user', '$uibModal', function($scope, $firebaseArray, $q, _, getDBUrl, ngToast, inventory, calendar, recipe, user, $uibModal) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var recipeRef = baseRef.child('recipes');
-	$scope.recipes = $firebase(recipeRef).$asArray();
-	//var itemsRef = baseRef.child('items');
-	$scope.items = $firebase(baseRef.child('items')).$asArray();
-	$scope.units = $firebase(baseRef.child('units')).$asArray();
-	var schedule = $firebase(baseRef.child('schedule')).$asArray();
+	$scope.recipes = recipe.get();
+	$scope.items = inventory.get();
+	$scope.units = $firebaseArray(baseRef.child('units'));
+	var schedule = calendar.getSchedule();
 
 	$scope.ingredient = '';
 	$scope.ingredientItem = '';

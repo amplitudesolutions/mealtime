@@ -1,7 +1,7 @@
 <toast></toast>
 <script type="text/ng-template" id="customTemplate.html">
   <a>
-  	<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  	<span ng-bind-html="match.label | uibTypeaheadHighlight:query"></span>
     <p>Current Stock: {{match.model.stock}}</p>
       
   </a>

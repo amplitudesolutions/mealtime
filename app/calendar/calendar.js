@@ -2,16 +2,12 @@
 
 angular.module('myApp.calendar', ['myApp.services.calendarService'])
 
-	.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'cook', 'user', '$uibModal', 'calendar', function($scope, $firebase, getDBUrl, cook, user, $uibModal, calendar) {
-
-		var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-
+	.controller('CalendarCtrl', ['$scope', 'getDBUrl', 'cook', 'user', '$uibModal', 'calendar', 'recipe', function($scope, getDBUrl, cook, user, $uibModal, calendar, recipe) {
 		$scope.schedule = calendar.getSchedule();
-		$scope.recipes = $firebase(baseRef.child('recipes')).$asArray();
+		$scope.recipes = recipe.get();
 		$scope.cooks = cook.getCooks();
 
 		var date = new Date();
-		// $scope.currentDay = date.getDay();
 		$scope.days = $scope.schedule;
 
 		// var date = new Date();
@@ -35,18 +31,10 @@ angular.module('myApp.calendar', ['myApp.services.calendarService'])
 			//Need to remove items from inventory and then remove from calendar list.
 			
 			//Grab the recipe selected for that day.
-			var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
-
 			//loop through items in the recipe and minus quantity from inventory.
 
 			//set calendar day as complete.
 		};
-		
-		// $scope.getRecipe = function(id) {
-		// 	var recipe = $firebase(baseRef.child('recipes').child(id)).$asArray();
-		// 	//console.log(recipe);
-		// 	//return recipe.name;
-		// };
 
 		$scope.selectCook = function(cook, day) {
 			calendar.selectCook(cook, day);

@@ -1,14 +1,13 @@
 angular.module('myApp.services.inventoryService', [])
 
-  .factory('inventory', ['$q', '$firebase', 'getDBUrl', 'category', 'user', function($q, $firebase, getDBUrl, category, user){
+  .factory('inventory', ['$q', '$firebaseArray', 'getDBUrl', 'category', 'user', function($q, $firebaseArray, getDBUrl, category, user){
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
     
     var listRef = baseRef.child('lists');
     var categoriesRef = baseRef.child('categories');
     var itemsRef = baseRef.child('items');
 
-    var fbItems = $firebase(itemsRef);
-    var items = fbItems.$asArray();
+    var items = $firebaseArray(itemsRef);
 
     return {
       get: function() {

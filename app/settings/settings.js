@@ -1,44 +1,26 @@
 'use strict';
 
-angular.module('myApp.settings', [])
+angular.module('myApp.settings', ['myApp.services.settingsService'])
 
 .controller('SettingsCtrl', [function() {
 
 }])
 
-.controller('SettingGeneralCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
-	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-	var settingsRef = baseRef.child('settings');
-	var listRef = baseRef.child('lists');
-
-	$scope.settings = $firebase(settingsRef).$asObject();
-	$scope.lists = $firebase(listRef).$asArray();
+.controller('SettingGeneralCtrl', ['$scope','$firebaseArray', '$firebaseObject', 'getDBUrl', 'ngToast', 'settings', 'list', function($scope, $firebaseArray, $firebaseObject, getDBUrl, ngToast, settings, list) {
+	$scope.settings = settings.getGeneral();
+	$scope.lists = list.get();
 }])
 
-.controller('SettingUnitCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
-	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-	var unitsRef = baseRef.child('units');
-
-	$scope.units = $firebase(unitsRef).$asArray();
+.controller('SettingUnitCtrl', ['$scope','$firebaseArray', 'getDBUrl', 'ngToast', 'settings', function($scope, $firebaseArray, getDBUrl, ngToast, settings) {
+	$scope.units = settings.getUnits();
 	$scope.newUnit = "";
 
 	$scope.addUnit = function() {
 		if ($scope.newUnit) {
-
-		    unitsRef.orderByChild("name").startAt($scope.newUnit).endAt($scope.newUnit).once('value', function(dataSnapshot) {
-		      	if (dataSnapshot.val() === null) {
-			    	//Create New Item
-			        $scope.units.$add({ name: $scope.newUnit }).then(function(ref) {         
-			      		ngToast.create('<b>' + $scope.newUnit + '</b> has been added');
-			          	$scope.newUnit = "";
-			        });
-		      	} else {
-			     //  	dataSnapshot.forEach(function(snap){
-				    // 	$scope.itemExists = $scope.items.$getRecord(snap.key()).$id;
-				    // });
-		      	}
-		    });
-
+			settings.addUnit($scope.newUnit).then(function(data) {
+				ngToast.create('<b>' + $scope.newUnit + '</b> has been added');
+				$scope.newUnit = "";
+			});
 		}
 	};
 }])

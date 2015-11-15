@@ -1,11 +1,9 @@
  angular.module('myApp.services.dashboardService', [])
 
-  .factory('category', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user){
+  .factory('category', ['$firebaseArray', 'getDBUrl', 'user', function($firebaseArray, getDBUrl, user){
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
     var categoriesRef = baseRef.child('categories');
-
-    var fbCategories = $firebase(categoriesRef);
-    var categories = fbCategories.$asArray();
+    var categories = $firebaseArray(categoriesRef);
 
     function setDefault(category) {
       category.child('default').set(true);
@@ -76,16 +74,15 @@
 
   }])
 
- .factory('list', ['$firebase', 'getDBUrl', 'inventory', 'user', function($firebase, getDBUrl, inventory, user){
+ .factory('list', ['$firebaseArray', 'getDBUrl', 'inventory', 'user', function($firebaseArray, getDBUrl, inventory, user){
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
     var listRef = baseRef.child('lists/Default');
     var itemsRef = baseRef.child('items');
     var transactions = baseRef.child("transactions");
     
-    var fbList = $firebase(listRef);
-    var fbListItems = $firebase(listRef.child('/items'));
-    var list = fbList.$asArray();
-    var listItems = fbListItems.$asArray();
+    var list = $firebaseArray(listRef);
+    var listItems = $firebaseArray(listRef.child('items'));
+
 
     function removeItem(item) {
       listItems.$remove(item);
@@ -126,9 +123,16 @@
           }
         });
       },
+      clearCart: function() {
+        listRef.child('items').orderByChild('gotit').startAt(true).endAt(true).once('value', function(snap) {
+          snap.forEach(function(snapData) {
+            listRef.child('items/' + snapData.key()).remove();
+          });
+        });
+      },
       removeFromCart: function(item) {
         var listItemRef = listRef.child("/items");
-        //Check if item exists, if not create it.
+
         listItemRef.child(item.$id + "/gotit").transaction(function(gotit){
           if (gotit !== null) {
             //Item in list.. need to tell them

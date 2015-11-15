@@ -1,9 +1,9 @@
 angular.module('myApp.services.calendarService', [])
 
-  .factory('calendar', ['$firebase', 'getDBUrl', 'list', 'user', function($firebase, getDBUrl, list, user){
+  .factory('calendar', ['$firebaseArray', 'getDBUrl', 'list', 'user', function($firebaseArray, getDBUrl, list, user){
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
     var scheduleRef = baseRef.child('schedule');
-    var schedule = $firebase(scheduleRef).$asArray();
+    var schedule = $firebaseArray(scheduleRef);
 
     return {
       getSchedule: function() {
@@ -43,13 +43,13 @@ angular.module('myApp.services.calendarService', [])
 
   }])
 
-  .factory('cook', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
+  .factory('cook', ['$firebaseArray', 'getDBUrl', 'user', function($firebaseArray, getDBUrl, user) {
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
     return {
       getCooks: function() {
         var cookRef = baseRef.child('cooks');
-        var cooks = $firebase(cookRef).$asArray();
+        var cooks = $firebaseArray(cookRef);
 
         return cooks;
       },
@@ -60,7 +60,7 @@ angular.module('myApp.services.calendarService', [])
       },
       getCook: function(cookId) {
         var cookRef = baseRef.child('cooks/' + cookId);
-        return $firebase(cookRef).$asObject();
+        return $firebaseArray(cookRef);
       }
     };
   }])

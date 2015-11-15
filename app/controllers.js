@@ -14,14 +14,7 @@ angular.module('myApp.controllers', [])
   };
 }])
 
-.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', '$firebase', 'sideBarNav', 'user', function($scope, $location, getDBUrl, $firebase, sideBarNav, user) {
-  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-  var inventoryRef = baseRef.child('items')
-  
-  var stockRef = inventoryRef.orderByChild('stock').startAt(1);
-  var fbStockItems = $firebase(stockRef);
-  $scope.inventory = fbStockItems.$asArray();
-
+.controller('MenuCtrl', ['$scope', '$location', 'getDBUrl', 'sideBarNav', 'user', function($scope, $location, getDBUrl, sideBarNav, user) {
   $scope.$location = $location;
   $scope.user = user.get();
 
@@ -48,19 +41,10 @@ angular.module('myApp.controllers', [])
   };
 }])
 
-.controller('InventoryListCtrl', ['$scope', 'getDBUrl', '$firebase', 'sideBarNav', 'user', function($scope, getDBUrl, $firebase, sideBarNav, user) {
-  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-  var inventoryRef = baseRef.child('items')
-  
-  var stockRef = inventoryRef.orderByChild('stock').startAt(1);
-  var fbStockItems = $firebase(stockRef);
-  $scope.inventory = fbStockItems.$asArray();
-
-  var categoriesRef = baseRef.child('categories');
-  var fbCategories = $firebase(categoriesRef);
-
-  $scope.categories = fbCategories.$asArray();
-
+.controller('InventoryListCtrl', ['$scope', 'getDBUrl', 'sideBarNav', 'user', 'inventory', 'category', function($scope, getDBUrl, sideBarNav, user, inventory, category) {
+  $scope.inventory = inventory.get();
+  $scope.categories = category.get();
+ 
   $scope.filterText = "";
   $scope.searchitem = "";
   $scope.sideBarState = sideBarNav.state();
