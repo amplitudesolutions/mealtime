@@ -30,7 +30,7 @@
         </button>
         <a class="navbar-brand" href="#/dashboard" ng-cloak>Meal Time</a>
       </div>
-      <div id="navbar" class="navbar-collapse" collapse="navbarCollapsed">
+      <div id="navbar" class="navbar-collapse" uib-collapse="navbarCollapsed">
         <ul class="nav navbar-nav">
           <li ng-class="{active: isActive('/dashboard')}"><a ui-sref="dashboard"><i class="fa fa-bars fa-lg"></i> dashboard</a></li>
           <li ng-class="{active: isActive('/recipes')}"><a ui-sref="recipes"><i class="fa fa-cutlery fa-lg"></i> recipes</a></li>
@@ -43,8 +43,8 @@
           <li class="hidden-xs">
             <a class="hand" ng-click="sideBarState()"><i class="fa fa-tasks fa-lg"></i></a>
           </li>
-          <li dropdown is-open="status.isopen">
-            <a dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell fa-lg" style="color: #FFD633;"></i> <span class="visible-xs-inline">alerts</span></a>
+          <li uib-dropdown is-open="status.isopen">
+            <a uib-dropdown-toggle class="dropdown-toggle hand"><i class="fa fa-bell fa-lg" style="color: #FFD633;"></i> <span class="visible-xs-inline">alerts</span></a>
             <ul class="dropdown-menu" role="menu">
               <li>
                 <div>
@@ -76,7 +76,7 @@
               </li>
             </ul>
           </li>
-          <li dropdown is-open="userDropDown.isOpen"><a dropdown-toggle class="downdown-toggle hand" ng-cloak><i class="fa fa-lg fa-user"></i>&nbsp;&nbsp;{{user.password.email.split('@')[0]}}</a>
+          <li uib-dropdown is-open="userDropDown.isOpen"><a uib-dropdown-toggle class="downdown-toggle hand" ng-cloak><i class="fa fa-lg fa-user"></i>&nbsp;&nbsp;{{user.password.email.split('@')[0]}}</a>
             <ul class="dropdown-menu" role="menu">
               <li>
                 <a ui-sref="settings" class="hand"><span>Options</span></a>
@@ -102,8 +102,8 @@
         <div class="input-group">
           <input type="text" class="form-control no-radius" placeholder="Search" ng-model="searchitem">
           <span class="input-group-btn">
-            <div class="btn-group" dropdown is-open="menuCategoryStatus.isopen" ng-init="menuCategoryStatus.isopen=false">
-              <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle ng-disabled="disabled"><i class="fa fa-list-ul"></i></button>
+            <div class="btn-group" uib-dropdown is-open="menuCategoryStatus.isopen" ng-init="menuCategoryStatus.isopen=false">
+              <button class="btn btn-default dropdown-toggle" type="button" uib-dropdown-toggle ng-disabled="disabled"><i class="fa fa-list-ul"></i></button>
                 <ul class="dropdown-menu pull-right" role="menu">
                     <li ng-class="{active: filterText == ''}"><a class="hand" ng-click="setFilter('');">All</a></li>
                     <li ng-repeat="c in categories" ng-class="{active: filterText == c.$id}"><a class="hand" ng-click="setFilter(c.$id)">{{c.name}}</a></li>

@@ -21,8 +21,8 @@
 										<div style="display: inline-block;"><i class="fa fa-cutlery"></i> {{(recipes[recipes.$indexFor(day.recipe)].prep*1)+(recipes[recipes.$indexFor(day.recipe)].cook*1)}}</div>
 
 										<div style="display: inline-block;">
-											<div class="btn-group" dropdown>
-												<button dropdown-toggle class="dropdown-toggle btn-link">
+											<div class="btn-group" uib-dropdown>
+												<button uib-dropdown-toggle class="dropdown-toggle btn-link">
 													<i class="fa fa-user" style="color: #{{cooks[cooks.$indexFor(day.cook)].color}}"></i> {{cooks[cooks.$indexFor(day.cook)].name}}
 												</button>
 												<ul class="dropdown-menu" role="menu">
