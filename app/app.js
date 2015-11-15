@@ -29,6 +29,15 @@ angular.module('myApp', [
       $state.go("login");
     }
   });
+
+  // Used for loading the default view from a parent state.
+  // ie) go to /settings and it goes to /settings/general
+  $rootScope.$on('$stateChangeSuccess', function(event, toState){
+    var aac;
+    if(aac = toState && toState.params && toState.params.autoActivateChild){
+        $state.go(aac);
+    }
+  });
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider,$urlRouterProvider) {
@@ -104,7 +113,51 @@ angular.module('myApp', [
 
     .state('settings', {
       url: '/settings',
-      templateUrl: 'settings/settings.html',      
+      templateUrl: 'settings/settings.html',
+      params: {
+        // Load nested view general by default.
+        autoActivateChild: 'settings.general'
+      },
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('settings.general', {
+      url: '/general',
+      templateUrl: 'settings/general.html',
+      //controller: 'SettingGeneralCtrl',     
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('settings.units', {
+      url: '/units',
+      templateUrl: 'settings/units.html',      
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForAuth returns a promise so the resolve waits for it to complete]\
+          return Auth.$requireAuth();
+        }]
+      }
+    })
+
+    .state('settings.group', {
+      url: '/group',
+      templateUrl: 'settings/group.html',      
       resolve: {
         // controller will not be loaded until $waitForAuth resolves
         // Auth refers to our $firebaseAuth wrapper in the example above
@@ -116,7 +169,8 @@ angular.module('myApp', [
     })
     ;
 
-    $urlRouterProvider.otherwise('/login');
+
+    //$urlRouterProvider.otherwise('/login');
 }])
 
 .controller('MainCtrl', ['$scope', 'sideBarNav', 'Auth', 'user', function($scope, sideBarNav, Auth, user) { 

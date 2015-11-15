@@ -2,18 +2,28 @@
 
 angular.module('myApp.settings', ['ui.router', 'ngAnimate', 'ngToast'])
 
-.controller('SettingsCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
+.controller('SettingsCtrl', [function() {
+
+}])
+
+.controller('SettingGeneralCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var settingsRef = baseRef.child('settings');
 	var listRef = baseRef.child('lists');
-	var unitsRef = baseRef.child('units');
 
 	$scope.settings = $firebase(settingsRef).$asObject();
 	$scope.lists = $firebase(listRef).$asArray();
+}])
+
+.controller('SettingUnitCtrl', ['$scope','$firebase', 'getDBUrl', 'ngToast', 'user', function($scope, $firebase, getDBUrl, ngToast, user) {
+	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
+	//var settingsRef = baseRef.child('settings');
+	//var listRef = baseRef.child('lists');
+	var unitsRef = baseRef.child('units');
+
+	//$scope.settings = $firebase(settingsRef).$asObject();
+	//$scope.lists = $firebase(listRef).$asArray();
 	$scope.units = $firebase(unitsRef).$asArray();
-
-	$scope.section = 'general'
-
 	$scope.newUnit = "";
 
 	$scope.addUnit = function() {
@@ -35,4 +45,7 @@ angular.module('myApp.settings', ['ui.router', 'ngAnimate', 'ngToast'])
 
 		}
 	};
-}]);
+}])
+
+
+;

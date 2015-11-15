@@ -2,93 +2,12 @@
 <div class="container" ng-controller="SettingsCtrl">
 	<div class="col-sm-3">
 		<div class="list-group">
-			<a class="list-group-item hand" ng-click="section = 'general'" ng-class="{'active': section === 'general'}">General</a>
-			<a class="list-group-item hand" ng-click="section = 'units'" ng-class="{'active': section === 'units', 'hand': 'active'}">Unit Types</a>
-			<a class="list-group-item hand" ng-click="section = 'group'" ng-class="{'active': section === 'group'}">Group Settings</a>
+			<a class="list-group-item hand" ui-sref="settings.general" ui-sref-active="active">General</a>
+			<a class="list-group-item hand" ui-sref="settings.units" ui-sref-active="active">Unit Types</a>
+			<a class="list-group-item hand" ui-sref="settings.group" ui-sref-active="active">Group Settings</a>
 		</div>
 	</div>
 	<div class="col-sm-9">
-		<div class="row">
-			<div class="col-sm-12" ng-show="section === 'general'">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						General Settings
-					</div>
-					<div class="panel-body">
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label class="">Default List Name</label>
-								<select ng-options="list.$id for list in lists track by list.$id" class="form-control" ng-model="settings.defaultlist"></select>
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<label>Unit of Measure</label>
-							<p class="form-control-static">
-				            	<label class="radio-inline">
-				              	<input type="radio" name="uom" value="metric" ng-model="settings.uom"> Metric</label>
-				            	<label class="radio-inline">
-				              	<input type="radio" name="uom" value="standard" ng-model="settings.uom"> Standard</label>
-				            </p>
-						</div>
-						<div class="col-sm-12">
-							<button class="btn btn-success" type="submit">Update</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-5" ng-show="section === 'units'">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Unit Types
-					</div>
-					<div class="panel-body">
-						<div class="form-group" ng-repeat="unit in units">
-							<div class="input-group">
-								<input type="text" name="unittype" class="form-control no-radius" ng-model="unit.name">
-								<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="removeUnit(unit)"></i></a></span>
-							</div>
-						</div>
-						<form ng-submit="addUnit()" name="newUnitForm">
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control no-radius" ng-model="newUnit" placeholder="Enter unit name here">
-									<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-plus-circle" ng-click="addUnit()"></i></a></span>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-12" ng-show="section === 'group'">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Group Settings
-					</div>
-					<div class="panel-body">
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label class="">Group Name</label>
-								<input type="text" class="form-control">
-							</div>
-						</div>
-						
-						<div class="col-sm-12">
-							<button class="btn btn-success" type="submit">Update</button>
-						</div>
-					</div>
-				</div>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Delete Group
-					</div>
-					<div class="panel-body">
-						<div class="col-sm-12">
-							<p><b>Deleting the group is permanent and can <u>NOT</u> be undone</b></p>
-							<button class="btn btn-danger" type="submit">Delete Group</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div class="row" ui-view></div>
 	</div>
 </div>

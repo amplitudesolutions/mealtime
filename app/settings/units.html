@@ -1,0 +1,23 @@
+<div class="col-sm-5" ng-controller="SettingUnitCtrl">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Unit Types
+		</div>
+		<div class="panel-body">
+			<div class="form-group" ng-repeat="unit in units">
+				<div class="input-group">
+					<input type="text" name="unittype" class="form-control no-radius" ng-model="unit.name">
+					<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="removeUnit(unit)"></i></a></span>
+				</div>
+			</div>
+			<form ng-submit="addUnit()" name="newUnitForm">
+				<div class="form-group">
+					<div class="input-group">
+						<input type="text" class="form-control no-radius" ng-model="newUnit" placeholder="Enter unit name here">
+						<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-plus-circle" ng-click="addUnit()"></i></a></span>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
