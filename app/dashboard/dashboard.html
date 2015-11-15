@@ -51,7 +51,7 @@
 								</div>
 								<div uib-collapse="itemCollapse" ng-init="itemCollapse = true">
 									<hr>
-									<progressbar ng-if="items[items.$indexFor(item.$id)].minstock > 0" value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></progressbar>
+									<uib-progressbar ng-if="items[items.$indexFor(item.$id)].minstock > 0" value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></uib-progressbar>
 									<i class="fa fa-check" style="color: green;"> {{items[items.$indexFor(item.$id)].stock}}</i>
 									<i class="fa fa-shopping-cart"> <small>{{items[items.$indexFor(item.$id)].lastpurchase | date: 'mediumDate'}}</small></i>
 								</div>
