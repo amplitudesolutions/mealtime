@@ -2,7 +2,7 @@
 
 angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 
-.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user) {
+.controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', '$uibModal', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user, $uibModal) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	var recipeRef = baseRef.child('recipes');
 	$scope.recipes = $firebase(recipeRef).$asArray();
@@ -11,25 +11,22 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 	$scope.units = $firebase(baseRef.child('units')).$asArray();
 	var schedule = $firebase(baseRef.child('schedule')).$asArray();
 
-	$scope.addNewRecipe = false;
-
-	$scope.newRecipe = '';
-	$scope.newIngredients = {};
-
-	$scope.newSteps = [];
-	$scope.step = '';
-
 	$scope.ingredient = '';
 	$scope.ingredientItem = '';
 
-	$scope.selectedRecipe = '';
-
-
 	$scope.recipe = function() {
-		// var modalInstance = $
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'templates/addRecipeTmpl.html',
+			backdrop: true,
+			controller: 'addRecipeCtrl',
+			size: 'md'
+		});
+
+		// modalInstance.result.then(function (addedRecipe) {
+		// 	calendar.selectCook(cook.getCook(addedCook), day);
+		// });
 	};
-
-
 
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.
@@ -87,6 +84,47 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 		});
 		
 	};
+	
+	var createRecipe = function () {
+		var deferred = $q.defer();
+
+		var newRecipe = $scope.newRecipe;
+
+		var newStep = $scope.step;
+		if (newStep != '') {
+			var p1 = addStep(newStep);
+		}
+		
+		var newIngredient = $scope.ingredient;
+		if (newIngredient != '') {
+			var p2 = addIngredient();
+		}
+
+		$q.all([p1, p2]).then(function(data){
+			newRecipe.ingredients = $scope.newIngredients;
+			newRecipe.steps = $scope.newSteps;
+
+			deferred.resolve(newRecipe);
+		});
+
+		return deferred.promise;
+	};
+
+	$scope.closeAdd = function() {
+		$scope.newRecipe = '';
+		$scope.ingredient = '';
+		$scope.newIngredients = {};
+		$scope.ingredientItem = '';
+		$scope.step = '';
+		$scope.newSteps = [];
+		$scope.addNewRecipe = false;
+	};
+}])
+
+.controller('addRecipeCtrl', ['$scope', '$q', '$uibModalInstance', 'inventory', 'recipe', function($scope, $q, $uibModalInstance, inventory, recipe) {
+	$scope.items = inventory.get();
+	$scope.newIngredients = {};
+	$scope.newSteps = [];
 
 	var addStep = function(newStep) {
 		var deferred = $q.defer();
@@ -142,41 +180,15 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 
 		return deferred.promise;
 	};
-	
-	var createRecipe = function () {
-		var deferred = $q.defer();
 
-		var newRecipe = $scope.newRecipe;
-
-		var newStep = $scope.step;
-		if (newStep != '') {
-			var p1 = addStep(newStep);
-		}
-		
-		var newIngredient = $scope.ingredient;
-		if (newIngredient != '') {
-			var p2 = addIngredient();
-		}
-
-		$q.all([p1, p2]).then(function(data){
-			newRecipe.ingredients = $scope.newIngredients;
-			newRecipe.steps = $scope.newSteps;
-
-			deferred.resolve(newRecipe);
-		});
-
-		return deferred.promise;
+	$scope.btnAddStep = function() {
+		addStep($scope.step);
+		$scope.step = '';
 	};
 
 	$scope.btnRemoveStep = function(step) {
 		removeStep(step).then(function(response) {
-			ngToast.create('Step removed UNDO');
-		});
-	};
-
-	$scope.btnRemoveIngredient = function(ingredient) {
-		removeIngredient(ingredient).then(function(response) {
-			ngToast.create(ingredient.name + ' removed UNDO');
+			//ngToast.create('Step removed UNDO');
 		});
 	};
 
@@ -187,45 +199,19 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 		});
 	};
 
-	$scope.btnAddStep = function() {
-		addStep($scope.step);
-		$scope.step = '';
+	$scope.btnRemoveIngredient = function(ingredient) {
+		removeIngredient(ingredient).then(function(response) {
+			//ngToast.create(ingredient.name + ' removed UNDO');
+		});
 	};
 
-	$scope.closeAdd = function() {
-		$scope.newRecipe = '';
-		$scope.ingredient = '';
-		$scope.newIngredients = {};
-		$scope.ingredientItem = '';
-		$scope.step = '';
-		$scope.newSteps = [];
-		$scope.addNewRecipe = false;
+	$scope.add = function() {
+		//$modalInstance.close(cook.addCook($scope.cook));
 	};
-}])
 
-.factory('recipe', ['$q', '$firebase', 'getDBUrl', 'inventory', 'user', function($q, $firebase, getDBUrl, inventory, user){
-  	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-	var recipeRef = baseRef.child('recipes');
-	var recipes = $firebase(recipeRef).$asArray();
-
-
-	return {
-	  	get: function() {
-	  		return recipes;
-	  	},
-	  	addRecipe: function(recipe) {
-
-	  	},
-	  	addStep: function() {
-
-		},
-	  	addIngredient: function() {
-			var deferred = $q.defer();
-			
-			
-			return deferred.promise;
-	  	}
-	}
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
 }])
 
 ;
