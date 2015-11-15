@@ -13,7 +13,7 @@
 			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
 				<div class="form-group">
 					<form ng-submit="addNewItem()">
-						<input type="text" class="form-control no-radius input-lg" placeholder="Add Item" ng-model="itemname.name" typeahead="i.name for i in items | filter:$viewValue | limitTo:8" typeahead-on-select="addItem($item)" typeahead-focus-first="false" typeahead-template-url="customTemplate.html">
+						<input type="text" class="form-control no-radius input-lg" placeholder="Add Item" ng-model="itemname.name" uib-typeahead="i.name for i in items | filter:$viewValue | limitTo:8" typeahead-on-select="addItem($item)" typeahead-focus-first="false" typeahead-template-url="customTemplate.html">
 					</form>
 				</div>
 			</div>
@@ -27,7 +27,7 @@
 						<div class="panel-heading hand" ng-click="editCategory(category)">
 							{{category.name}}
 						</div>
-						<div class="list-group" collapse="!isCategoryEditing(category.$id)">
+						<div class="list-group" uib-collapse="!isCategoryEditing(category.$id)">
 							<div class="list-group-item">
 								<form ng-submit="saveCategory(categoryEdit)">
 									<div class="form-group">
@@ -49,7 +49,7 @@
 									<button type="button" class="btn btn-default">{{item.quantity}}</button>
 									<button type="button" class="btn btn-default" ng-click="addQty(item)"><i class="fa fa-plus"></i></button>
 								</div>
-								<div collapse="itemCollapse" ng-init="itemCollapse = true">
+								<div uib-collapse="itemCollapse" ng-init="itemCollapse = true">
 									<hr>
 									<progressbar ng-if="items[items.$indexFor(item.$id)].minstock > 0" value="items[items.$indexFor(item.$id)].stock" max="items[items.$indexFor(item.$id)].minstock"></progressbar>
 									<i class="fa fa-check" style="color: green;"> {{items[items.$indexFor(item.$id)].stock}}</i>
@@ -65,7 +65,7 @@
 					<div class="panel-heading" ng-click="setAddCategoryState(true)">
 						Add New Category
 					</div>
-					<div class="panel-body" collapse="!isAddCategory()">
+					<div class="panel-body" uib-collapse="!isAddCategory()">
 						<div class="form-group">
 							<label class="sr-only">Category Name</label>
 							<form ng-submit="addCategory()">
