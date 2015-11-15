@@ -14,6 +14,8 @@ body {
   background-color: #0c63aa;
 }
 
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 .appSettings {
   padding-top: 51px;
   background: #ffffff;

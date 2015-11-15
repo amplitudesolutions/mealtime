@@ -2,7 +2,7 @@
 
 angular.module('myApp.calendar', ['ui.router', 'ngAnimate'])
 
-.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'cook', 'user', '$modal', 'calendar', function($scope, $firebase, getDBUrl, cook, user, $modal, calendar) {
+.controller('CalendarCtrl', ['$scope', '$firebase', 'getDBUrl', 'cook', 'user', '$uibModal', 'calendar', function($scope, $firebase, getDBUrl, cook, user, $uibModal, calendar) {
 
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 
@@ -53,7 +53,7 @@ angular.module('myApp.calendar', ['ui.router', 'ngAnimate'])
 	};
 
 	$scope.addCook = function(day) {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation:false,
 			templateUrl: 'templates/addCookTmpl.html',
 			controller: 'addCookCtrl',

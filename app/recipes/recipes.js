@@ -26,7 +26,7 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 
 
 	$scope.recipe = function() {
-		var modalInstance = $
+		// var modalInstance = $
 	};
 
 
