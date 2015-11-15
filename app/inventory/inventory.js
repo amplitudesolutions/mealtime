@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.inventory', ['ui.router'])
+angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 
 .controller('InventoryCtrl', ['$scope', 'inventory', 'category', function($scope, inventory, category) {
 	$scope.filterText = "";

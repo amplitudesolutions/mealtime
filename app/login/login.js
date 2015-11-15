@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('myApp.login', ['ui.router', 'ngAnimate'])
+angular.module('myApp.login', [])
 
-.controller('LoginCtrl', ['$scope', '$location', '$modal', 'user', function($scope, $location, $modal, user) {
+.controller('LoginCtrl', ['$scope', '$location', '$uibModal', 'user', function($scope, $location, $uibModal, user) {
 	$scope.user = '';
 
 	$scope.createGroup = false;
@@ -34,7 +34,7 @@ angular.module('myApp.login', ['ui.router', 'ngAnimate'])
 	};
 
 	$scope.forgotPassword = function() {
-		var modalInstance = $modal.open({
+		var modalInstance = $uibModal.open({
 			animation: $scope.animationsEnabled,
 			templateUrl: 'myModalContent.html',
 			controller: 'ModalInstanceCtrl',

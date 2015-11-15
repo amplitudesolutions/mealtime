@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
+angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
 .controller('RecipesCtrl', ['$scope','$firebase', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'user', '$uibModal', function($scope, $firebase, $q, _, getDBUrl, ngToast, inventory, calendar, user, $uibModal) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);

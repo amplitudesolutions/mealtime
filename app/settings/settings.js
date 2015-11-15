@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.settings', ['ui.router', 'ngAnimate', 'ngToast'])
+angular.module('myApp.settings', [])
 
 .controller('SettingsCtrl', [function() {
 
