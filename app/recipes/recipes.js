@@ -24,6 +24,13 @@ angular.module('myApp.recipes', ['ui.router', 'ngAnimate', 'ngToast'])
 
 	$scope.selectedRecipe = '';
 
+
+	$scope.recipe = function() {
+		var modalInstance = $
+	};
+
+
+
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
 		// Need to Add scheduled date to Recipe record in Firebase as well.
 
