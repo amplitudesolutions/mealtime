@@ -457,20 +457,20 @@ angular.module('myApp', [
 
 }])
 
-.factory('recipe', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
-  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-  var recipesRef = baseRef.child('recipes');
-  var recipes = $firebase(recipesRef).$asArray();
+// .factory('recipe', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
+//   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
+//   var recipesRef = baseRef.child('recipes');
+//   var recipes = $firebase(recipesRef).$asArray();
 
-  return {
-    get: function() {
-      return recipes;
-    },
-    getRecipe: function(recipeId) {
-      return $firebase(recipesRef.child(id)).$asArray();
-    }
-  }
-}])
+//   return {
+//     get: function() {
+//       return recipes;
+//     },
+//     getRecipe: function(recipeId) {
+//       return $firebase(recipesRef.child(id)).$asArray();
+//     }
+//   }
+// }])
 
 .factory('category', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user){
   var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
