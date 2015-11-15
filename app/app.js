@@ -7,6 +7,7 @@ angular.module('myApp', [
   'myApp.dashboard',
   'myApp.inventory',
   'myApp.recipes',
+  'myApp.recipeService',
   'myApp.settings',
   'myApp.calendar',
   'myApp.list',

@@ -1,4 +1,4 @@
-angular.module('myApp', ['firebase'])
+angular.module('myApp.recipeService', ['firebase'])
 	
 	.factory('recipe', ['$firebase', 'getDBUrl', 'user', function($firebase, getDBUrl, user) {
 	  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
