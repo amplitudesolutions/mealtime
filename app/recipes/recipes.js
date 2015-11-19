@@ -120,88 +120,71 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	};
 }])
 
-.controller('addRecipeCtrl', ['$scope', '$q', '$uibModalInstance', 'inventory', 'recipe', function($scope, $q, $uibModalInstance, inventory, recipe) {
+.controller('addRecipeCtrl', ['$scope', '$uibModalInstance', 'inventory', 'recipe', 'settings', function($scope, $uibModalInstance, inventory, recipe, settings) {
 	$scope.items = inventory.get();
 	$scope.newIngredients = {};
+	$scope.ingredientItem = '';
 	$scope.newSteps = [];
+	$scope.newStep = '';
+	$scope.units = settings.getUnits();
 
 	var addStep = function(newStep) {
-		var deferred = $q.defer();
 		if (newStep != '') {
 			$scope.newSteps.push({detail: newStep});
-			deferred.resolve('Success');
 		}
-		return deferred.promise;
 	};
 
 	var removeStep = function(step) {
-		var deferred = $q.defer();
-
 		$scope.newSteps.splice($scope.newSteps.indexOf(step), 1);
-		deferred.resolve('Success');
-
-		return deferred.promise;
 	};
 
 	var removeIngredient = function(ingredient) {
-		var deferred = $q.defer();
 		delete $scope.newIngredients[_.findKey($scope.newIngredients, {'name': ingredient.name})];
-
-		deferred.resolve('Success');
-
-		return deferred.promise;
 	};	
 
 	var addIngredient = function() {
-		var deferred = $q.defer();
-
+		console.log($scope.ingredientItem);
 		var newIngredient = {};
-		if ($scope.ingredient.name === undefined) {
-			newIngredient.name = $scope.ingredient;
-		} else {
-			newIngredient = $scope.ingredient;
-		}
-
-		newIngredient.quantity = $scope.ingredientItem.quantity;
-		newIngredient.uom = $scope.ingredientItem.uom;
-
-		// Need to check current inventory levels and what is current scheduled for the week and adjust qty on
-		// grocery list as needed.
-
-		inventory.add(newIngredient).then(function(response) {
-			if (response != '') {
-				$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-				deferred.resolve(response);
+		if ($scope.ingredientItem != '') {
+			if ($scope.ingredientItem.name === undefined) {
+				newIngredient.name = $scope.ingredientItem.name;
+			} else {
+				newIngredient = $scope.ingredientItem.name;
 			}
-		}, function (reason) {
-			console.log(reason);
-		});
 
-		return deferred.promise;
+			newIngredient.quantity = $scope.ingredientItem.quantity;
+			newIngredient.uom = $scope.ingredientItem.uom;
+
+			// Need to check current inventory levels and what is current scheduled for the week and adjust qty on
+			// grocery list as needed.
+
+			inventory.add(newIngredient).then(function(response) {
+				if (response != '') {
+					$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
+				}
+			}, function (reason) {
+				console.log(reason);
+			});
+		}
 	};
 
 	$scope.btnAddStep = function() {
-		addStep($scope.step);
-		$scope.step = '';
+		addStep($scope.newStep);
+		$scope.newStep = '';
 	};
 
 	$scope.btnRemoveStep = function(step) {
-		removeStep(step).then(function(response) {
-			//ngToast.create('Step removed UNDO');
-		});
+		removeStep(step);
 	};
 
 	$scope.btnAddIngredient = function() {
-		addIngredient().then(function(response){
-			$scope.ingredient = '';
-			$scope.ingredientItem = '';
-		});
+		addIngredient($scope.ingredientItem);
+		$scope.ingredient = '';
+		$scope.ingredientItem = '';
 	};
 
 	$scope.btnRemoveIngredient = function(ingredient) {
-		removeIngredient(ingredient).then(function(response) {
-			//ngToast.create(ingredient.name + ' removed UNDO');
-		});
+		removeIngredient(ingredient);
 	};
 
 	$scope.add = function() {
