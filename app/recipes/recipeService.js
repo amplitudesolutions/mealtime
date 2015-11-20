@@ -1,6 +1,6 @@
 angular.module('myApp.services.recipeService', [])
 	
-	.factory('recipe', ['$firebaseArray', 'getDBUrl', 'user', function($firebaseArray, getDBUrl, user) {
+	.factory('recipe', ['$q', '$firebaseArray', 'getDBUrl', 'user', function($q, $firebaseArray, getDBUrl, user) {
 	  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	  var recipesRef = baseRef.child('recipes'); // = $firebaseArray(baseRef.child('recipes'));
 
