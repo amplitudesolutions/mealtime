@@ -70,18 +70,18 @@
       			</div>
       			<div class="col-sm-2">
 	      			<div class="form-group">
-		      			<input type="text" class="form-control no-radius" placeholder="Directions" ng-model="ingredientItem.directions">
+		      			<input type="text" class="form-control no-radius" placeholder="Directions" ng-model="newIngredient.directions">
 		      		</div>
       			</div>
       			<div class="col-sm-2">
 	      			<div class="form-group">
-		      			<input type="text" class="form-control no-radius" placeholder="Unit" ng-model="ingredientItem.quantity">
+		      			<input type="text" class="form-control no-radius" placeholder="Unit" ng-model="newIngredient.quantity">
 		      		</div>
       			</div>
       			<div class="col-sm-3">
       				<div class="form-group">
 		      			<div class="input-group">
-		      				<select ng-options="unit.name for unit in units track by unit.$id" class="form-control no-radius" ng-model="ingredientItem.uom"></select>
+		      				<select ng-options="unit.name for unit in units track by unit.$id" class="form-control no-radius" ng-model="newIngredient.uom"></select>
 			      			<span class="input-group-addon input-group-side-button" ng-click="btnAddIngredient()"><a><i class="fa fa-plus-circle"></i></a></span>
 			      		</div>
 		      		</div>	

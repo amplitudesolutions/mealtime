@@ -129,7 +129,6 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	$scope.newStep = '';
 	$scope.units = settings.getUnits();
 
-
 	var addStep = function(newStep) {
 		if (newStep != '') {
 			$scope.recipe.steps.push({detail: newStep});
@@ -145,29 +144,15 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	};	
 
 	var addIngredient = function() {
-		// console.log($scope.newIngredient);
-		var newIngredient = {};
-		if ($scope.newIngredient.name != '') {
-			if ($scope.newIngredient.name === undefined) {
-				newIngredient.name = $scope.newIngredient.name;
-			} else {
-				newIngredient = $scope.newIngredient.name;
-			}
 
-			newIngredient.quantity = $scope.newIngredient.quantity;
-			newIngredient.uom = $scope.newIngredient.uom;
-
-			// Need to check current inventory levels and what is current scheduled for the week and adjust qty on
-			// grocery list as needed.
-
-			inventory.add(newIngredient).then(function(response) {
-				if (response != '') {
-					$scope.recipe.ingredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-				}
-			}, function (reason) {
-				console.log(reason);
-			});
+		// If object, then it already exists in inventory
+		if (typeof $scope.newIngredient.name === 'object') {
+			$scope.newIngredient.id = $scope.newIngredient.name.$id;
+			$scope.newIngredient.name = $scope.newIngredient.name.name;
 		}
+
+		$scope.recipe.ingredients.push({id: $scope.newIngredient.id, name: $scope.newIngredient.name, directions: $scope.newIngredient.directions, quantity: $scope.newIngredient.quantity, uom: $scope.newIngredient.uom});
+
 	};
 
 	$scope.btnAddStep = function() {
@@ -181,8 +166,10 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
 	$scope.btnAddIngredient = function() {
 		addIngredient($scope.newIngredient);
-		// $scope.ingredient = '';
-		$scope.newIngredient = '';
+		$scope.newIngredient.name = '';
+		$scope.newIngredient.directions = '';
+		$scope.newIngredient.quantity = '';
+		$scope.newIngredient.uom = '';
 	};
 
 	$scope.btnRemoveIngredient = function(ingredient) {
@@ -191,6 +178,26 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
 	$scope.add = function() {
 		addStep($scope.newStep);
+		addIngredient($scope.newIngredient);
+
+		angular.forEach($scope.recipe.ingredients, function(value, key) {
+			//Add undefined inventory
+			
+			if (angular.isUndefined(value.id)) {
+				console.log(value.id);
+				inventory.add(value).then(function(response) {
+					console.log(key + '-' + value);
+					if (response != '') {
+						$scope.recipe.ingredients[key] = {id: response.$id, name: value.name, directions: value.directions, quantity: value.quantity, uom: value.uom};
+					}
+				}, function (reason) {
+					console.log(reason);
+				});
+			}
+
+			//$scope.recipe.ingredient[$scope.recipe.ingredients[key].id] = {name: value.name, directions: value.directions, quantity: value.quantity, uom: value.uom};
+		});
+		console.log($scope.recipe);
 		$uibModalInstance.close(recipe.add($scope.recipe));
 	};
 
