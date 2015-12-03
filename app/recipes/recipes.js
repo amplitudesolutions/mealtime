@@ -188,7 +188,7 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 				inventory.add(value).then(function(response) {
 					console.log(key + '-' + value);
 					if (response != '') {
-						$scope.recipe.ingredients[key] = {id: response.$id, name: value.name, directions: value.directions, quantity: value.quantity, uom: value.uom};
+						$scope.recipe.ingredients[key] = {id: response.$id, name: value.name, directions: value.directions, quantity: value.quantity, uom: value.uom };
 					}
 				}, function (reason) {
 					console.log(reason);
@@ -198,7 +198,7 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 			//$scope.recipe.ingredient[$scope.recipe.ingredients[key].id] = {name: value.name, directions: value.directions, quantity: value.quantity, uom: value.uom};
 		});
 		console.log($scope.recipe);
-		$uibModalInstance.close(recipe.add($scope.recipe));
+		//$uibModalInstance.close(recipe.add($scope.recipe));
 	};
 
 	$scope.cancel = function() {
