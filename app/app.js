@@ -29,7 +29,8 @@ angular.module('myApp', [
     // We can catch the error thrown when the $requireAuth promise is rejected
     // and redirect the user back to the login page
     if (error === "AUTH_REQUIRED") {
-      $state.go("login");
+      window.location.href = './login';
+      // $state.go("login");
     }
   });
 
@@ -48,19 +49,6 @@ angular.module('myApp', [
   $urlRouterProvider.otherwise('/dashboard');
 
   $stateProvider
-
-    .state('login', {
-      url: '/login',
-      templateUrl: 'login/login.html',
-      resolve: {
-        // controller will not be loaded until $waitForAuth resolves
-         // Auth refers to our $firebaseAuth wrapper in the example above
-         "currentAuth": ["Auth", function(Auth) {
-           // $waitForAuth returns a promise so the resolve waits for it to complete
-           return Auth.$waitForAuth();
-         }]
-      }
-    })
 
     .state('dashboard', {
       url: '/dashboard',
@@ -171,8 +159,7 @@ angular.module('myApp', [
       }
     })
     ;
-
-    //$urlRouterProvider.otherwise('/login');
+    
 }])
 
 ;

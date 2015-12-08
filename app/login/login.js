@@ -1,6 +1,13 @@
 'use strict';
 
-angular.module('myApp.login', [])
+angular.module('myApp.login', [
+  'ui.router',
+  'ngAnimate',
+  'ui.bootstrap',
+  'myApp.services',
+  'myApp.directives'
+])
+
 
 .controller('LoginCtrl', ['$scope', '$location', '$uibModal', 'user', function($scope, $location, $uibModal, user) {
 	$scope.user = '';
@@ -14,7 +21,7 @@ angular.module('myApp.login', [])
 		userCopy.email += '@mealtime.io'; //or maybe get mealtime.guru
 		
 		user.login(userCopy).then(function(userObj) {
-			window.location.href = "#/dashboard";
+			window.location.href = "../#/dashboard";
 		}).catch(function(error) {
 			switch(error.code) {
 				case "INVALID_EMAIL":
@@ -62,7 +69,7 @@ angular.module('myApp.login', [])
 		user.create(create).then(function(createObj) {
 			user.login(create).then(function(userObj) {
 				$scope.isProcessing = false;
-				window.location.href = "#/dashboard";
+				window.location.href = "../#/dashboard";
 			})
 		}).catch(function(error) {
 			switch(error.code) {
