@@ -37,7 +37,8 @@ angular.module('myApp.controllers', [])
 
   $scope.logout = function() {
     user.logout();
-    $location.path("/login");
+    window.location.href = './login';
+    // $location.path("../login");
   };
 }])
 
