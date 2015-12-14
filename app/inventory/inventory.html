@@ -35,7 +35,7 @@
 						<th class="text-center hidden-xs">Options</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody infinite-scroll="items.scroll.next(30)" infinite-scroll-distance='1'>
 					<tr ng-repeat="i in items | filter: {name: itemname, category: filterText } | orderBy: 'name'" class="">
 						<td>
 							<span ng-click="editItem(i.$id)" ng-hide="isItemEditing(i.$id)" class="hand">{{i.name}} <small ng-if="i.price > 0">Price: ${{i.price}}</small></span>

@@ -10,8 +10,14 @@ angular.module('myApp.services.inventoryService', [])
     var items = $firebaseArray(itemsRef);
 
     return {
-      get: function() {
+      get: function(itemCount) {
         return items;
+      },
+      getInifinite: function() {
+        var scrollRef = new Firebase.util.Scroll(itemsRef, 'name');
+        var scrollItems = $firebaseArray(scrollRef);
+        scrollItems.scroll = scrollRef.scroll;      
+        return scrollItems;
       },
       add: function(item) {
         var deferred = $q.defer();

@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('myApp.inventory', ['myApp.services.inventoryService'])
+angular.module('myApp.inventory', ['myApp.services.inventoryService', 'infinite-scroll'])
+
+angular.module('infinite-scroll').value('THROTTLE_MILLISECONDS', 250)
 
 .controller('InventoryCtrl', ['$scope', 'inventory', 'category', function($scope, inventory, category) {
 	$scope.filterText = "";
@@ -8,7 +10,7 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 	$scope.itemname = "";
 	
 	$scope.categories = category.get(); //fbCategories.$asArray();
-	$scope.items = inventory.get();
+	$scope.items = inventory.getInifinite();
 
 	$scope.itemEditId = null;
 
