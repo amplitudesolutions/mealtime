@@ -4,14 +4,9 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
 .controller('RecipesCtrl', ['$scope','$firebaseArray', '$q', '_', 'getDBUrl', 'ngToast', 'inventory', 'calendar', 'recipe', 'user', '$uibModal', function($scope, $firebaseArray, $q, _, getDBUrl, ngToast, inventory, calendar, recipe, user, $uibModal) {
 	var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
-	var recipeRef = baseRef.child('recipes');
+	// var recipeRef = baseRef.child('recipes');
 	$scope.recipes = recipe.get();
-	$scope.items = inventory.get();
-	$scope.units = $firebaseArray(baseRef.child('units'));
 	var schedule = calendar.getSchedule();
-
-	$scope.ingredient = '';
-	$scope.ingredientItem = '';
 
 	$scope.recipe = function() {
 		var modalInstance = $uibModal.open({
@@ -51,166 +46,66 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	};
 
 	$scope.viewRecipe = function(recipe) {
-		$scope.selectedRecipe = recipe;
+		
 	};
 
 	$scope.editRecipe = function() {
-		$scope.newRecipe = angular.copy($scope.selectedRecipe);
-		$scope.newIngredients = $scope.newRecipe.ingredients;
-
-		if ($scope.newIngredients == null) {
-			$scope.newIngredients = {};
-		}
-
-		$scope.newSteps = $scope.newRecipe.steps;
-		if ($scope.newSteps == null) {
-			$scope.newSteps = [];
-		}
-		$scope.addNewRecipe = true;
-	};
-
-	$scope.addRecipe = function() {
-		createRecipe().then(function(response) {
-			if ($scope.selectedRecipe != '') {
-				$scope.recipes[$scope.recipes.$indexFor(response.$id)] = response;
-				$scope.recipes.$save($scope.recipes.$indexFor(response.$id));
-				$scope.selectedRecipe = $scope.recipes[$scope.recipes.$indexFor(response.$id)];
-			} else {
-				$scope.recipes.$add(response);
-			}
-
-			$scope.closeAdd();
-		});
 		
 	};
+
 	
-	var createRecipe = function () {
-		var deferred = $q.defer();
-
-		var newRecipe = $scope.newRecipe;
-
-		var newStep = $scope.step;
-		if (newStep != '') {
-			var p1 = addStep(newStep);
-		}
-		
-		var newIngredient = $scope.ingredient;
-		if (newIngredient != '') {
-			var p2 = addIngredient();
-		}
-
-		$q.all([p1, p2]).then(function(data){
-			newRecipe.ingredients = $scope.newIngredients;
-			newRecipe.steps = $scope.newSteps;
-
-			deferred.resolve(newRecipe);
-		});
-
-		return deferred.promise;
-	};
-
-	$scope.closeAdd = function() {
-		$scope.newRecipe = '';
-		$scope.ingredient = '';
-		$scope.newIngredients = {};
-		$scope.ingredientItem = '';
-		$scope.step = '';
-		$scope.newSteps = [];
-		$scope.addNewRecipe = false;
-	};
 }])
 
-.controller('addRecipeCtrl', ['$scope', '$q', '$uibModalInstance', 'inventory', 'recipe', function($scope, $q, $uibModalInstance, inventory, recipe) {
+.controller('addRecipeCtrl', ['$scope', '$uibModalInstance', 'inventory', 'recipe', 'settings', function($scope, $uibModalInstance, inventory, recipe, settings) {
 	$scope.items = inventory.get();
-	$scope.newIngredients = {};
+	$scope.newIngredients = [];
 	$scope.newSteps = [];
-
-	var addStep = function(newStep) {
-		var deferred = $q.defer();
-		if (newStep != '') {
-			$scope.newSteps.push({detail: newStep});
-			deferred.resolve('Success');
-		}
-		return deferred.promise;
-	};
-
-	var removeStep = function(step) {
-		var deferred = $q.defer();
-
-		$scope.newSteps.splice($scope.newSteps.indexOf(step), 1);
-		deferred.resolve('Success');
-
-		return deferred.promise;
-	};
-
-	var removeIngredient = function(ingredient) {
-		var deferred = $q.defer();
-		delete $scope.newIngredients[_.findKey($scope.newIngredients, {'name': ingredient.name})];
-
-		deferred.resolve('Success');
-
-		return deferred.promise;
-	};	
-
-	var addIngredient = function() {
-		var deferred = $q.defer();
-
-		var newIngredient = {};
-		if ($scope.ingredient.name === undefined) {
-			newIngredient.name = $scope.ingredient;
-		} else {
-			newIngredient = $scope.ingredient;
-		}
-
-		newIngredient.quantity = $scope.ingredientItem.quantity;
-		newIngredient.uom = $scope.ingredientItem.uom;
-
-		// Need to check current inventory levels and what is current scheduled for the week and adjust qty on
-		// grocery list as needed.
-
-		inventory.add(newIngredient).then(function(response) {
-			if (response != '') {
-				$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-				deferred.resolve(response);
-			}
-		}, function (reason) {
-			console.log(reason);
-		});
-
-		return deferred.promise;
-	};
+	$scope.isDeleted = [];
+	$scope.units = settings.getUnits();
 
 	$scope.btnAddStep = function() {
-		addStep($scope.step);
+		$scope.newSteps.push({detail: $scope.step});
 		$scope.step = '';
 	};
 
-	$scope.btnRemoveStep = function(step) {
-		removeStep(step).then(function(response) {
-			//ngToast.create('Step removed UNDO');
-		});
-	};
-
-	$scope.btnAddIngredient = function() {
-		addIngredient().then(function(response){
-			$scope.ingredient = '';
-			$scope.ingredientItem = '';
-		});
-	};
-
-	$scope.btnRemoveIngredient = function(ingredient) {
-		removeIngredient(ingredient).then(function(response) {
-			//ngToast.create(ingredient.name + ' removed UNDO');
-		});
+	$scope.btnRemoveStep = function(index) {
+		$scope.newSteps.splice(index, 1);
 	};
 
 	$scope.add = function() {
+		// inventory.add(newIngredient).then(function(response) {
+		// 	if (response != '') {
+		// 		$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
+		// 	}
+		// }, function (reason) {
+		// 	console.log(reason);
+		// });
+
 		//$modalInstance.close(cook.addCook($scope.cook));
 	};
 
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
+
+	$scope.btnAddIngredient = function() {
+		var newIngredient = {};
+		if ($scope.ingredient.name === undefined) {
+			newIngredient.$id = '';
+			newIngredient.name = $scope.ingredient;
+		} else {
+			newIngredient = $scope.ingredient;
+		}
+
+		$scope.newIngredients.push({id: newIngredient.$id, name: newIngredient.name, quantity: $scope.ingredientItem.quantity, uom: $scope.ingredientItem.uom});
+		$scope.ingredient = '';
+		$scope.ingredientItem = '';
+	};
+
+	$scope.btnRemoveIngredient = function(index) {
+		$scope.newIngredients.splice(index, 1);
+	};	
+
 }])
 
 ;

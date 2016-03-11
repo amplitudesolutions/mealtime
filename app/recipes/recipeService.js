@@ -10,6 +10,9 @@ angular.module('myApp.services.recipeService', [])
 	    },
 	    getRecipe: function(recipeId) {
 	      return $firebaseArray(recipesRef.child(id));
+	    },
+	    add: function(recipe) {
+	    	
 	    }
 	  }
 	}])
