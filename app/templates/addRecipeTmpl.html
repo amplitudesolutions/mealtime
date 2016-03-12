@@ -11,19 +11,19 @@
 			<div class="col-sm-8">
 		      	<div class="form-group" ng-class="{'has-error': addRecipe.$submitted && !addRecipe.recipeName.$valid}">
 		      		<label >Recipe Name</label>
-		      		<input type="text" class="form-control no-radius" name="recipeName" placeholder="Recipe Name" ng-model="newRecipe.name" required>
+		      		<input type="text" class="form-control no-radius" name="recipeName" placeholder="Recipe Name" ng-model="recipe.name" required>
 		      	</div>
 		    </div>
 		    <div class="col-sm-2">
 		    	<div class="form-group text-center">
 		      		<label>Prep <i class="fa fa-clock-o"></i></label>
-		      		<input type="text" class="form-control no-radius" name="recipePrep" placeholder="Time" ng-model="newRecipe.prep">
+		      		<input type="text" class="form-control no-radius" name="recipePrep" placeholder="Time" ng-model="recipe.prep">
 		      	</div>
 		    </div>
 		    <div class="col-sm-2">
 		    	<div class="form-group text-center">
 		      		<label>Cook <i class="fa fa-clock-o"></i></label>
-		      		<input type="text" class="form-control no-radius" name="recipeCook" placeholder="Time" ng-model="newRecipe.cook">
+		      		<input type="text" class="form-control no-radius" name="recipeCook" placeholder="Time" ng-model="recipe.cook">
 		      	</div>
 		    </div>
 		</div>
@@ -31,7 +31,7 @@
 			<div class="col-sm-12">
 		      	<div class="form-group">
 		      		<label >Description</label>
-		      		<input type="text" class="form-control no-radius" name="recipeDescription" placeholder="Brief Description" ng-model="newRecipe.description">
+		      		<input type="text" class="form-control no-radius" name="recipeDescription" placeholder="Brief Description" ng-model="recipe.description">
 		      	</div>
 		    </div>
       	</div>
@@ -50,7 +50,9 @@
       		<div class="col-sm-4">
       			<div class="form-group">
 	      			<div class="input-group">
-	      				<select ng-options="unit.name for unit in units track by unit.$id" class="form-control no-radius" ng-model="item.uom"></select>
+	      				<select class="form-control no-radius" ng-model="item.uom">
+	      					<option ng-repeat="u in units" value="{{u.$id}}">{{u.name}}</option>
+	      				</select>
 		      			<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="btnRemoveIngredient(item)"></i></a></span>
 		      		</div>
 	      		</div>
@@ -70,7 +72,9 @@
   			<div class="col-sm-4">
   				<div class="form-group">
 	      			<div class="input-group">
-	      				<select ng-options="unit.name for unit in units track by unit.$id" class="form-control no-radius" ng-model="ingredientItem.uom"></select>
+	      				<select class="form-control no-radius" ng-model="ingredientItem.uom">
+	      					<option ng-repeat="u in units" value="{{u.$id}}">{{u.name}}</option>
+	      				</select>
 		      			<span class="input-group-addon input-group-side-button"><a><i class="fa fa-plus-circle" ng-click="btnAddIngredient()"></i></a></span>
 		      		</div>
 	      		</div>	

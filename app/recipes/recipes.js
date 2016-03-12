@@ -73,15 +73,42 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	};
 
 	$scope.add = function() {
-		// inventory.add(newIngredient).then(function(response) {
-		// 	if (response != '') {
-		// 		$scope.newIngredients[response.$id] = {name: response.name, quantity: newIngredient.quantity, uom: newIngredient.uom};
-		// 	}
-		// }, function (reason) {
-		// 	console.log(reason);
-		// });
+		$scope.recipe.steps = angular.copy($scope.newSteps);
+		$scope.recipe.ingredients = angular.copy($scope.newIngredients);
+		
+		if (!angular.isUndefined($scope.step) && $scope.step != '') {
+			$scope.recipe.steps.push({detail: $scope.step});
+		};
 
-		//$modalInstance.close(cook.addCook($scope.cook));
+		if (!angular.isUndefined($scope.ingredient && $scope.ingredient != '')) {
+			var newIngredient = {id: '', name: '', quantity: '', uom: ''};
+		
+			if ($scope.ingredient.name === undefined) {
+				newIngredient.$id = '';
+				newIngredient.name = $scope.ingredient;
+			} else {
+				newIngredient = $scope.ingredient;
+			}
+			newIngredient.quantity = $scope.ingredientItem.quantity;
+			newIngredient.uom = $scope.ingredientItem.uom;
+
+			$scope.recipe.ingredients.push(newIngredient);
+
+		};
+
+		angular.forEach($scope.recipe.ingredients, function(value, key){
+			if (value.id === '') {
+				var item = {};
+				item.name = value.name;
+				inventory.add(item).then(function(response) {
+					$scope.recipe.ingredients[key].id = response.$id;
+				})
+			}
+		});
+
+		recipe.add($scope.recipe).then(function(data) {
+			$uibModalInstance.close();
+		});
 	};
 
 	$scope.cancel = function() {
@@ -89,17 +116,20 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	};
 
 	$scope.btnAddIngredient = function() {
-		var newIngredient = {};
+		var newIngredient = {id: '', name: '', quantity: '', uom: ''};
 		if ($scope.ingredient.name === undefined) {
 			newIngredient.$id = '';
 			newIngredient.name = $scope.ingredient;
 		} else {
 			newIngredient = $scope.ingredient;
 		}
+		newIngredient.quantity = $scope.ingredientItem.quantity;
+		newIngredient.uom = $scope.ingredientItem.uom;
 
-		$scope.newIngredients.push({id: newIngredient.$id, name: newIngredient.name, quantity: $scope.ingredientItem.quantity, uom: $scope.ingredientItem.uom});
+		$scope.newIngredients.push(newIngredient);
+
 		$scope.ingredient = '';
-		$scope.ingredientItem = '';
+		$scope.ingredientItem = {quantity: '', uom: ''};
 	};
 
 	$scope.btnRemoveIngredient = function(index) {
