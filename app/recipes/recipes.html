@@ -11,7 +11,7 @@
 			</div>
 			<div class="col-xs-1 col-sm-1">
 				<div class="row">
-				    <button type="button" class="btn btn-default btn-lg" ng-click="recipe()">
+				    <button type="button" class="btn btn-default btn-lg" ng-click="add()">
 						<i class="fa fa-list-ul"></i>
 				    </button>
 				</div>
@@ -23,7 +23,7 @@
 			<div class="panel panel-default no-radius panel-box-shadow">
 				<div class="panel-body">
 					<div>
-						<div><a ng-click="viewRecipe(r)" class="hand">{{r.name}}</a></div>
+						<div><a ng-click="view(r.$id)" class="hand">{{r.name}}</a></div>
 						<div style="display: inline-block;"><i class="fa fa fa-clock-o"></i> {{r.prep}} +</div>
 						<div style="display: inline-block;"><span class="glyphicon glyphicon-fire"></span> {{r.cook}} =</div>
 						<div style="display: inline-block;"><i class="fa fa fa-cutlery"></i> {{(r.prep*1)+(r.cook*1)}}</div>

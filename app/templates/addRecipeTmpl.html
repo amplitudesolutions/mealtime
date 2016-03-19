@@ -11,19 +11,28 @@
 			<div class="col-sm-8">
 		      	<div class="form-group" ng-class="{'has-error': addRecipe.$submitted && !addRecipe.recipeName.$valid}">
 		      		<label >Recipe Name</label>
-		      		<input type="text" class="form-control no-radius" name="recipeName" placeholder="Recipe Name" ng-model="recipe.name" required>
+		      		<input type="text" class="form-control no-radius" name="recipeName" placeholder="Recipe Name" ng-model="recipe.name" required ng-hide="viewMode">
+		      		<p class="form-control-static" ng-show="viewMode">
+		      			{{recipe.name}}
+		      		</p>
 		      	</div>
 		    </div>
 		    <div class="col-sm-2">
 		    	<div class="form-group text-center">
 		      		<label>Prep <i class="fa fa-clock-o"></i></label>
-		      		<input type="text" class="form-control no-radius" name="recipePrep" placeholder="Time" ng-model="recipe.prep">
+		      		<input type="text" class="form-control no-radius" name="recipePrep" placeholder="Time" ng-model="recipe.prep" ng-hide="viewMode">
+		      		<p class="form-control-static" ng-show="viewMode">
+		      			{{recipe.prep}}
+		      		</p>
 		      	</div>
 		    </div>
 		    <div class="col-sm-2">
 		    	<div class="form-group text-center">
 		      		<label>Cook <i class="fa fa-clock-o"></i></label>
-		      		<input type="text" class="form-control no-radius" name="recipeCook" placeholder="Time" ng-model="recipe.cook">
+		      		<input type="text" class="form-control no-radius" name="recipeCook" placeholder="Time" ng-model="recipe.cook" ng-hide="viewMode">
+		      		<p class="form-control-static" ng-show="viewMode">
+		      			{{recipe.cook}}
+		      		</p>
 		      	</div>
 		    </div>
 		</div>
@@ -31,12 +40,15 @@
 			<div class="col-sm-12">
 		      	<div class="form-group">
 		      		<label >Description</label>
-		      		<input type="text" class="form-control no-radius" name="recipeDescription" placeholder="Brief Description" ng-model="recipe.description">
+		      		<input type="text" class="form-control no-radius" name="recipeDescription" placeholder="Brief Description" ng-model="recipe.description" ng-hide="viewMode">
+		      		<p class="form-control-static" ng-show="viewMode">
+		      			{{recipe.description}}
+		      		</p>
 		      	</div>
 		    </div>
       	</div>
       	<div class="divider">Ingredients</div>
-      	<div class="row" ng-repeat="item in newIngredients">
+      	<div class="row" ng-repeat="item in newIngredients" ng-hide="viewMode">
       		<div class="col-sm-5">
       			<div class="form-group">
       				<input type="text" class="form-control no-radius" placeholder="Item name" ng-model="item.name" uib-typeahead="i as i.name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="updateIngredient($item)" typeahead-focus-first="false">
@@ -53,12 +65,20 @@
 	      				<select class="form-control no-radius" ng-model="item.uom">
 	      					<option ng-repeat="u in units" value="{{u.$id}}">{{u.name}}</option>
 	      				</select>
-		      			<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="btnRemoveIngredient(item)"></i></a></span>
+		      			<span class="input-group-addon" style="border: 0; background-color: #fff;"><a><i class="fa fa-minus-circle" ng-click="btnRemoveIngredient($index)"></i></a></span>
 		      		</div>
 	      		</div>
       		</div>
       	</div>
-      	<div class="row">
+      	<div class="row" ng-repeat="item in newIngredients" ng-show="viewMode">
+      		<div class="col-sm-6">
+      			{{item.name}}
+      		</div>
+      		<div class="col-sm-6">
+      			{{item.quantity}} {{units[units.$indexFor(item.uom)].name}}
+      		</div>
+      	</div>
+      	<div class="row" ng-hide="viewMode">
   			<div class="col-sm-5">
   				<div class="form-group">
   					<input type="text" class="form-control no-radius" placeholder="Item name" ng-model="ingredient" uib-typeahead="i as i.name for i in items | filter:$viewValue | limitTo:5" typeahead-on-select="" typeahead-focus-first="false">
@@ -81,7 +101,7 @@
   			</div>
       	</div>
       	<div class="divider">Directions</div>
-      	<div class="row" ng-repeat="step in newSteps">
+      	<div class="row" ng-repeat="step in newSteps" ng-hide="viewMode">
   			<div class="col-sm-12">
   				<div class="form-group">
   					<div class="input-group">
@@ -92,7 +112,7 @@
 	      		</div>
   			</div>
   		</div>
-  		<div class="row">
+  		<div class="row" ng-hide="viewMode">
   			<div class="col-sm-12">
   				<div class="form-group">
   					<div class="input-group">
@@ -104,7 +124,18 @@
   			</div>
   		</div>
 
-		<button class="btn btn-link" type="button" ng-click="cancel()">Cancel</button>
-		<button class="btn btn-primary pull-right">Add</button>
+  		<!-- view only -->
+  		<div class="row" ng-repeat="step in newSteps" ng-show="viewMode">
+  			<div class="col-sm-2">
+  				<p class="text-center">{{$index + 1}}</p>
+  			</div>
+  			<div class="col-sm-10">
+  				<span>{{step.detail}}</span>
+  			</div>
+  		</div>
+
+		<button type="button" class="btn btn-link" type="button" ng-click="cancel()">Close</button>
+		<button type="button" class="btn btn-primary pull-right" ng-show="viewMode" ng-click="viewMode = false">Edit</button>
+		<button class="btn btn-primary pull-right" ng-hide="viewMode">Save</button>
 	</div>
 </form>

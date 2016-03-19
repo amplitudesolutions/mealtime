@@ -8,18 +8,34 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	$scope.recipes = recipe.get();
 	var schedule = calendar.getSchedule();
 
-	$scope.recipe = function() {
+	$scope.add = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'templates/addRecipeTmpl.html',
 			backdrop: true,
 			controller: 'addRecipeCtrl',
-			size: 'md'
+			size: 'md',
+			resolve: {
+            	itemId: function() {
+            		return null;
+            	}
+            }
 		});
+	};
 
-		// modalInstance.result.then(function (addedRecipe) {
-		// 	calendar.selectCook(cook.getCook(addedCook), day);
-		// });
+	$scope.view = function(id) {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'templates/addRecipeTmpl.html',
+			backdrop: true,
+			controller: 'addRecipeCtrl',
+			size: 'md',
+			resolve: {
+            	itemId: function() {
+            		return id;
+            	}
+            }
+		});
 	};
 
 	$scope.scheduleRecipe = function(recipe, selectedDay) {
@@ -44,24 +60,36 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 	    // };
 		ngToast.create(recipe.name + ' added for ' + schedule[selectedDay].name);
 	};
-
-	$scope.viewRecipe = function(recipe) {
-		
-	};
-
-	$scope.editRecipe = function() {
-		
-	};
-
 	
 }])
 
-.controller('addRecipeCtrl', ['$scope', '$uibModalInstance', 'inventory', 'recipe', 'settings', function($scope, $uibModalInstance, inventory, recipe, settings) {
+.controller('addRecipeCtrl', ['$scope', '$uibModalInstance', 'inventory', 'recipe', 'settings', 'itemId', 'ngToast', function($scope, $uibModalInstance, inventory, recipe, settings, itemId, ngToast) {
+	$scope.viewMode = true;
+
 	$scope.items = inventory.get();
 	$scope.newIngredients = [];
 	$scope.newSteps = [];
 	$scope.isDeleted = [];
 	$scope.units = settings.getUnits();
+
+	if (itemId) {
+		$scope.action = "Edit"
+		recipe.getRecipe(itemId).then(function(data) {
+			$scope.recipe = data;
+			if (!angular.isUndefined(data.steps)) {
+				$scope.newSteps = data.steps;
+			}
+
+			if (!angular.isUndefined(data.ingredients)) {
+				$scope.newIngredients = data.ingredients;
+			}
+		});
+	} else {
+		$scope.action = "New"
+		$scope.recipe = {};
+		$scope.viewMode = false;
+		// $scope.addAnother();
+	}
 
 	$scope.btnAddStep = function() {
 		$scope.newSteps.push({detail: $scope.step});
@@ -106,9 +134,17 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 			}
 		});
 
-		recipe.add($scope.recipe).then(function(data) {
-			$uibModalInstance.close();
-		});
+		if (itemId) {
+			recipe.save($scope.recipe).then(function(data) {
+				ngToast.create('Recipe saved');
+			});
+		} else {
+			recipe.add($scope.recipe).then(function(data) {
+				ngToast.create('Recipe Added');
+			});	
+		}
+		
+		$uibModalInstance.close();
 	};
 
 	$scope.cancel = function() {

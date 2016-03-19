@@ -1,6 +1,6 @@
 angular.module('myApp.services.recipeService', [])
 	
-	.factory('recipe', ['$firebaseArray', 'getDBUrl', '$q', 'user', function($firebaseArray, getDBUrl, $q, user) {
+	.factory('recipe', ['$firebaseArray', '$firebaseObject', 'getDBUrl', '$q', 'user', function($firebaseArray, $firebaseObject, getDBUrl, $q, user) {
 	  var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
 	  var recipes = $firebaseArray(baseRef.child('recipes'));
 
@@ -9,7 +9,17 @@ angular.module('myApp.services.recipeService', [])
 	      return recipes;
 	    },
 	    getRecipe: function(recipeId) {
-	      return $firebaseArray(recipesRef.child(id));
+	    	var deferred = $q.defer();
+
+	    	var recipe = $firebaseObject(baseRef.child("recipes").child(recipeId));
+
+	    	recipe.$loaded().then(function(data) {
+	    		deferred.resolve(data);
+	    	}).catch(function(error) {
+	    		deferred.reject(error);
+	    	});
+	      	
+	      	return deferred.promise;
 	    },
 	    add: function(recipe) {
 	    	var deferred = $q.defer();
@@ -34,6 +44,16 @@ angular.module('myApp.services.recipeService', [])
 
 
 	    	return deferred.promise;
+	    },
+	    save: function(recipe) {
+	    	var deferred = $q.defer();
+			recipe.$save().then(function(ref) {
+				deferred.resolve(ref);
+			}, function(error) {
+				deferred.reject(error);
+			});
+
+			return deferred.promise;
 	    }
 	  }
 	}])
