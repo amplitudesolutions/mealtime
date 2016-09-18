@@ -19,10 +19,13 @@ angular.module('myApp.services.inventoryService', [])
         var defaultCategory = category.getDefault();
         
         if (item.name) {
-          itemsRef.orderByChild("name").startAt(item.name).endAt(item.name).once('value', function(dataSnapshot) {
+          //
+          item.searchValue = item.name.toLowerCase();
+
+          itemsRef.orderByChild("searchValue").startAt(item.searchValue).endAt(item.searchValue).once('value', function(dataSnapshot) {
               if (dataSnapshot.val() === null) {
               //Create New Item
-                items.$add({ name: item.name, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+              items.$add({ name: item.name, searchValue: item.searchValue, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
                   categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
                   deferred.resolve(items.$getRecord(ref.key()));
                 });
@@ -54,6 +57,7 @@ angular.module('myApp.services.inventoryService', [])
         var name = items[items.$indexFor(item.$id)].name.trim();
         if (name) {
           item.name = name;
+          item.searchValue = item.name.toLowerCase();
           items.$save(item);
         }
       },

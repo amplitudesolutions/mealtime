@@ -1,6 +1,6 @@
  angular.module('myApp.services.dashboardService', [])
 
-  .factory('category', ['$firebaseArray', 'getDBUrl', 'user', function($firebaseArray, getDBUrl, user){
+  .factory('category', ['$firebaseArray', '$q', 'getDBUrl', 'user', function($firebaseArray, $q, getDBUrl, user){
     var baseRef = new Firebase(getDBUrl.path + '/' + user.get().uid);
     var categoriesRef = baseRef.child('categories');
     var categories = $firebaseArray(categoriesRef);
@@ -31,16 +31,32 @@
         return categories;
       },
       add: function(category) {
-        categories.$add({ name: category.name, color: category.color }).then(function(ref) {
-          if (categories.length == 1) {
-            setDefault(ref);
+        var deferred = $q.defer();
+
+        category.searchValue = category.name.toLowerCase();
+
+        categoriesRef.orderByChild("searchValue").startAt(category.searchValue).endAt(category.searchValue).once('value', function(dataSnapshot) {
+          if (dataSnapshot.val() === null) {
+            categories.$add(category).then(function(ref) {
+              if (categories.length == 1) {
+                setDefault(ref);
+              }
+              deferred.resolve(categories.$getRecord(ref.key()));
+            });
+          } else {
+            dataSnapshot.forEach(function(snap){
+              deferred.resolve(categories.$getRecord(snap.key()));
+            });
           }
         });
+
+        return deferred.promise;
       },
       save: function(category) {
         var name = category.name.trim();
         if (name) {
           category.name = name;
+          category.searchValue = category.name.toLowerCase();
           var cat = categories.$indexFor(category.$id);
           categories[cat] = category;
           categories.$save(cat);
