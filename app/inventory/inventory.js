@@ -12,6 +12,8 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 
 	$scope.itemEditId = null;
 
+	$scope.itemEdit = {};
+
 	$scope.setFilter = function(category) {
 		$scope.filterText = category;
 		$scope.status.isopen = false;
@@ -25,8 +27,9 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 		}
 	};
 
-	$scope.editItem = function (id) {
-		$scope.itemEditId = id;
+	$scope.editItem = function (item) {
+		$scope.itemEditId = item.$id;
+		$scope.itemEdit = angular.copy(item);
 	};
 
 	$scope.addNewItem = function() {
@@ -34,6 +37,7 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 		item.name = $scope.itemname;
 		item.stock = 0;
 		item.minstock = 0;
+		item.price = '';
 		inventory.add(item);
 	};
 
@@ -42,8 +46,23 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 	};
 
 	$scope.saveItem = function(item) {
-		inventory.save(item);
+
+		if ($scope.itemEdit.name) {
+			// Don't necessarily like this way... will change once I figure out a better way to do it.
+			item.name = $scope.itemEdit.name;
+			item.searchValue = $scope.itemEdit.searchValue.toLowerCase();
+			item.price = $scope.itemEdit.price;
+
+			inventory.save(item);
+
+			$scope.itemEditId = null;
+			$scope.itemEdit = {};
+		}
+	};
+
+	$scope.cancel = function() {
 		$scope.itemEditId = null;
+		$scope.itemEdit = {};
 	};
 
 	$scope.addStock = function(item) {

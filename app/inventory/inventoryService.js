@@ -21,11 +21,12 @@ angular.module('myApp.services.inventoryService', [])
         if (item.name) {
           //
           item.searchValue = item.name.toLowerCase();
+          item.category = defaultCategory;
 
           itemsRef.orderByChild("searchValue").startAt(item.searchValue).endAt(item.searchValue).once('value', function(dataSnapshot) {
               if (dataSnapshot.val() === null) {
               //Create New Item
-              items.$add({ name: item.name, searchValue: item.searchValue, category: defaultCategory, stock: 0, minstock: 0}).then(function(ref) {         
+              items.$add(item).then(function(ref) {         
                   categoriesRef.child("/" + defaultCategory + "/items/" + ref.key()).set(true);
                   deferred.resolve(items.$getRecord(ref.key()));
                 });
@@ -56,6 +57,12 @@ angular.module('myApp.services.inventoryService', [])
       save: function (item) {
         var name = items[items.$indexFor(item.$id)].name.trim();
         if (name) {
+
+          // Check to see if price is defined, if it isn't, it will throw an error. This is because
+          // previous items before this build were added without price.
+          if (item.price === undefined)
+            item.price = '';
+
           item.name = name;
           item.searchValue = item.name.toLowerCase();
           items.$save(item);
