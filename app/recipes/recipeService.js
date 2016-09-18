@@ -54,7 +54,20 @@ angular.module('myApp.services.recipeService', [])
 			});
 
 			return deferred.promise;
-	    }
+	    },
+	    remove: function(item) {
+	    	var deferred = $q.defer();
+
+	    	baseRef.child('recipes').child(item.$id).remove(function(error) {
+	    		if (error)
+	    			deferred.reject(error);
+	    		else
+	    			deferred.resolve(true);
+	    	});
+
+	    	return deferred.promise;
+	    	
+	      }
 	  }
 	}])
 ;

@@ -91,6 +91,18 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 		// $scope.addAnother();
 	}
 
+	$scope.delete = function(item) {
+		recipe.remove(item).then(function(data) {
+			//Delete successful.
+			// Need to show toast with UNDO button.
+			
+			$uibModalInstance.close();
+		}, function(error) {
+
+		});
+		
+	};
+
 	$scope.btnAddStep = function() {
 		$scope.newSteps.push({detail: $scope.step});
 		$scope.step = '';
