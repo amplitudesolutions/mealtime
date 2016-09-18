@@ -95,7 +95,7 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 		recipe.remove(item).then(function(data) {
 			//Delete successful.
 			// Need to show toast with UNDO button.
-			
+
 			$uibModalInstance.close();
 		}, function(error) {
 
@@ -140,6 +140,9 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 			if (value.id === '') {
 				var item = {};
 				item.name = value.name;
+				item.price = '';
+				item.stock = 0;
+				item.minstock = 0;
 				inventory.add(item).then(function(response) {
 					$scope.recipe.ingredients[key].id = response.$id;
 				})
