@@ -2,7 +2,7 @@
 
 angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 
-.controller('InventoryCtrl', ['$scope', 'inventory', 'category', function($scope, inventory, category) {
+.controller('InventoryCtrl', ['$scope', 'inventory', 'category', 'ngToast', function($scope, inventory, category, ngToast) {
 	$scope.filterText = "";
 	$scope.itemAdded = "";
 	$scope.itemname = "";
@@ -53,7 +53,12 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 			item.searchValue = $scope.itemEdit.searchValue.toLowerCase();
 			item.price = $scope.itemEdit.price;
 
-			inventory.save(item);
+			inventory.save(item).then(function(data) {
+				ngToast.create('Item Saved!');
+			}, function(error) {
+				ngToast.danger({content: 'Issue saving item ' + error});
+				console.log(error);
+			});
 
 			$scope.itemEditId = null;
 			$scope.itemEdit = {};
@@ -82,6 +87,11 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 	};
 
 	 $scope.deleteItem = function(item) {
-	 	inventory.remove(item);
+	 	inventory.remove(item).then(function(ref) {
+			ngToast.create('Item Deleted!');
+	 	}, function(error) {
+	 		ngToast.danger({content: 'Issue deleting item ' + error});
+			console.log(error);
+	 	});
 	  };
 }]);

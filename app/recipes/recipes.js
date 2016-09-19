@@ -95,10 +95,11 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 		recipe.remove(item).then(function(data) {
 			//Delete successful.
 			// Need to show toast with UNDO button.
-
+			ngToast.create('Recipe Deleted!');
+			
 			$uibModalInstance.close();
 		}, function(error) {
-
+			console.log(error);
 		});
 		
 	};
@@ -151,7 +152,7 @@ angular.module('myApp.recipes', ['myApp.services.recipeService'])
 
 		if (itemId) {
 			recipe.save($scope.recipe).then(function(data) {
-				ngToast.create('Recipe saved');
+				ngToast.create('Recipe Saved');
 			});
 		} else {
 			recipe.add($scope.recipe).then(function(data) {

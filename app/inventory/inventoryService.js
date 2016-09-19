@@ -43,6 +43,8 @@ angular.module('myApp.services.inventoryService', [])
         return deferred.promise;
       },
       remove: function(item) {
+        var deferred = $q.defer();
+
         //Delete Item from Inventory
         var category = null;
 
@@ -50,14 +52,25 @@ angular.module('myApp.services.inventoryService', [])
             category = data.val().category;
         });
 
-        categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
-        listRef.child("/Default/items/" + item.$id).remove();
-        itemsRef.child(item.$id).remove();
+        itemsRef.child(item.$id).remove(function(error) {
+          if (error) {
+            deferred.reject(error);
+          } else {
+            // This is not handled the best, need to figure out.
+            categoriesRef.child("/" + category + "/items/" + item.$id).set(null);
+            listRef.child("/Default/items/" + item.$id).remove();
+  
+            deferred.resolve(true);
+          }
+        });
+
+        return deferred.promise;
       },
       save: function (item) {
+        var deferred = $q.defer();
+
         var name = items[items.$indexFor(item.$id)].name.trim();
         if (name) {
-
           // Check to see if price is defined, if it isn't, it will throw an error. This is because
           // previous items before this build were added without price.
           if (item.price === undefined)
@@ -65,8 +78,15 @@ angular.module('myApp.services.inventoryService', [])
 
           item.name = name;
           item.searchValue = item.name.toLowerCase();
-          items.$save(item);
+          
+          items.$save(item).then(function(ref) {
+            deferred.resolve(ref);
+          }, function(error) {
+            deferred.reject(error);
+          });
         }
+
+        return deferred.promise;
       },
       changeCategory: function(item, category_id) {
         // If category === null then set to default category.
