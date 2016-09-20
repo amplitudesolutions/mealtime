@@ -38,7 +38,12 @@ angular.module('myApp.inventory', ['myApp.services.inventoryService'])
 		item.stock = 0;
 		item.minstock = 0;
 		item.price = '';
-		inventory.add(item);
+		inventory.add(item).then(function(data) {
+			ngToast.create('Item Added');
+		}, function(error) {
+			ngToast.danger('Issue adding item ' + error);
+			console.log(error);
+		});
 	};
 
 	$scope.changeCategory = function(item, category_id) {
